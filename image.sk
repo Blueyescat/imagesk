@@ -335,5 +335,10 @@ effect (save|write) [(image|img)] %object% to [file] %string%:
 					send "[image.sk] '%raw expression-2%' is not a valid file path." to console
 				continue
 			{_file}.mkdirs();
-			ImageIO.write(expression-1, "png" and {_file})
+			set {_fileName} to "%last element of split {_path} at File.separator!%"
+			if {_fileName} contains ".":
+				set {_extension} to "%last element of split {_fileName} at "".""%"
+			else:
+				set {_extension} to "png"
+			ImageIO.write(expression-1, {_extension} and {_file})
 		continue
