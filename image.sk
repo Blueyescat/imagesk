@@ -35,6 +35,7 @@ expression [(image|img)] colo[u]r (0¦%-color%|1¦[hex] %-string%|2¦[rgb] [\(]%
 			set {_opacity} to expression-6
 		else if expression-7 is set:
 			set {_opacity} to expression-7
+		delete {_color}
 		if {_opacity} is set:
 			set {_opacity} to (255 / 100) * {_opacity}
 			if {_opacity} is greater than 255:
@@ -68,7 +69,7 @@ function imgskSetVariable(variable: object, object: object, event: event):
 function imgskCopyImage(image: object) :: object:
 	return new BufferedImage(({_image}.getColorModel()), ({_image}.copyData(null)), ({_image}.isAlphaPremultiplied()) and null)
 
-effect create [a[n]] [new] [(10¦transparent)] image with (0¦width %number%[( and|,)] [with] height %number%|1¦height %number%[( and|,)] [with] width %number%)[[( and|,)] [with] b[ack]g[round] %-object%] [and] (store|save) [[the] result] (in|to) [variable] %-object%:
+effect create [a[n]] [new] image with (0¦width %number%[( and|,)] [with] height %number%|1¦height %number%[( and|,)] [with] width %number%)[[( and|,)] [with] b[ack]g[round] %-object%] [and] (store|save) [[the] result] (in|to) [variable] %-object%:
 	trigger:
 		delay the current effect
 		if (raw expression-6) isn't instance of Variable:
@@ -129,6 +130,7 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 		else if parse mark is 2:
 			if expression-3 is set:
 				#TODO
+				stop
 		continue
 
 effect resize [(image|img)] %object% to [sizes] (0¦width %number%[( and|,)] height %number%|1¦height %number%[( and|,)] width %number%) [(with|using) algorithm %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
@@ -225,8 +227,8 @@ object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
 
 object property (opacity|transparency):
 	set:
-		if (raw expression-1) is instance of Variable:
-			if expression-1 is instance of BufferedImage:
+		if expression-1 is instance of BufferedImage:
+			if (raw expression-1) is instance of Variable:
 				if change value is set:
 					set {_opacity} to (1 / 100) * change value
 					if {_opacity} is greater than 1:
@@ -239,8 +241,24 @@ object property (opacity|transparency):
 					{_g}.drawImage(expression-1, 0, 0 and null);
 					{_g}.dispose();
 					imgskSetVariable((raw expression-1), {_temp}, (event))
-		else:
-			send "[image.sk] The image to be edited must be in a variable! (set opacity)" to console
+			else:
+				send "[image.sk] The image to be edited must be in a variable! (set image opacity)" to console
+		else if expression-1 is instance of Color:
+			if (raw expression-1) is instance of Variable:
+				if change value is set:
+					set {_opacity} to change value
+					set {_opacity} to (255 / 100) * {_opacity}
+					if {_opacity} is greater than 255:
+						set {_opacity} to 255
+					else if {_opacity} is smaller than 0:
+						set {_opacity} to 0
+					set {_color} to new Color((expression-1.getRed()), (expression-1.getGreen()), (expression-1.getBlue()) and {_opacity})
+					imgskSetVariable((raw expression-1), {_color}, (event))
+			else:
+				send "[image.sk] The color to be edited must be in a variable! (set color opacity)" to console
+	get:
+		if expression-1 is instance of Color:
+			return (expression-1.getAlpha() / 255) * 100
 
 effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [and] (store|save) [[the] result] (in|to) [variable] %-object%:
 	trigger:
