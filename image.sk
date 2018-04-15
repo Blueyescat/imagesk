@@ -2,6 +2,7 @@ options:
 	variable: imagesk
 
 import:
+	org.bukkit.Bukkit
 	ch.njol.skript.lang.Variable
 	ch.njol.skript.variables.Variables
 	ch.njol.skript.util.Color as SkriptColor
@@ -18,6 +19,9 @@ import:
 	java.awt.RenderingHints
 	java.awt.GraphicsEnvironment
 	javax.imageio.ImageIO
+
+on load:
+	set {Logger} to Bukkit.getServer().getLogger()
 
 expression [(image|img)] colo[u]r (0¦%-color%|1¦[hex] %-string%|2¦[rgb] [\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
 	get:
@@ -82,7 +86,7 @@ effect create [a[n]] [new] image with (0¦width %number%[( and|,)] [with] height
 		delay the current effect
 		if (raw expression-6) isn't instance of Variable:
 			if expression-6 is set:
-				send "[image.sk] '%raw expression-6%' is not a variable." to console
+				{Logger}.severe("[image.sk] '%raw expression-6%' is not a variable.");
 			continue	
 		if parse mark is 0:
 			set {_width} to rounded expression-1
@@ -107,7 +111,7 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 		delay the current effect
 		if (raw expression-4) isn't instance of Variable:
 			if expression-4 is set:
-				send "[image.sk] '%raw expression-4%' is not a variable." to console
+				{Logger}.severe("[image.sk] '%raw expression-4%' is not a variable.");
 			continue	
 		if parse mark is 0:
 			if expression-1 is set:
@@ -147,12 +151,12 @@ effect resize [(image|img)] %object% to [sizes] (0¦width %number%[( and|,)] hei
 		if raw expression-7 is not set:
 			if (raw expression-1) isn't instance of Variable:
 				if expression-1 is set:
-					send "[image.sk] The image to be resized must be in a variable!" to console
+					{Logger}.severe("[image.sk] The image to be resized must be in a variable!");
 				continue
 		else:
 			if (raw expression-7) isn't instance of Variable:
 				if expression-7 is set:
-					send "[image.sk] '%raw expression-7%' is not a variable." to console
+					{Logger}.severe("[image.sk] '%raw expression-7%' is not a variable.");
 				continue
 		if expression-1 isn't instance of BufferedImage:
 			continue
@@ -219,7 +223,7 @@ object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
 					expression-1.setRGB(({_x} - 1), ({_y} - 1) and {_rgb});
 					imgskSetVariable((raw expression-1), expression-1, (event))
 		else:
-			send "[image.sk] The image to be edited must be in a variable! (set pixel color)" to console
+			{Logger}.severe("[image.sk] The image to be edited must be in a variable! (set pixel color)");
 	delete:
 		if (raw expression-1) is instance of Variable:
 			if expression-2 is set:
@@ -231,7 +235,7 @@ object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
 					expression-1.setRGB(({_x} - 1), ({_y} - 1) and {_rgb});
 					imgskSetVariable((raw expression-1), expression-1, (event))
 		else:
-			send "[image.sk] The image to be edited must be in a variable! (delete pixel color)" to console
+			{Logger}.severe("[image.sk] The image to be edited must be in a variable! (delete pixel color)");
 
 object property (opacity|transparency):
 	set:
@@ -250,7 +254,7 @@ object property (opacity|transparency):
 					{_g}.dispose();
 					imgskSetVariable((raw expression-1), {_temp}, (event))
 			else:
-				send "[image.sk] The image to be edited must be in a variable! (set image opacity)" to console
+				{Logger}.severe("[image.sk] The image to be edited must be in a variable! (set image opacity)");
 		else if expression-1 is instance of Color:
 			if (raw expression-1) is instance of Variable:
 				if change value is set:
@@ -263,7 +267,7 @@ object property (opacity|transparency):
 					set {_color} to new Color((expression-1.getRed()), (expression-1.getGreen()), (expression-1.getBlue()) and {_opacity})
 					imgskSetVariable((raw expression-1), {_color}, (event))
 			else:
-				send "[image.sk] The color to be edited must be in a variable! (set color opacity)" to console
+				{Logger}.severe("[image.sk] The color to be edited must be in a variable! (set color opacity)");
 	get:
 		if expression-1 is instance of Color:
 			return (expression-1.getAlpha() / 255) * 100
@@ -275,7 +279,7 @@ effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number
 			continue
 		else if (raw expression-10) isn't instance of Variable:
 			if expression-10 is set:
-				send "[image.sk] '%raw expression-10%' is not a variable." to console
+				{Logger}.severe("[image.sk] '%raw expression-10%' is not a variable.");
 			continue
 		if parse mark is 0:
 			set {_x1} to expression-2
@@ -298,12 +302,12 @@ effect (draw|merge) [(image|img)] %object% (on|with) [image] %object% [at [locat
 		if raw expression-5 is not set:
 			if (raw expression-2) isn't instance of Variable:
 				if expression-2 is set:
-					send "[image.sk] The image to be edited must be in a variable! (merge image)" to console
+					{Logger}.severe("[image.sk] The image to be edited must be in a variable! (merge image)");
 				continue
 		else:
 			if (raw expression-5) isn't instance of Variable:
 				if expression-5 is set:
-					send "[image.sk] '%raw expression-5%' is not a variable." to console
+					{Logger}.severe("[image.sk] '%raw expression-5%' is not a variable.");
 				continue
 		if expression-1 isn't instance of BufferedImage:
 			continue
@@ -329,7 +333,7 @@ effect (draw|merge) [(image|img)] %object% (on|with) [image] %object% [at [locat
 			imgskSetVariable((raw expression-5), {_image}, (event))
 		continue
 
-effect (create|generate) [an] [(image|img)] (text|string) [(with (id|name)|named)] %string% [[and] with text %-string%]:
+effect (create|generate) [a[n]] [(image|img)] (text|string) [(with (id|name)|named)] %string% [[and] with text %-string%]:
 	trigger:
 		if {{@variable}::texts::%expression-1%} is set:
 			delete {{@variable}::texts::%expression-1%::*}
@@ -454,12 +458,12 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 		if raw expression-5 is not set:
 			if (raw expression-2) isn't instance of Variable:
 				if expression-2 is set:
-					send "[image.sk] The image to be edited must be in a variable! (write text)" to console
+					{Logger}.severe("[image.sk] The image to be edited must be in a variable! (write text)");
 				continue
 		else:
 			if (raw expression-5) isn't instance of Variable:
 				if expression-5 is set:
-					send "[image.sk] '%raw expression-5%' is not a variable." to console
+					{Logger}.severe("[image.sk] '%raw expression-5%' is not a variable.");
 				continue
 		set {_image} to imgskCopyImage(expression-2)
 		set {_g} to {_image}.createGraphics()
@@ -519,7 +523,7 @@ effect (save|write) [(image|img)] %object% to [file] %string%:
 			set {_file} to new File({_path})
 			if {_file} is not set:
 				if expression-2 is set:
-					send "[image.sk] '%raw expression-2%' is not a valid file path." to console
+					{Logger}.severe("[image.sk] '%raw expression-2%' is not a valid file path.");
 				continue
 			{_file}.mkdirs();
 			set {_fileName} to "%last element of split {_path} at File.separator!%"
