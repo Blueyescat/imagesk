@@ -15,6 +15,9 @@ import:
 	java.awt.AlphaComposite
 	java.awt.Color
 	java.awt.Font
+	java.awt.BasicStroke
+	java.awt.geom.Line2D
+	java.awt.geom.Line2D$Float as Line2DFloat
 	java.awt.font.TextAttribute
 	java.awt.RenderingHints
 	java.awt.GraphicsEnvironment
@@ -296,7 +299,7 @@ effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number
 		imgskSetVariable((raw expression-10), (expression-1.getSubimage(({_x1} - 1), ({_y1} - 1), ({_width} - 1) and ({_height} - 1))), (event))
 		continue
 
-effect (draw|merge) [(image|img)] %object% (on|with) [image] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
 		delay the current effect
 		if raw expression-5 is not set:
@@ -331,6 +334,49 @@ effect (draw|merge) [(image|img)] %object% (on|with) [image] %object% [at [locat
 			imgskSetVariable((raw expression-2), {_image}, (event))
 		else:
 			imgskSetVariable((raw expression-5), {_image}, (event))
+		continue
+
+effect draw [a] line on [(image|img)] %object% [with width %-number%][[( and|,)] [with] %-object%] (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+	trigger:
+		delay the current effect
+		if raw expression-12 is not set:
+			if (raw expression-1) isn't instance of Variable:
+				if expression-1 is set:
+					{Logger}.severe("[image.sk] The image to be edited must be in a variable! (draw line)");
+				continue
+		else:
+			if (raw expression-12) isn't instance of Variable:
+				if expression-12 is set:
+					{Logger}.severe("[image.sk] '%raw expression-12%' is not a variable.");
+				continue
+		if expression-1 isn't instance of BufferedImage:
+			continue
+		if parse mark is 0:
+			set {_x1} to expression-4
+			set {_y1} to expression-5
+			set {_x2} to expression-6
+			set {_y2} to expression-7
+		else if parse mark is 1:
+			set {_x1} to expression-8
+			set {_y1} to expression-9
+			set {_x2} to expression-10
+			set {_y2} to expression-11
+		set {_image} to imgskCopyImage(expression-1)
+		set {_g} to {_image}.createGraphics()
+		if expression-2 is set:
+			set {_width} to expression-2
+		else:
+			set {_width} to 1
+		{_g}.setStroke(new BasicStroke({_width}));
+		if expression-3 is set:
+			{_g}.setColor(expression-3);
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
+		{_g}.draw(new Line2DFloat({_x1}, {_y1}, {_x2} and {_y2}));
+		{_g}.dispose();
+		if raw expression-12 is not set:
+			imgskSetVariable((raw expression-1), {_image}, (event))
+		else:
+			imgskSetVariable((raw expression-12), {_image}, (event))
 		continue
 
 effect (create|generate) [a[n]] [(image|img)] (text|string) [(with (id|name)|named)] %string% [[and] with text %-string%]:
