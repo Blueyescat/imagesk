@@ -1,13 +1,22 @@
+options:
+	variable: imagesk
+
 import:
 	ch.njol.skript.lang.Variable
 	ch.njol.skript.variables.Variables
 	ch.njol.skript.util.Color as SkriptColor
+	java.lang.String
+	java.text.AttributedString
 	java.io.File
 	java.net.URL
 	java.awt.Image
 	java.awt.image.BufferedImage
 	java.awt.AlphaComposite
 	java.awt.Color
+	java.awt.Font
+	java.awt.font.TextAttribute
+	java.awt.RenderingHints
+	java.awt.GraphicsEnvironment
 	javax.imageio.ImageIO
 
 expression [(image|img)] colo[u]r (0¦%-color%|1¦[hex] %-string%|2¦[rgb] [\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
@@ -35,7 +44,6 @@ expression [(image|img)] colo[u]r (0¦%-color%|1¦[hex] %-string%|2¦[rgb] [\(]%
 			set {_opacity} to expression-6
 		else if expression-7 is set:
 			set {_opacity} to expression-7
-		delete {_color}
 		if {_opacity} is set:
 			set {_opacity} to (255 / 100) * {_opacity}
 			if {_opacity} is greater than 255:
@@ -314,6 +322,185 @@ effect (draw|merge) [(image|img)] %object% (on|with) [image] %object% [at [locat
 		set {_image} to imgskCopyImage(expression-2)
 		set {_g} to {_image}.createGraphics()
 		{_g}.drawImage(expression-1, {_x}, {_y} and null);
+		{_g}.dispose();
+		if raw expression-5 is not set:
+			imgskSetVariable((raw expression-2), {_image}, (event))
+		else:
+			imgskSetVariable((raw expression-5), {_image}, (event))
+		continue
+
+effect (create|generate) [an] [(image|img)] (text|string) [(with (id|name)|named)] %string% [[and] with text %-string%]:
+	trigger:
+		if {{@variable}::texts::%expression-1%} is set:
+			delete {{@variable}::texts::%expression-1%::*}
+		set {{@variable}::texts::%expression-1%} to true
+		if expression-2 is set:
+			set {{@variable}::texts::%expression-1%::text} to expression-2
+		set {{@variable}::texts::%expression-1%::font} to Font.DIALOG!
+		set {{@variable}::texts::%expression-1%::size} to 12
+
+expression [the] [(image|img)] (text|string) [(with (id|name)|named)] %string%:
+	get:
+		if {{@variable}::texts::%expression-1%} is set:
+			return "imgtext:%expression-1%"
+	delete:
+		delete {{@variable}::texts::%expression-1%} and {{@variable}::texts::%expression-1%::*}
+
+expression [(all [[of] the]|the)] [(image|img)] (text|string)[s]:
+	get:
+		loop {{@variable}::texts::*}:
+			add "imgtext:%loop-index%" to {_list::*}
+		return {_list::*}
+	delete:
+		delete {{@variable}::texts::*}
+ 
+expression (0¦(text|string)|1¦font[[( |-)]family]) of [[(image|img)] (text|string)] %string%:
+	get:
+		if parse mark is 0:
+			return {{@variable}::texts::%expression-1%::text}
+		else if parse mark is 1:
+			return {{@variable}::texts::%expression-1%::font}
+	set:
+		if {{@variable}::texts::%expression-1%} is set:
+			if parse mark is 0:
+				if change value is instance of String:
+					set {{@variable}::texts::%expression-1%::text} to change value
+			else if parse mark is 1:
+				if change value is instance of String:
+					set {{@variable}::texts::%expression-1%::font} to change value
+	reset:
+		if parse mark is 0:
+			set {{@variable}::texts::%expression-1%::text} to "Sample Text"
+		else if parse mark is 1:
+			set {{@variable}::texts::%expression-1%::font} to Font.DIALOG!
+
+expression (0¦bold|1¦italic|2¦underline[d]|3¦strikethrough) [state] of [[(image|img)] (text|string)] %string%:
+	get:
+		if parse mark is 0:
+			return {{@variable}::texts::%expression-1%::bold}
+		else if parse mark is 1:
+			return {{@variable}::texts::%expression-1%::italic}
+		else if parse mark is 2:
+			return {{@variable}::texts::%expression-1%::underline}
+		else if parse mark is 3:
+			return {{@variable}::texts::%expression-1%::strikethrough}
+	set:
+		if {{@variable}::texts::%expression-1%} is set:
+			if change value is true or false:
+				if parse mark is 0:
+					if change value is true:
+						set {{@variable}::texts::%expression-1%::bold} to true
+					else:
+						delete {{@variable}::texts::%expression-1%::bold}
+				else if parse mark is 1:
+					if change value is true:
+						set {{@variable}::texts::%expression-1%::italic} to true
+					else:
+						delete {{@variable}::texts::%expression-1%::italic}
+				else if parse mark is 2:
+					if change value is true:
+						set {{@variable}::texts::%expression-1%::underline} to true
+					else:
+						delete {{@variable}::texts::%expression-1%::underline}
+				else if parse mark is 3:
+					if change value is true:
+						set {{@variable}::texts::%expression-1%::strikethrough} to true
+					else:
+						delete {{@variable}::texts::%expression-1%::strikethrough}
+	reset:
+		if parse mark is 0:
+			delete {{@variable}::texts::%expression-1%::bold}
+		else if parse mark is 1:
+			delete {{@variable}::texts::%expression-1%::italic}
+		else if parse mark is 2:
+			delete {{@variable}::texts::%expression-1%::underline}
+		else if parse mark is 3:
+			delete {{@variable}::texts::%expression-1%::strikethrough}
+
+expression size of [[(image|img)] (text|string)] %string%:
+	get:
+		return {{@variable}::texts::%expression-1%::size}
+	set:
+		if "%change value%" parsed as number is set:
+			set {{@variable}::texts::%expression-1%::size} to change value
+	reset:
+		set {{@variable}::texts::%expression-1%::size} to 12
+
+expression (0¦[foreground]|1¦background) colo[u]r of [[(image|img)] (text|string)] %string%:
+	get:
+		if parse mark is 0:
+			return {{@variable}::texts::%expression-1%::foreground}
+		else if parse mark is 1:
+			return {{@variable}::texts::%expression-1%::background}
+	set:
+		if imgskColor(change value) is instance of Color:
+			if parse mark is 0:
+				set {{@variable}::texts::%expression-1%::foreground} to imgskColor(change value)
+			else if parse mark is 1:
+				set {{@variable}::texts::%expression-1%::background} to imgskColor(change value)
+	reset:
+		if parse mark is 0:
+			delete {{@variable}::texts::%expression-1%::foreground}
+		else if parse mark is 1:
+			delete {{@variable}::texts::%expression-1%::background}
+
+effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %string% (on|to) [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+	trigger:
+		delay the current effect
+		if expression-2 isn't instance of BufferedImage:
+			continue
+		if {{@variable}::texts::%expression-1%} is not set:
+			continue
+		if raw expression-5 is not set:
+			if (raw expression-2) isn't instance of Variable:
+				if expression-2 is set:
+					send "[image.sk] The image to be edited must be in a variable! (write text)" to console
+				continue
+		else:
+			if (raw expression-5) isn't instance of Variable:
+				if expression-5 is set:
+					send "[image.sk] '%raw expression-5%' is not a variable." to console
+				continue
+		set {_image} to imgskCopyImage(expression-2)
+		set {_g} to {_image}.createGraphics()
+		if {{@variable}::texts::%expression-1%::color} is set:
+			{_g}.setColor({{@variable}::texts::%expression-1%::color});
+		set {_font} to {{@variable}::texts::%expression-1%::font}
+		set {_size} to {{@variable}::texts::%expression-1%::size}
+		if {_size} is smaller than 1:
+			set {_size} to 1
+		set {_text} to {{@variable}::texts::%expression-1%::text}
+		set {_style} to 0
+		if {{@variable}::texts::%expression-1%::bold} is set:
+			add Font.BOLD! to {_style}
+		if {{@variable}::texts::%expression-1%::italic} is set:
+			add Font.ITALIC! to {_style}
+		set {_font} to new Font({_font}, {_style} and {_size})
+		if {{@variable}::texts::%expression-1%::underline}, {{@variable}::texts::%expression-1%::strikethrough}, {{@variable}::texts::%expression-1%::foreground} or {{@variable}::texts::%expression-1%::background} is set:
+			set {_aString} to new AttributedString({_text})
+			if {{@variable}::texts::%expression-1%::underline} is set:
+				{_aString}.addAttribute((TextAttribute.UNDERLINE!) and (TextAttribute.UNDERLINE_ON!));
+			if {{@variable}::texts::%expression-1%::strikethrough} is set:
+				{_aString}.addAttribute((TextAttribute.STRIKETHROUGH!) and (TextAttribute.STRIKETHROUGH_ON!));
+			if {{@variable}::texts::%expression-1%::foreground} is set:
+				{_aString}.addAttribute((TextAttribute.FOREGROUND!) and {{@variable}::texts::%expression-1%::foreground});
+			if {{@variable}::texts::%expression-1%::background} is set:
+				{_aString}.addAttribute((TextAttribute.BACKGROUND!) and {{@variable}::texts::%expression-1%::background});
+			{_aString}.addAttribute((TextAttribute.FONT!) and {_font});
+			set {_text} to {_aString}.getIterator()
+		if expression-3 is set:
+			set {_x} to expression-3
+			set {_x} to {_x} - 1
+		else:
+			set {_x} to 0
+		if expression-4 is set:
+			set {_y} to expression-4
+			set {_y} to {_y} - 1
+		else:
+			set {_y} to {_g}.getFontMetrics({_font}).getHeight()
+		{_g}.setFont({_font});
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
+		{_g}.drawString({_text}, {_x} and {_y});
 		{_g}.dispose();
 		if raw expression-5 is not set:
 			imgskSetVariable((raw expression-2), {_image}, (event))
