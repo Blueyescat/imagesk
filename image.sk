@@ -386,52 +386,60 @@ effect draw [a] line [(10¦with (flat cap|square edge[s]))] on [(image|img)] %ob
 			imgskSetVariable((raw expression-12), {_image}, (event))
 		continue
 
-effect draw [a[n]] oval on [(image|img)] %object% with (0¦(width [radius]|vertical radius) %-number%[( and|,)] [with] (height [radius]|horizontal radius) %-number%|1¦(height [radius]|horizontal radius) %-number%[( and|,)] [with] (width [radius]|vertical radius) %-number%) [at [[center] location] %-number%( and|,) %-number%][[( and|,)] [with] %-object%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] %object% with (0¦(width [radius]|vertical radius) %-number%[( and|,)] [with] (height [radius]|horizontal radius) %-number%|1¦(height [radius]|horizontal radius) %-number%[( and|,)] [with] (width [radius]|vertical radius) %-number%) [at [[center] location] %-number%( and|,) %-number%][[( and|,)] [with] %-object%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
 		delay the current effect
-		if raw expression-9 is not set:
-			if (raw expression-1) isn't instance of Variable:
-				if expression-1 is set:
+		if raw expression-10 is not set:
+			if (raw expression-2) isn't instance of Variable:
+				if expression-2 is set:
 					{Logger}.severe("[image.sk] The image to be edited must be in a variable! (draw line)");
 				continue
 		else:
-			if (raw expression-9) isn't instance of Variable:
-				if expression-19 is set:
-					{Logger}.severe("[image.sk] '%raw expression-9%' is not a variable.");
+			if (raw expression-10) isn't instance of Variable:
+				if expression-10 is set:
+					{Logger}.severe("[image.sk] '%raw expression-10%' is not a variable.");
 				continue
-		if expression-1 isn't instance of BufferedImage:
+		if expression-2 isn't instance of BufferedImage:
 			continue
-		if expression-6 is set:
-			set {_x} to expression-6
+		if expression-7 is set:
+			set {_x} to expression-7
 			set {_x} to {_x} - 1
 		else:
 			continue
-		if expression-7 is set:
-			set {_y} to expression-7
+		if expression-8 is set:
+			set {_y} to expression-8
 			set {_y} to {_y} - 1
 		else:
 			continue
-		if parse mark is 0:
-			if expression-2 or expression-3 is not set:
+		if parse mark is 0 or 10:
+			if expression-3 or expression-4 is not set:
 				continue
-			set {_width} to expression-2 * 2
-			set {_height} to expression-3 * 2
-		else if parse mark is 1:
-			if expression-4 or expression-5 is not set:
-				continue
+			set {_width} to expression-3 * 2
 			set {_height} to expression-4 * 2
-			set {_width} to expression-5 * 2
-		set {_image} to imgskCopyImage(expression-1)
+		else if parse mark is 1 or 11:
+			if expression-5 or expression-6 is not set:
+				continue
+			set {_height} to expression-5 * 2
+			set {_width} to expression-6 * 2
+		set {_image} to imgskCopyImage(expression-2)
 		set {_g} to {_image}.createGraphics()
-		if imgskColor(expression-8) is instance of Color:
-			{_g}.setColor(imgskColor(expression-8));
+		if imgskColor(expression-9) is instance of Color:
+			{_g}.setColor(imgskColor(expression-9));
 		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
-		{_g}.fillOval(({_x} - ({_width} / 2)), ({_y} - ({_height} / 2)), {_width} and {_height});
-		{_g}.dispose();
-		if raw expression-9 is not set:
-			imgskSetVariable((raw expression-1), {_image}, (event))
+		if parse mark is 10 or 11:
+			if expression-1 is set:
+				set {_owidth} to expression-1
+			else:
+				set {_owidth} to 1
+			{_g}.setStroke(new BasicStroke({_owidth}));
+			{_g}.drawOval(({_x} - ({_width} / 2)), ({_y} - ({_height} / 2)), {_width} and {_height});
 		else:
-			imgskSetVariable((raw expression-9), {_image}, (event))
+			{_g}.fillOval(({_x} - ({_width} / 2)), ({_y} - ({_height} / 2)), {_width} and {_height});
+		{_g}.dispose();
+		if raw expression-10 is not set:
+			imgskSetVariable((raw expression-2), {_image}, (event))
+		else:
+			imgskSetVariable((raw expression-10), {_image}, (event))
 		continue
 
 effect (create|generate) [a[n]] [(image|img)] (text|string) [(with (id|name)|named)] %string% [[and] with text %-string%]:
