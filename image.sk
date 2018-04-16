@@ -336,7 +336,7 @@ effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at 
 			imgskSetVariable((raw expression-5), {_image}, (event))
 		continue
 
-effect draw [a] line on [(image|img)] %object% [with width %-number%][[( and|,)] [with] %-object%] (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect draw [a] line [(10¦with (flat cap|square edge[s]))] on [(image|img)] %object% [with width %-number%][[( and|,)] [with] %-object%] (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
 		delay the current effect
 		if raw expression-12 is not set:
@@ -351,12 +351,12 @@ effect draw [a] line on [(image|img)] %object% [with width %-number%][[( and|,)]
 				continue
 		if expression-1 isn't instance of BufferedImage:
 			continue
-		if parse mark is 0:
+		if parse mark is 0 or 10:
 			set {_x1} to expression-4
 			set {_y1} to expression-5
 			set {_x2} to expression-6
 			set {_y2} to expression-7
-		else if parse mark is 1:
+		else if parse mark is 1 or 11:
 			set {_x1} to expression-8
 			set {_y1} to expression-9
 			set {_x2} to expression-10
@@ -367,9 +367,12 @@ effect draw [a] line on [(image|img)] %object% [with width %-number%][[( and|,)]
 			set {_width} to expression-2
 		else:
 			set {_width} to 1
-		{_g}.setStroke(new BasicStroke({_width}));
-		if expression-3 is set:
-			{_g}.setColor(expression-3);
+		if parse mark is 10 or 11:
+			{_g}.setStroke(new BasicStroke({_width}));
+		else:
+			{_g}.setStroke(new BasicStroke({_width}, (BasicStroke.CAP_ROUND!) and 2));
+		if imgskColor(expression-3) is instance of Color:
+			{_g}.setColor(imgskColor(expression-3));
 		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
 		{_g}.draw(new Line2DFloat({_x1}, {_y1}, {_x2} and {_y2}));
 		{_g}.dispose();
