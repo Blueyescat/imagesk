@@ -386,7 +386,7 @@ effect draw [a] line [(10¦with (flat cap|square edge[s]))] on [(image|img)] %ob
 			imgskSetVariable((raw expression-12), {_image}, (event))
 		continue
 
-effect draw [a[n]] oval on [(image|img)] %object% with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) [at [[center] location] %-number%( and|,) %-number%][[( and|,)] [with] %-object%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect draw [a[n]] oval on [(image|img)] %object% with (0¦(width [radius]|vertical radius) %-number%[( and|,)] [with] (height [radius]|horizontal radius) %-number%|1¦(height [radius]|horizontal radius) %-number%[( and|,)] [with] (width [radius]|vertical radius) %-number%) [at [[center] location] %-number%( and|,) %-number%][[( and|,)] [with] %-object%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
 		delay the current effect
 		if raw expression-9 is not set:
@@ -414,13 +414,13 @@ effect draw [a[n]] oval on [(image|img)] %object% with (0¦width %-number%[( and
 		if parse mark is 0:
 			if expression-2 or expression-3 is not set:
 				continue
-			set {_width} to rounded expression-2
-			set {_height} to rounded expression-3
+			set {_width} to expression-2 * 2
+			set {_height} to expression-3 * 2
 		else if parse mark is 1:
 			if expression-4 or expression-5 is not set:
 				continue
-			set {_height} to rounded expression-4
-			set {_width} to rounded expression-5
+			set {_height} to expression-4 * 2
+			set {_width} to expression-5 * 2
 		set {_image} to imgskCopyImage(expression-1)
 		set {_g} to {_image}.createGraphics()
 		if imgskColor(expression-8) is instance of Color:
