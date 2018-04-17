@@ -469,7 +469,8 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 		set {_polygon} to new Polygon()
 		loop expressions-4:
 			add 1 to {_coord}
-			add loop-value to {_coords::*}
+			set {_c} to loop-value
+			add {_c} - 1 to {_coords::*}
 			if mod({_coord}, 2) is 0:
 				{_polygon}.addPoint({_coords::*});
 				delete {_coords::*}
