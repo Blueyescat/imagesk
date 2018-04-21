@@ -87,7 +87,7 @@ function imgskSetVariable(variable: object, object: object, event: event):
 function imgskCopyImage(image: object) :: object:
 	return new BufferedImage(({_image}.getColorModel()), ({_image}.copyData(null)), ({_image}.isAlphaPremultiplied()) and null)
 
-effect create [a[n]] [new] image with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] [with] b[ack]g[round] %-object%] [and] (store|save) [[the] result] (in|to) [variable] %-object%:
+effect create [a[n]] [new] image with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] [with] b[ack]g[round] [colo[u]r] %-object%] [and] (store|save) [[the] result] (in|to) [variable] %-object%:
 	trigger:
 		delay the current effect
 		if (raw expression-6) isn't instance of Variable:
@@ -335,30 +335,47 @@ effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at 
 			imgskSetVariable((raw expression-5), {_image}, (event))
 		continue
 
-function imgskAreSimilar(color1: object, color2: object, tolerance: number) :: boolean:
-	set {_color1} to imgskColor({_color1})
-	set {_color2} to imgskColor({_color2})
-	set {_r1} to {_color1}.getRed()
-	set {_g1} to {_color1}.getGreen()
-	set {_b1} to {_color1}.getBlue()
-	set {_minR} to max({_r1} - {_tolerance} and 0)
-	set {_minG} to max({_g1} - {_tolerance} and 0)
-	set {_minB} to max({_b1} - {_tolerance} and 0)
-	set {_maxR} to min({_r1} + {_tolerance} and 255)
-	set {_maxG} to min({_g1} + {_tolerance} and 255)
-	set {_maxB} to min({_b1} + {_tolerance} and 255)
-	if {_color2}.getRed() is between {_minR} and {_maxR}:
-		if {_color2}.getGreen() is between {_minG} and {_maxG}:
-			if {_color2}.getBlue() is between {_minB} and {_maxB}:
-				return true
-	return false
+object property condition similar to %object% [with (tolerance %-number% [percent]|%-number% [percent] tolerance)]:
+	check:
+		if imgskColor(expression-1) or imgskColor(expression-2) isn't instance of Color:
+			negate the condition
+			continue
+		if expression-3 is set:
+			set {_tolerance} to expression-3
+		else if expression-4 is set:
+			set {_tolerance} to expression-4
+		else:
+			set {_tolerance} to 0
+		if {_tolerance} is greater than 100:
+			set {_tolerance} to 100
+		else if {_tolerance} is smaller than 0:
+			set {_tolerance} to 0
+		set {_tolerance} to (255 / 100) * {_tolerance}
+		delete {_similar}
+		set {_color1} to imgskColor(expression-1)
+		set {_color2} to imgskColor(expression-2)
+		set {_r1} to {_color1}.getRed()
+		set {_g1} to {_color1}.getGreen()
+		set {_b1} to {_color1}.getBlue()
+		set {_minR} to max({_r1} - {_tolerance} and 0)
+		set {_minG} to max({_g1} - {_tolerance} and 0)
+		set {_minB} to max({_b1} - {_tolerance} and 0)
+		set {_maxR} to min({_r1} + {_tolerance} and 255)
+		set {_maxG} to min({_g1} + {_tolerance} and 255)
+		set {_maxB} to min({_b1} + {_tolerance} and 255)
+		if {_color2}.getRed() is between {_minR} and {_maxR}:
+			if {_color2}.getGreen() is between {_minG} and {_maxG}:
+				if {_color2}.getBlue() is between {_minB} and {_maxB}:
+					continue
+		negate the condition
+		continue
 
-effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[ment]] [colo[u]r] %object% at [location] %number%( and|,) %number% [with tolerance %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[ment]] [colo[u]r] %object% at [location] %number%( and|,) %number% [with (tolerance %-number% [percent]|%-number% [percent] tolerance)] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
-		if raw expression-6 is set:
-			if (raw expression-6) isn't instance of Variable:
-				if expression-6 is set:
-					{Logger}.severe("[image.sk] '%raw expression-6%' is not a variable.");
+		if raw expression-7 is set:
+			if (raw expression-7) isn't instance of Variable:
+				if expression-7 is set:
+					{Logger}.severe("[image.sk] '%raw expression-7%' is not a variable.");
 				continue
 		if raw expression-6 is not set:
 			set {_image} to expression-1
@@ -376,33 +393,40 @@ effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[m
 			continue
 		if expression-5 is set:
 			set {_tolerance} to expression-5
+		else if expression-6 is set:
+			set {_tolerance} to expression-6
 		else:
 			set {_tolerance} to 0
-		if imgskAreSimilar((pixel expression-3, expression-4 of {_image}), {_target}, {_tolerance}) is false:
+		if {_tolerance} is greater than 100:
+			set {_tolerance} to 100
+		else if {_tolerance} is smaller than 0:
+			set {_tolerance} to 0
+		set {_tolerance} to ({_tolerance} / 255) * 120
+		if (pixel expression-3, expression-4 of {_image}) isn't similar to {_target} with tolerance {_tolerance}:
 			continue
 		delay the current effect
 		set {_queue} to new LinkedList()
 		{_queue}.add(new Point(expression-3 and expression-4));
 		while {_queue}.isEmpty() is false:
 			set {_pixel} to {_queue}.removeFirst()
-			if imgskAreSimilar((pixel ({_pixel}.x!) + 1, {_pixel}.y! of {_image}), {_target}, {_tolerance}) is true:
+			if (pixel ({_pixel}.x!) + 1, {_pixel}.y! of {_image}) is similar to {_target} with tolerance {_tolerance}:
 				set pixel ({_pixel}.x!) + 1, {_pixel}.y! of {_image} to {_replacement}
 				{_queue}.addLast(new Point((({_pixel}.x!) + 1) and {_pixel}.y!));
-			if imgskAreSimilar((pixel ({_pixel}.x!) - 1, {_pixel}.y! of {_image}), {_target}, {_tolerance}) is true:
+			if (pixel ({_pixel}.x!) - 1, {_pixel}.y! of {_image}) is similar to {_target} with tolerance {_tolerance}:
 				set pixel ({_pixel}.x!) - 1, {_pixel}.y! of {_image} to {_replacement}
 				{_queue}.addLast(new Point((({_pixel}.x!) - 1) and {_pixel}.y!));
-			if imgskAreSimilar((pixel {_pixel}.x!, ({_pixel}.y! + 1) of {_image}), {_target}, {_tolerance}) is true:
+			if (pixel {_pixel}.x!, ({_pixel}.y!) + 1 of {_image}) is similar to {_target} with tolerance {_tolerance}:
 				set pixel {_pixel}.x!, ({_pixel}.y! + 1) of {_image} to {_replacement}
 				{_queue}.addLast(new Point({_pixel}.x! and ({_pixel}.y! + 1)));
-			if imgskAreSimilar((pixel {_pixel}.x!, ({_pixel}.y! - 1) of {_image}), {_target}, {_tolerance}) is true:
+			if (pixel {_pixel}.x!, ({_pixel}.y!) - 1 of {_image}) is similar to {_target} with tolerance {_tolerance}:
 				set pixel {_pixel}.x!, ({_pixel}.y! - 1) of {_image} to {_replacement}
 				{_queue}.addLast(new Point({_pixel}.x! and ({_pixel}.y! - 1)));
 		delete {_queue}
-		if raw expression-6 is set:
-			imgskSetVariable((raw expression-6), {_image}, (event))
+		if raw expression-7 is set:
+			imgskSetVariable((raw expression-7), {_image}, (event))
 		continue
 
-effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)] %object% [with width %-number%][[( and|,)] [with] %-object%] (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)] %object% [with width %-number%][[( and|,)] [with] [colo[u]r] %-object%] (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
 		if raw expression-12 is not set:
 			if (raw expression-1) isn't instance of Variable:
@@ -448,7 +472,7 @@ effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)]
 			imgskSetVariable((raw expression-12), {_image}, (event))
 		continue
 
-effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] %object% with (0¦(width [radius]|vertical radius) %-number%[( and|,)] [with] (height [radius]|horizontal radius) %-number%|1¦(height [radius]|horizontal radius) %-number%[( and|,)] [with] (width [radius]|vertical radius) %-number%)[[( and|,)] [with] %-object%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] %object% with (0¦(width [radius]|vertical radius) %-number%[( and|,)] [with] (height [radius]|horizontal radius) %-number%|1¦(height [radius]|horizontal radius) %-number%[( and|,)] [with] (width [radius]|vertical radius) %-number%)[[( and|,)] [with] [colo[u]r] %-object%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
 		if raw expression-10 is not set:
 			if (raw expression-2) isn't instance of Variable:
@@ -504,7 +528,7 @@ effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] 
 			imgskSetVariable((raw expression-10), {_image}, (event))
 		continue
 
-effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with %-object%] on [(image|img)] %object% ((between|at)|using) ([corner] locations|vertices|vertexes|points) %numbers% [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% ((between|at)|using) ([corner] locations|vertices|vertexes|points) %numbers% [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
 		if raw expression-5 is not set:
 			if (raw expression-3) isn't instance of Variable:
