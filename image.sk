@@ -7,6 +7,7 @@ import:
 	ch.njol.skript.variables.Variables
 	ch.njol.skript.util.Color as SkriptColor
 	java.lang.String
+	java.util.LinkedList
 	java.text.AttributedString
 	java.io.File
 	java.net.URL
@@ -22,12 +23,13 @@ import:
 	java.awt.font.TextAttribute
 	java.awt.RenderingHints
 	java.awt.GraphicsEnvironment
+	java.awt.Point
 	javax.imageio.ImageIO
 
 on load:
 	set {Logger} to Bukkit.getServer().getLogger()
 
-expression [(image|img)] colo[u]r (0¦%-color%|1¦[hex] %-string%|2¦[rgb] [\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
+expression [(image|img)] colo[u]r (0¦%-color%|1¦[from] [hex] %-string%|2¦[from] [rgb] [\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
 	get:
 		if parse mark is 0 or 1:
 			if parse mark is 0:
@@ -112,11 +114,11 @@ effect create [a[n]] [new] image with (0¦width %-number%[( and|,)] [with] heigh
 
 effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦base[ ]64 %-string%) [and] (store|save) [[the] result] (in|to) [variable] %-object%:
 	trigger:
-		delay the current effect
 		if (raw expression-4) isn't instance of Variable:
 			if expression-4 is set:
 				{Logger}.severe("[image.sk] '%raw expression-4%' is not a variable.");
-			continue	
+			continue
+		delay the current effect
 		if parse mark is 0:
 			if expression-1 is set:
 				set {_image} to ImageIO.read(new URL(expression-1))
@@ -151,7 +153,6 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 
 effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] height %-number%|1¦height %-number%[( and|,)] width %-number%) [(with|using) algorithm %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
-		delay the current effect
 		if raw expression-7 is not set:
 			if (raw expression-1) isn't instance of Variable:
 				if expression-1 is set:
@@ -174,6 +175,7 @@ effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] he
 				continue
 			set {_height} to rounded expression-4
 			set {_width} to rounded expression-5
+		delay the current effect
 		loop "width" and "height":
 			if {_%loop-value%} is smaller than 1:
 				set {_%loop-value%} to 1
@@ -220,30 +222,22 @@ object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
 				set {_rgb} to expression-1.getRGB(({_x} - 1) and ({_y} - 1))
 				return new Color((bits 16-23 of {_rgb}), (bits 8-15 of {_rgb}) and (bits 0-7 of {_rgb}))
 	set:
-		if (raw expression-1) is instance of Variable:
-			if (imgskColor(change value)) isn't instance of Color:
-				stop
-			if expression-2 is set:
-				if expression-3 is set:
-					set {_rgb} to (imgskColor(change value)).getRGB()
-					set {_x} to expression-2
-					set {_y} to expression-3
-					expression-1.setRGB(({_x} - 1), ({_y} - 1) and {_rgb});
-					imgskSetVariable((raw expression-1), expression-1, (event))
-		else:
-			{Logger}.severe("[image.sk] The image to be edited must be in a variable! (set pixel color)");
+		if (imgskColor(change value)) isn't instance of Color:
+			stop
+		if expression-2 is set:
+			if expression-3 is set:
+				set {_rgb} to (imgskColor(change value)).getRGB()
+				set {_x} to expression-2
+				set {_y} to expression-3
+				expression-1.setRGB(({_x} - 1), ({_y} - 1) and {_rgb});
 	delete:
-		if (raw expression-1) is instance of Variable:
-			if expression-2 is set:
-				if expression-3 is set:
-					set {_rgb} to new Color(0, 0, 0 and 0)
-					set {_rgb} to {_rgb}.getRGB()
-					set {_x} to expression-2
-					set {_y} to expression-3
-					expression-1.setRGB(({_x} - 1), ({_y} - 1) and {_rgb});
-					imgskSetVariable((raw expression-1), expression-1, (event))
-		else:
-			{Logger}.severe("[image.sk] The image to be edited must be in a variable! (delete pixel color)");
+		if expression-2 is set:
+			if expression-3 is set:
+				set {_rgb} to new Color(0, 0, 0 and 0)
+				set {_rgb} to {_rgb}.getRGB()
+				set {_x} to expression-2
+				set {_y} to expression-3
+				expression-1.setRGB(({_x} - 1), ({_y} - 1) and {_rgb});
 
 object property (opacity|transparency):
 	set:
@@ -282,13 +276,13 @@ object property (opacity|transparency):
 
 effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [and] (store|save) [[the] result] (in|to) [variable] %-object%:
 	trigger:
-		delay the current effect
 		if expression-1 isn't instance of BufferedImage:
 			continue
 		else if (raw expression-10) isn't instance of Variable:
 			if expression-10 is set:
 				{Logger}.severe("[image.sk] '%raw expression-10%' is not a variable.");
 			continue
+		delay the current effect
 		if parse mark is 0:
 			set {_x1} to expression-2
 			set {_y1} to expression-3
@@ -306,7 +300,6 @@ effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number
 
 effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
-		delay the current effect
 		if raw expression-5 is not set:
 			if (raw expression-2) isn't instance of Variable:
 				if expression-2 is set:
@@ -321,6 +314,7 @@ effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at 
 			continue
 		if expression-2 isn't instance of BufferedImage:
 			continue
+		delay the current effect
 		if expression-3 is set:
 			set {_x} to expression-3
 			set {_x} to {_x} - 1
@@ -341,9 +335,75 @@ effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at 
 			imgskSetVariable((raw expression-5), {_image}, (event))
 		continue
 
+function imgskAreSimilar(color1: object, color2: object, tolerance: number) :: boolean:
+	set {_color1} to imgskColor({_color1})
+	set {_color2} to imgskColor({_color2})
+	set {_r1} to {_color1}.getRed()
+	set {_g1} to {_color1}.getGreen()
+	set {_b1} to {_color1}.getBlue()
+	set {_minR} to max({_r1} - {_tolerance} and 0)
+	set {_minG} to max({_g1} - {_tolerance} and 0)
+	set {_minB} to max({_b1} - {_tolerance} and 0)
+	set {_maxR} to min({_r1} + {_tolerance} and 255)
+	set {_maxG} to min({_g1} + {_tolerance} and 255)
+	set {_maxB} to min({_b1} + {_tolerance} and 255)
+	if {_color2}.getRed() is between {_minR} and {_maxR}:
+		if {_color2}.getGreen() is between {_minG} and {_maxG}:
+			if {_color2}.getBlue() is between {_minB} and {_maxB}:
+				return true
+	return false
+
+effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[ment]] [colo[u]r] %object% at [location] %number%( and|,) %number% [with tolerance %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+	trigger:
+		if raw expression-6 is set:
+			if (raw expression-6) isn't instance of Variable:
+				if expression-6 is set:
+					{Logger}.severe("[image.sk] '%raw expression-6%' is not a variable.");
+				continue
+		if raw expression-6 is not set:
+			set {_image} to expression-1
+		else:
+			set {_image} to imgskCopyImage({_image})
+		if expression-3 or expression-4 is smaller than 0:
+			continue
+		if expression-3 is greater than or equal to {_image}.getWidth():
+			continue
+		if expression-4 is greater than or equal to {_image}.getHeight():
+			continue
+		set {_target} to pixel expression-3, expression-4 of {_image} 
+		set {_replacement} to expression-2
+		if {_target} is {_replacement}:
+			continue
+		if expression-5 is set:
+			set {_tolerance} to expression-5
+		else:
+			set {_tolerance} to 0
+		if imgskAreSimilar((pixel expression-3, expression-4 of {_image}), {_target}, {_tolerance}) is false:
+			continue
+		delay the current effect
+		set {_queue} to new LinkedList()
+		{_queue}.add(new Point(expression-3 and expression-4));
+		while {_queue}.isEmpty() is false:
+			set {_pixel} to {_queue}.removeFirst()
+			if imgskAreSimilar((pixel ({_pixel}.x!) + 1, {_pixel}.y! of {_image}), {_target}, {_tolerance}) is true:
+				set pixel ({_pixel}.x!) + 1, {_pixel}.y! of {_image} to {_replacement}
+				{_queue}.addLast(new Point((({_pixel}.x!) + 1) and {_pixel}.y!));
+			if imgskAreSimilar((pixel ({_pixel}.x!) - 1, {_pixel}.y! of {_image}), {_target}, {_tolerance}) is true:
+				set pixel ({_pixel}.x!) - 1, {_pixel}.y! of {_image} to {_replacement}
+				{_queue}.addLast(new Point((({_pixel}.x!) - 1) and {_pixel}.y!));
+			if imgskAreSimilar((pixel {_pixel}.x!, ({_pixel}.y! + 1) of {_image}), {_target}, {_tolerance}) is true:
+				set pixel {_pixel}.x!, ({_pixel}.y! + 1) of {_image} to {_replacement}
+				{_queue}.addLast(new Point({_pixel}.x! and ({_pixel}.y! + 1)));
+			if imgskAreSimilar((pixel {_pixel}.x!, ({_pixel}.y! - 1) of {_image}), {_target}, {_tolerance}) is true:
+				set pixel {_pixel}.x!, ({_pixel}.y! - 1) of {_image} to {_replacement}
+				{_queue}.addLast(new Point({_pixel}.x! and ({_pixel}.y! - 1)));
+		delete {_queue}
+		if raw expression-6 is set:
+			imgskSetVariable((raw expression-6), {_image}, (event))
+		continue
+
 effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)] %object% [with width %-number%][[( and|,)] [with] %-object%] (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
-		delay the current effect
 		if raw expression-12 is not set:
 			if (raw expression-1) isn't instance of Variable:
 				if expression-1 is set:
@@ -356,6 +416,7 @@ effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)]
 				continue
 		if expression-1 isn't instance of BufferedImage:
 			continue
+		delay the current effect
 		if parse mark is 0 or 10:
 			set {_x1} to expression-4
 			set {_y1} to expression-5
@@ -389,7 +450,6 @@ effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)]
 
 effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] %object% with (0¦(width [radius]|vertical radius) %-number%[( and|,)] [with] (height [radius]|horizontal radius) %-number%|1¦(height [radius]|horizontal radius) %-number%[( and|,)] [with] (width [radius]|vertical radius) %-number%)[[( and|,)] [with] %-object%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
-		delay the current effect
 		if raw expression-10 is not set:
 			if (raw expression-2) isn't instance of Variable:
 				if expression-2 is set:
@@ -402,6 +462,7 @@ effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] 
 				continue
 		if expression-2 isn't instance of BufferedImage:
 			continue
+		delay the current effect
 		if expression-8 is set:
 			set {_x} to expression-8
 			set {_x} to {_x} - 1
@@ -445,7 +506,6 @@ effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] 
 
 effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with %-object%] on [(image|img)] %object% ((between|at)|using) ([corner] locations|vertices|vertexes|points) %numbers% [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
-		delay the current effect
 		if raw expression-5 is not set:
 			if (raw expression-3) isn't instance of Variable:
 				if expression-3 is set:
@@ -458,6 +518,7 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 				continue
 		if expression-3 isn't instance of BufferedImage:
 			continue
+		delay the current effect
 		set {_image} to imgskCopyImage(expression-3)
 		set {_g} to {_image}.createGraphics()
 		if imgskColor(expression-2) is instance of Color:
@@ -610,7 +671,6 @@ expression (0¦[foreground]|1¦background) colo[u]r of [[(image|img)] (text|stri
 
 effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %string% (on|to) [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
-		delay the current effect
 		if expression-2 isn't instance of BufferedImage:
 			continue
 		if {{@variable}::texts::%expression-1%} is not set:
@@ -625,6 +685,7 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 				if expression-5 is set:
 					{Logger}.severe("[image.sk] '%raw expression-5%' is not a variable.");
 				continue
+		delay the current effect
 		set {_image} to imgskCopyImage(expression-2)
 		set {_g} to {_image}.createGraphics()
 		if {{@variable}::texts::%expression-1%::color} is set:
@@ -686,9 +747,9 @@ effect (save|write) [(image|img)] %object% to [file] %string%:
 					{Logger}.severe("[image.sk] '%raw expression-2%' is not a valid file path.");
 				continue
 			{_file}.mkdirs();
-			set {_fileName} to "%last element of split {_path} at File.separator!%"
+			set {_fileName} to last element of split {_path} at File.separator!
 			if {_fileName} contains ".":
-				set {_extension} to "%last element of split {_fileName} at "".""%"
+				set {_extension} to last element of split {_fileName} at "."
 			else:
 				set {_extension} to "png"
 			ImageIO.write(expression-1, {_extension} and {_file})
