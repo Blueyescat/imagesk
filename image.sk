@@ -29,12 +29,8 @@ import:
 on load:
 	set {Logger} to Bukkit.getServer().getLogger()
 
-expression [(image|img)] colo[u]r (0¦%-color%|1¦[from] hex %-string%|2¦[from] (10¦[rgb]|11¦hsb)[ ][\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
+expression [(image|img)] colo[u]r (0¦%-color%|1¦[from] [hex] %-string%|2¦[from] [rgb[ ]][\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
 	get:
-		if expression-6 is set:
-			set {_opacity} to expression-6
-		else if expression-7 is set:
-			set {_opacity} to expression-7
 		if parse mark is 0 or 1:
 			if parse mark is 0:
 				set {_color} to expression-1.getBukkitColor()
@@ -45,22 +41,19 @@ expression [(image|img)] colo[u]r (0¦%-color%|1¦[from] hex %-string%|2¦[from]
 			set {_r} to {_color}.getRed()
 			set {_g} to {_color}.getGreen()
 			set {_b} to {_color}.getBlue()
-		else if parse mark is 8 or 9:
-			if parse mark is 8:
-				set {_r} to expression-3
-				set {_g} to expression-4
-				set {_b} to expression-5
-			else:
-				set {_hsb} to Color.getHSBColor(((1 / 100) * expression-3), ((1 / 100) * expression-4) and ((1 / 100) * expression-5))
-				if {_opacity} is not set:
-					return {_hsb}
-				else:
-					return new Color(({_hsb}.getGreen()), ({_hsb}.getBlue()), ({_hsb}.getGreen()) and {_opacity})
+		else if parse mark is 2:
+			set {_r} to expression-3
+			set {_g} to expression-4
+			set {_b} to expression-5
 		loop "r", "g" and "b":
 			if {_%loop-value%} is greater than 255:
 				set {_%loop-value%} to 255
 			else if {_%loop-value%} is smaller than 0:
 				set {_%loop-value%} to 0
+		if expression-6 is set:
+			set {_opacity} to expression-6
+		else if expression-7 is set:
+			set {_opacity} to expression-7
 		if {_opacity} is set:
 			set {_opacity} to (255 / 100) * {_opacity}
 			if {_opacity} is greater than 255:
