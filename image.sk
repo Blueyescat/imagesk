@@ -29,7 +29,7 @@ import:
 on load:
 	set {Logger} to Bukkit.getServer().getLogger()
 
-expression [(image|img)] colo[u]r (0¦%-color%|1¦[from] hex %-string%|2¦[from] (10¦[rgb]|11¦hsb))[ ][\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
+expression [(image|img)] colo[u]r (0¦%-color%|1¦[from] hex %-string%|2¦[from] (10¦[rgb]|11¦hsb)[ ][\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
 	get:
 		if expression-6 is set:
 			set {_opacity} to expression-6
