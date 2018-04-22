@@ -739,7 +739,9 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 			set {_y} to {_g}.getFontMetrics({_font}).getHeight()
 		{_g}.setFont({_font});
 		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
-		{_g}.drawString({_text}, {_x} and {_y});
+		loop ...{_text}.split("\n|\\n"):
+			{_g}.drawString(loop-value, {_x} and {_y});
+			add {_g}.getFontMetrics({_font}).getHeight() - 1 to {_y}
 		{_g}.dispose();
 		if raw expression-5 is set:
 			imgskSetVariable((raw expression-5), {_image}, (event))
