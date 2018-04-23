@@ -205,14 +205,36 @@ effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] he
 			imgskSetVariable((raw expression-7), {_resized}, (event))
 		continue
 
-object property (0¦width|1¦height):
+object property (0¦width|1¦height|2¦ascent|3¦descent):
 	get:
-		if expression-1 isn't instance of BufferedImage:
-			return
-		if parse mark is 0:
-			return expression-1.getWidth()
-		else if parse mark is 1:
-			return expression-1.getHeight()
+		if expression-1 is instance of BufferedImage:
+			if parse mark is 0:
+				return expression-1.getWidth()
+			else if parse mark is 1:
+				return expression-1.getHeight()
+		else if expression-1 is instance of String:
+			set {_name} to expression-1
+			if first 8 characters of {_name} is "imgtext:":
+				set {_name} to subtext of {_name} from character 9 to length of {_name}
+			if {{@variable}::texts::%{_name}%} is not set:
+				return
+			set {_style} to 0
+			if {{@variable}::texts::%{_name}%::bold} is set:
+				add Font.BOLD! to {_style}
+			if {{@variable}::texts::%{_name}%::italic} is set:
+				add Font.ITALIC! to {_style}
+			set {_font} to new Font({{@variable}::texts::%{_name}%::font}, {_style} and {{@variable}::texts::%{_name}%::size})
+			set {_g} to new BufferedImage(1, 1 and 1).getGraphics()
+			set {_fm} to {_g}.getFontMetrics({_font})
+			if parse mark is 0:
+				return {_fm}.stringWidth({{@variable}::texts::%{_name}%::text})
+			else if parse mark is 1:
+				return {_fm}.getHeight()
+			else if parse mark is 2:
+				return {_fm}.getAscent()
+			else:
+				return {_fm}.getDescent()
+			{_g}.dispose();
 
 object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
 	get:
@@ -608,7 +630,7 @@ expression (0¦(text|string)|1¦font[[( |-)]family]) of [[(image|img)] (text|str
 		else if parse mark is 1:
 			set {{@variable}::texts::%expression-1%::font} to Font.DIALOG!
 
-expression (0¦bold|1¦italic|2¦underline[d]|3¦strikethrough) [state] of [[(image|img)] (text|string)] %string%:
+expression (0¦bold|1¦italic|2¦underline[d]|3¦strikethrough|4¦outline[d]|5¦(only|just) outline) [state] of [[(image|img)] (text|string)] %string%:
 	get:
 		if parse mark is 0:
 			return {{@variable}::texts::%expression-1%::bold}
@@ -618,6 +640,10 @@ expression (0¦bold|1¦italic|2¦underline[d]|3¦strikethrough) [state] of [[(im
 			return {{@variable}::texts::%expression-1%::underline}
 		else if parse mark is 3:
 			return {{@variable}::texts::%expression-1%::strikethrough}
+		else if parse mark is 4:
+			return {{@variable}::texts::%expression-1%::outline}
+		else if parse mark is 5:
+			return {{@variable}::texts::%expression-1%::onlyOutline}
 	set:
 		if {{@variable}::texts::%expression-1%} is set:
 			if change value is true or false:
@@ -641,6 +667,16 @@ expression (0¦bold|1¦italic|2¦underline[d]|3¦strikethrough) [state] of [[(im
 						set {{@variable}::texts::%expression-1%::strikethrough} to true
 					else:
 						delete {{@variable}::texts::%expression-1%::strikethrough}
+				else if parse mark is 4:
+					if change value is true:
+						set {{@variable}::texts::%expression-1%::outline} to true
+					else:
+						delete {{@variable}::texts::%expression-1%::outline}
+				else if parse mark is 5:
+					if change value is true:
+						set {{@variable}::texts::%expression-1%::onlyOutline} to true
+					else:
+						delete {{@variable}::texts::%expression-1%::onlyOutline}
 	reset:
 		if parse mark is 0:
 			delete {{@variable}::texts::%expression-1%::bold}
@@ -650,6 +686,10 @@ expression (0¦bold|1¦italic|2¦underline[d]|3¦strikethrough) [state] of [[(im
 			delete {{@variable}::texts::%expression-1%::underline}
 		else if parse mark is 3:
 			delete {{@variable}::texts::%expression-1%::strikethrough}
+		else if parse mark is 4:
+			delete {{@variable}::texts::%expression-1%::outline}
+		else if parse mark is 5:
+			delete {{@variable}::texts::%expression-1%::onlyOutline}
 
 expression size of [[(image|img)] (text|string)] %string%:
 	get:
@@ -660,23 +700,44 @@ expression size of [[(image|img)] (text|string)] %string%:
 	reset:
 		set {{@variable}::texts::%expression-1%::size} to 12
 
-expression (0¦[foreground]|1¦background) colo[u]r of [[(image|img)] (text|string)] %string%:
+expression outline (width|size) of [[(image|img)] (text|string)] %string%:
+	get:
+		if {{@variable}::texts::%expression-1%::outlineWidth} is set:
+			return {{@variable}::texts::%expression-1%::outlineWidth}
+		else:
+			return 1
+	set:
+		if "%change value%" parsed as number is set:
+			set {{@variable}::texts::%expression-1%::outlineWidth} to change value
+	reset:
+		delete {{@variable}::texts::%expression-1%::outlineWidth}
+
+expression (0¦[foreground]|1¦background|2¦outline) colo[u]r of [[(image|img)] (text|string)] %string%:
 	get:
 		if parse mark is 0:
 			return {{@variable}::texts::%expression-1%::foreground}
 		else if parse mark is 1:
 			return {{@variable}::texts::%expression-1%::background}
+		else if parse mark is 2:
+			if {{@variable}::texts::%expression-1%::outlineColor} is set:
+				return {{@variable}::texts::%expression-1%::outlineColor}
+			else:
+				return color hex "000000"
 	set:
 		if imgskColor(change value) is instance of Color:
 			if parse mark is 0:
 				set {{@variable}::texts::%expression-1%::foreground} to imgskColor(change value)
 			else if parse mark is 1:
 				set {{@variable}::texts::%expression-1%::background} to imgskColor(change value)
+			else if parse mark is 2:
+				set {{@variable}::texts::%expression-1%::outlineColor} to imgskColor(change value)
 	reset:
 		if parse mark is 0:
 			delete {{@variable}::texts::%expression-1%::foreground}
 		else if parse mark is 1:
 			delete {{@variable}::texts::%expression-1%::background}
+		else if parse mark is 2:
+			delete {{@variable}::texts::%expression-1%::outlineColor}
 
 effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %string% (on|to) [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
@@ -695,8 +756,6 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 		else:
 			set {_image} to expression-2
 		set {_g} to {_image}.createGraphics()
-		if {{@variable}::texts::%expression-1%::color} is set:
-			{_g}.setColor({{@variable}::texts::%expression-1%::color});
 		set {_font} to {{@variable}::texts::%expression-1%::font}
 		set {_size} to {{@variable}::texts::%expression-1%::size}
 		if {_size} is smaller than 1:
@@ -708,18 +767,7 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 		if {{@variable}::texts::%expression-1%::italic} is set:
 			add Font.ITALIC! to {_style}
 		set {_font} to new Font({_font}, {_style} and {_size})
-		if {{@variable}::texts::%expression-1%::underline}, {{@variable}::texts::%expression-1%::strikethrough}, {{@variable}::texts::%expression-1%::foreground} or {{@variable}::texts::%expression-1%::background} is set:
-			set {_aString} to new AttributedString({_text})
-			if {{@variable}::texts::%expression-1%::underline} is set:
-				{_aString}.addAttribute((TextAttribute.UNDERLINE!) and (TextAttribute.UNDERLINE_ON!));
-			if {{@variable}::texts::%expression-1%::strikethrough} is set:
-				{_aString}.addAttribute((TextAttribute.STRIKETHROUGH!) and (TextAttribute.STRIKETHROUGH_ON!));
-			if {{@variable}::texts::%expression-1%::foreground} is set:
-				{_aString}.addAttribute((TextAttribute.FOREGROUND!) and {{@variable}::texts::%expression-1%::foreground});
-			if {{@variable}::texts::%expression-1%::background} is set:
-				{_aString}.addAttribute((TextAttribute.BACKGROUND!) and {{@variable}::texts::%expression-1%::background});
-			{_aString}.addAttribute((TextAttribute.FONT!) and {_font});
-			set {_text} to {_aString}.getIterator()
+		{_g}.setFont({_font});
 		if expression-3 is set:
 			set {_x} to expression-3
 			set {_x} to {_x} - 1
@@ -727,14 +775,46 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 			set {_x} to 0
 		if expression-4 is set:
 			set {_y} to expression-4
-			set {_y} to {_y} - 1
+			add {_g}.getFontMetrics({_font}).getAscent() - 1 to {_y}
 		else:
-			set {_y} to {_g}.getFontMetrics({_font}).getHeight()
-		{_g}.setFont({_font});
+			set {_y} to {_g}.getFontMetrics({_font}).getAscent() - 1
 		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
-		loop ...{_text}.split("\n|\\n"):
-			{_g}.drawString(loop-value, {_x} and {_y});
-			add {_g}.getFontMetrics({_font}).getHeight() - 1 to {_y}
+		if {{@variable}::texts::%expression-1%::outline}, {{@variable}::texts::%expression-1%::onlyOutline}, {{@variable}::texts::%expression-1%::outlineColor} or {{@variable}::texts::%expression-1%::outlineWidth} is set:
+			loop ...{_text}.split("\n|\\n"):
+				set {_w} to loop-value
+				if {{@variable}::texts::%expression-1%::underline}, {{@variable}::texts::%expression-1%::strikethrough} or {{@variable}::texts::%expression-1%::background} is set:
+					{Logger}.warning("[image.sk] Using underline, strikethrough and background color with outline in the same time isn't supported currently. These properties won't work.");
+				set {_frc} to {_g}.getFontRenderContext()
+				set {_gv} to {_font}.createGlyphVector({_frc} and {_w})
+				if {{@variable}::texts::%expression-1%::outlineWidth} is set:
+					{_g}.setStroke(new BasicStroke({{@variable}::texts::%expression-1%::outlineWidth}, (BasicStroke.CAP_ROUND!) and 1));
+				if {{@variable}::texts::%expression-1%::onlyOutline} is not set:
+					if {{@variable}::texts::%expression-1%::foreground} is set:
+						{_g}.setColor({{@variable}::texts::%expression-1%::foreground});
+					{_g}.fill({_gv}.getOutline({_x} and {_y}));
+				if {{@variable}::texts::%expression-1%::outlineColor} is set:
+					{_g}.setColor({{@variable}::texts::%expression-1%::outlineColor});
+				else:
+					{_g}.setColor(color hex "000000");
+				{_g}.draw({_gv}.getOutline({_x} and {_y}));
+				add {_g}.getFontMetrics({_font}).getHeight() to {_y}
+		else:
+			loop ...{_text}.split("\n|\\n"):
+				set {_w} to loop-value
+				if {{@variable}::texts::%expression-1%::underline}, {{@variable}::texts::%expression-1%::strikethrough}, {{@variable}::texts::%expression-1%::foreground} or {{@variable}::texts::%expression-1%::background} is set:
+					set {_aString} to new AttributedString({_w})
+					if {{@variable}::texts::%expression-1%::underline} is set:
+						{_aString}.addAttribute((TextAttribute.UNDERLINE!) and (TextAttribute.UNDERLINE_ON!));
+					if {{@variable}::texts::%expression-1%::strikethrough} is set:
+						{_aString}.addAttribute((TextAttribute.STRIKETHROUGH!) and (TextAttribute.STRIKETHROUGH_ON!));
+					if {{@variable}::texts::%expression-1%::foreground} is set:
+						{_aString}.addAttribute((TextAttribute.FOREGROUND!) and {{@variable}::texts::%expression-1%::foreground});
+					if {{@variable}::texts::%expression-1%::background} is set:
+						{_aString}.addAttribute((TextAttribute.BACKGROUND!) and {{@variable}::texts::%expression-1%::background});
+					{_aString}.addAttribute((TextAttribute.FONT!) and {_font});
+					set {_w} to {_aString}.getIterator()
+				{_g}.drawString({_w}, {_x} and {_y});
+				add {_g}.getFontMetrics({_font}).getHeight() - 2 to {_y}
 		{_g}.dispose();
 		if raw expression-5 is set:
 			imgskSetVariable((raw expression-5), {_image}, (event))
@@ -761,3 +841,21 @@ effect (save|write) [(image|img)] %object% to [file] %string%:
 				set {_extension} to "png"
 			ImageIO.write(expression-1, {_extension} and {_file});
 		continue
+
+effect (register|install|load) [new] font [family] [(from|of|at))] [file] %string%:
+	trigger:
+		delay the current effect
+		if expression-1 is set:
+			set {_path} to expression-1
+			replace all "/" and "\" with File.separator! in {_path}
+			set {_file} to new File({_path})
+			if {_file} is not set:
+				if expression-2 is set:
+					{Logger}.severe("[image.sk] '%raw expression-1%' is not a valid file path.");
+				continue
+			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT! and {_file}))
+		continue
+
+expression [(all [[of] the]|the)] [available] font[( (families|[family] names)|s)]:
+	get:
+		return ...GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()
