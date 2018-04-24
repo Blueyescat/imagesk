@@ -29,6 +29,9 @@ import:
 on load:
 	set {Logger} to Bukkit.getServer().getLogger()
 
+on skript load:
+	delete {{@variable}::*}
+
 expression [(image|img)] colo[u]r (0¦%-color%|1¦[from] [hex] %-string%|2¦[from] [rgb[ ]][\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
 	get:
 		if parse mark is 0 or 1:
@@ -265,6 +268,9 @@ object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
 				expression-1.setRGB(({_x} - 1), ({_y} - 1) and {_rgb});
 
 object property (opacity|transparency):
+	get:
+		if expression-1 is instance of Color:
+			return (expression-1.getAlpha() / 255) * 100
 	set:
 		if expression-1 is instance of BufferedImage:
 			if (raw expression-1) is instance of Variable:
@@ -295,9 +301,6 @@ object property (opacity|transparency):
 					imgskSetVariable((raw expression-1), {_color}, (event))
 			else:
 				{Logger}.severe("[image.sk] The color to be edited must be in a variable! (set color opacity)");
-	get:
-		if expression-1 is instance of Color:
-			return (expression-1.getAlpha() / 255) * 100
 
 effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [and] (store|save) [[the] result] (in|to) [variable] %-object%:
 	trigger:
@@ -594,6 +597,7 @@ effect (create|generate) [a[n]] [new] [(image|img)] (text|string) [(with (id|nam
 			set {{@variable}::texts::%expression-1%::text} to expression-2
 		set {{@variable}::texts::%expression-1%::font} to Font.DIALOG!
 		set {{@variable}::texts::%expression-1%::size} to 12
+		set {{@variable}::texts::%expression-1%::foreground} to color "FFFFFF"
 
 expression [the] [(image|img)] (text|string) [(with (id|name)|named)] %string%:
 	get:
@@ -697,6 +701,12 @@ expression size of [[(image|img)] (text|string)] %string%:
 	set:
 		if "%change value%" parsed as number is set:
 			set {{@variable}::texts::%expression-1%::size} to change value
+	add:
+		if "%change value%" parsed as number is set:
+			add change value to {{@variable}::texts::%expression-1%::size}
+	remove:
+		if "%change value%" parsed as number is set:
+			remove change value from {{@variable}::texts::%expression-1%::size}
 	reset:
 		set {{@variable}::texts::%expression-1%::size} to 12
 
@@ -709,6 +719,12 @@ expression outline (width|size) of [[(image|img)] (text|string)] %string%:
 	set:
 		if "%change value%" parsed as number is set:
 			set {{@variable}::texts::%expression-1%::outlineWidth} to change value
+	add:
+		if "%change value%" parsed as number is set:
+			add change value to {{@variable}::texts::%expression-1%::outlineWidth}
+	remove:
+		if "%change value%" parsed as number is set:
+			remove change value from {{@variable}::texts::%expression-1%::outlineWidth}
 	reset:
 		delete {{@variable}::texts::%expression-1%::outlineWidth}
 
@@ -829,9 +845,9 @@ effect (save|write) [(image|img)] %object% to [file] %string%:
 			set {_path} to expression-2
 			replace all "/" and "\" with File.separator! in {_path}
 			set {_file} to new File({_path})
-			if {_file} is not set:
+			if {_file}.exists() is false:
 				if expression-2 is set:
-					{Logger}.severe("[image.sk] '%raw expression-2%' is not a valid file path.");
+					{Logger}.severe("[image.sk] '%expression-2%' is not a valid file path.");
 				continue
 			{_file}.mkdirs();
 			set {_fileName} to last element of split {_path} at File.separator!
@@ -849,9 +865,9 @@ effect (register|install|load) [new] font [family] [(from|of|at))] [file] %strin
 			set {_path} to expression-1
 			replace all "/" and "\" with File.separator! in {_path}
 			set {_file} to new File({_path})
-			if {_file} is not set:
-				if expression-2 is set:
-					{Logger}.severe("[image.sk] '%raw expression-1%' is not a valid file path.");
+			if {_file}.exists() is false:
+				if expression-1 is set:
+					{Logger}.severe("[image.sk] '%expression-1%' is not a valid file path.");
 				continue
 			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT! and {_file}))
 		continue
