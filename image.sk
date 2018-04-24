@@ -727,6 +727,8 @@ expression outline (width|size) of [[(image|img)] (text|string)] %string%:
 			remove change value from {{@variable}::texts::%expression-1%::outlineWidth}
 	reset:
 		delete {{@variable}::texts::%expression-1%::outlineWidth}
+	delete:
+		delete {{@variable}::texts::%expression-1%::outlineWidth}
 
 expression (0¦[foreground]|1¦background|2¦outline) colo[u]r of [[(image|img)] (text|string)] %string%:
 	get:
@@ -748,6 +750,13 @@ expression (0¦[foreground]|1¦background|2¦outline) colo[u]r of [[(image|img)]
 			else if parse mark is 2:
 				set {{@variable}::texts::%expression-1%::outlineColor} to imgskColor(change value)
 	reset:
+		if parse mark is 0:
+			delete {{@variable}::texts::%expression-1%::foreground}
+		else if parse mark is 1:
+			delete {{@variable}::texts::%expression-1%::background}
+		else if parse mark is 2:
+			delete {{@variable}::texts::%expression-1%::outlineColor}
+	delete:
 		if parse mark is 0:
 			delete {{@variable}::texts::%expression-1%::foreground}
 		else if parse mark is 1:
