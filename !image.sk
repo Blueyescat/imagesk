@@ -139,8 +139,11 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 				set {_path} to expression-2
 				replace all "/" and "\" with File.separator! in {_path}
 				set {_file} to new File({_path})
-				if {_file} is set:
-					set {_image} to ImageIO.read({_file})
+				if {_file}.exists() is false:
+					if expression-2 is set:
+						{Logger}.severe("[image.sk] '%expression-2%' is not a valid file path.");
+					continue
+				set {_image} to ImageIO.read({_file})
 		else if parse mark is 2:
 			if expression-3 is set:
 				#TODO
@@ -854,10 +857,6 @@ effect (save|write) [(image|img)] %object% to [file] %string%:
 			set {_path} to expression-2
 			replace all "/" and "\" with File.separator! in {_path}
 			set {_file} to new File({_path})
-			if {_file}.exists() is false:
-				if expression-2 is set:
-					{Logger}.severe("[image.sk] '%expression-2%' is not a valid file path.");
-				continue
 			{_file}.mkdirs();
 			set {_fileName} to last element of split {_path} at File.separator!
 			if {_fileName} contains ".":
