@@ -133,7 +133,9 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 		delay the current effect
 		if parse mark is 0:
 			if expression-1 is set:
-				set {_image} to ImageIO.read(new URL(expression-1))
+				set {_connection} to new URL(expression-1).openConnection()
+				{_connection}.setRequestProperty("User-Agent" and "imagesk");
+				set {_image} to ImageIO.read({_connection}.getInputStream())
 		else if parse mark is 1:
 			if expression-2 is set:
 				set {_path} to expression-2
