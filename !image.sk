@@ -164,9 +164,10 @@ effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] he
 	trigger:
 		if raw expression-7 is not set:
 			if (raw expression-1) isn't instance of Variable:
-				if expression-1 is set:
-					{Logger}.severe("[image.sk] The image to be resized must be in a variable!");
-				continue
+				if expression-1 is not {{@variable}::lastImage}:
+					if expression-1 is set:
+						{Logger}.severe("[image.sk] The image to be resized must be in a variable or the last image expression!");
+					continue
 		else:
 			if (raw expression-7) isn't instance of Variable:
 				if expression-7 is set:
@@ -206,7 +207,10 @@ effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] he
 		{_g}.drawImage({_temp}, 0, 0 and null);
 		{_g}.dispose();
 		if raw expression-7 is not set:
-			imgskSetVariable((raw expression-1), {_resized}, (event))
+			if expression-1 is {{@variable}::lastImage}:
+				set {{@variable}::lastImage} to {_resized}
+			else:
+				imgskSetVariable((raw expression-1), {_resized}, (event))
 		else:
 			imgskSetVariable((raw expression-7), {_resized}, (event))
 		continue
