@@ -615,7 +615,7 @@ expression [the] (image|img) (text|string) [(with (id|name)|named)] %string%:
 	delete:
 		delete {{@variable}::texts::%expression-1%} and {{@variable}::texts::%expression-1%::*}
 
-expression [(all [[of] the]|the)] [(image|img)] (text|string)s:
+expression [(all [[of] the]|the)] (image|img) (text|string)s:
 	get:
 		loop {{@variable}::texts::*}:
 			add "imgtext:%loop-index%" to {_list::*}
