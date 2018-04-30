@@ -9,7 +9,7 @@ import:
 	java.lang.String
 	java.util.LinkedList
 	java.text.AttributedString
-	java.io.File
+	java.io.File as JavaFile
 	java.net.URL
 	java.awt.Image
 	java.awt.image.BufferedImage
@@ -139,8 +139,8 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 		else if parse mark is 1:
 			if expression-2 is set:
 				set {_path} to expression-2
-				replace all "/" and "\" with File.separator! in {_path}
-				set {_file} to new File({_path})
+				replace all "/" and "\" with JavaFile.separator! in {_path}
+				set {_file} to new JavaFile({_path})
 				if {_file}.exists() is false:
 					if expression-2 is set:
 						{Logger}.severe("[image.sk] '%expression-2%' is not a valid file path.");
@@ -861,10 +861,10 @@ effect (save|write) [(image|img)] %object% to [file] %string%:
 			if expression-1 isn't instance of BufferedImage:
 				continue
 			set {_path} to expression-2
-			replace all "/" and "\" with File.separator! in {_path}
-			set {_file} to new File({_path})
+			replace all "/" and "\" with JavaFile.separator! in {_path}
+			set {_file} to new JavaFile({_path})
 			{_file}.mkdirs();
-			set {_fileName} to last element of split {_path} at File.separator!
+			set {_fileName} to last element of split {_path} at JavaFile.separator!
 			if {_fileName} contains ".":
 				set {_extension} to last element of split {_fileName} at "."
 			else:
@@ -877,8 +877,8 @@ effect (register|install|load) [new] font [family] [(from|of|at))] [file] %strin
 		delay the current effect
 		if expression-1 is set:
 			set {_path} to expression-1
-			replace all "/" and "\" with File.separator! in {_path}
-			set {_file} to new File({_path})
+			replace all "/" and "\" with JavaFile.separator! in {_path}
+			set {_file} to new JavaFile({_path})
 			if {_file}.exists() is false:
 				if expression-1 is set:
 					{Logger}.severe("[image.sk] '%expression-1%' is not a valid file path.");
