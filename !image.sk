@@ -608,7 +608,7 @@ effect (create|generate) [a[n]] [new] [(image|img)] (text|string) [(with (id|nam
 		set {{@variable}::texts::%expression-1%::size} to 12
 		set {{@variable}::texts::%expression-1%::foreground} to color "FFFFFF"
 
-expression [the] [(image|img)] (text|string) [(with (id|name)|named)] %string%:
+expression [the] (image|img) (text|string) [(with (id|name)|named)] %string%:
 	get:
 		if {{@variable}::texts::%expression-1%} is set:
 			return "imgtext:%expression-1%"
