@@ -72,23 +72,26 @@ expression %color% with ((opacity|transparency) %-number% [percent]|%-number% [p
 	get:
 		return color expression-1 with opacity expression-2
 
-function imgskColor(color: object) :: object:
-	if {_color} is instance of SkriptColor:
-		return color {_color}
-	return {_color}
+local expression imageskColor %object%:
+	get:
+		if expression-1 is instance of SkriptColor:
+			return color expression-1
+		return expression-1
 
-function imgskSetVariable(variable: object, object: object, event: event):
-	set {_variable} to "%{_variable}%"
-	if first character of {_variable} is "{":
-		if last character of {_variable} is "}":
-			set {_variable} to subtext of {_variable} from character 2 to (length of {_variable}) - 1
-	if first character of {_variable} is "_":
-		Variables.setVariable((subtext of {_variable} from character 2 to length of {_variable}), {_object}, {_event} and true);
-	else:
-		set {%{_variable}%} to {_object}
+local effect imageskSetVariable %object% to %object% in %event%:
+	trigger:
+		set {_variable} to "%expression-1%"
+		if first character of {_variable} is "{":
+			if last character of {_variable} is "}":
+				set {_variable} to subtext of {_variable} from character 2 to (length of {_variable}) - 1
+		if first character of {_variable} is "_":
+			Variables.setVariable((subtext of {_variable} from character 2 to length of {_variable}), expression-2, expression-3 and true);
+		else:
+			set {%{_variable}%} to expression-2
 
-function imgskCopyImage(image: object) :: object:
-	return new BufferedImage(({_image}.getColorModel()), ({_image}.copyData(null)), ({_image}.isAlphaPremultiplied()) and null)
+local expression imgskCopyImage %object%:
+	get:
+		return new BufferedImage((expression-1.getColorModel()), (expression-1.copyData(null)), (expression-1.isAlphaPremultiplied()) and null)
 
 effect create [a[n]] [new] image with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] [with] b[ack]g[round] [colo[u]r] %-object%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	trigger:
@@ -108,13 +111,13 @@ effect create [a[n]] [new] image with (0¦width %-number%[( and|,)] [with] heigh
 			if {_%loop-value%} is smaller than 1:
 				set {_%loop-value%} to 1
 		set {_image} to new BufferedImage({_width}, {_height} and 2)
-		if imgskColor(expression-5) is instance of Color:
+		if imageskColor expression-5 is instance of Color:
 			set {_g} to {_image}.createGraphics()
-			{_g}.setColor(imgskColor(expression-5));
+			{_g}.setColor(imageskColor expression-5);
 			{_g}.fillRect(0, 0, {_width} and {_height});
 			{_g}.dispose();
 		if raw expression-6 is set:
-			imgskSetVariable((raw expression-6), {_image}, (event))
+			imageskSetVariable (raw expression-6) to {_image} in event
 		else:
 			set {{@variable}::lastImage} to {_image}
 		continue
@@ -157,7 +160,7 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 			{_g}.dispose();
 			set {_image} to {_newImage}
 		if raw expression-4 is set:
-			imgskSetVariable((raw expression-4), {_image}, (event))
+			imageskSetVariable (raw expression-4) to {_image} in event
 		else:
 			set {{@variable}::lastImage} to {_image}
 		continue
@@ -212,9 +215,9 @@ effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] he
 			if expression-1 is {{@variable}::lastImage}:
 				set {{@variable}::lastImage} to {_resized}
 			else:
-				imgskSetVariable((raw expression-1), {_resized}, (event))
+				imageskSetVariable (raw expression-1) to {_resized} in event
 		else:
-			imgskSetVariable((raw expression-7), {_resized}, (event))
+			imageskSetVariable (raw expression-7) to {_resized} in event
 		continue
 
 object property (0¦width|1¦height|2¦ascent|3¦descent):
@@ -259,11 +262,11 @@ object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
 				set {_rgb} to expression-1.getRGB(({_x} - 1) and ({_y} - 1))
 				return new Color((bits 16-23 of {_rgb}), (bits 8-15 of {_rgb}) and (bits 0-7 of {_rgb}))
 	set:
-		if (imgskColor(change value)) isn't instance of Color:
+		if (imageskColor change value) isn't instance of Color:
 			stop
 		if expression-2 is set:
 			if expression-3 is set:
-				set {_rgb} to (imgskColor(change value)).getRGB()
+				set {_rgb} to (imageskColor change value).getRGB()
 				set {_x} to expression-2
 				set {_y} to expression-3
 				expression-1.setRGB(({_x} - 1), ({_y} - 1) and {_rgb});
@@ -294,7 +297,7 @@ object property (opacity|transparency):
 					{_g}.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER! and {_opacity}));
 					{_g}.drawImage(expression-1, 0, 0 and null);
 					{_g}.dispose();
-					imgskSetVariable((raw expression-1), {_temp}, (event))
+					imageskSetVariable (raw expression-1) to {_temp} in event
 			else:
 				{Logger}.severe("[image.sk] The image to be edited must be in a variable! (set image opacity)");
 		else if expression-1 is instance of Color:
@@ -307,7 +310,7 @@ object property (opacity|transparency):
 					else if {_opacity} is smaller than 0:
 						set {_opacity} to 0
 					set {_color} to new Color((expression-1.getRed()), (expression-1.getGreen()), (expression-1.getBlue()) and {_opacity})
-					imgskSetVariable((raw expression-1), {_color}, (event))
+					imageskSetVariable (raw expression-1) to {_color} in event
 			else:
 				{Logger}.severe("[image.sk] The color to be edited must be in a variable! (set color opacity)");
 
@@ -332,7 +335,7 @@ effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number
 			set {_y2} to expression-9
 		set {_width} to difference between {_x1} and {_x2}
 		set {_height} to difference between {_y1} and {_y2}
-		imgskSetVariable((raw expression-10), (expression-1.getSubimage(({_x1} - 1), ({_y1} - 1), ({_width} - 1) and ({_height} - 1))), (event))
+		imageskSetVariable raw expression-10 to expression-1.getSubimage(({_x1} - 1), ({_y1} - 1), ({_width} - 1) and ({_height} - 1)) in event
 		continue
 
 effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
@@ -358,19 +361,19 @@ effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at 
 		else:
 			set {_y} to 0
 		if raw expression-5 is set:
-			set {_image} to imgskCopyImage(expression-2)
+			set {_image} to imgskCopyImage expression-2
 		else:
 			set {_image} to expression-2
 		set {_g} to {_image}.createGraphics()
 		{_g}.drawImage(expression-1, {_x}, {_y} and null);
 		{_g}.dispose();
 		if raw expression-5 is set:
-			imgskSetVariable((raw expression-5), {_image}, (event))
+			imageskSetVariable (raw expression-5) to {_image} in event
 		continue
 
 object property condition similar to %object% [with (tolerance %-number% [percent]|%-number% [percent] tolerance)]:
 	check:
-		if imgskColor(expression-1) or imgskColor(expression-2) isn't instance of Color:
+		if imageskColor expression-1 or imageskColor expression-2 isn't instance of Color:
 			stop
 		if expression-3 is set:
 			set {_tolerance} to expression-3
@@ -383,8 +386,8 @@ object property condition similar to %object% [with (tolerance %-number% [percen
 		else if {_tolerance} is smaller than 0:
 			set {_tolerance} to 0
 		set {_tolerance} to (255 / 100) * {_tolerance}
-		set {_color1} to imgskColor(expression-1)
-		set {_color2} to imgskColor(expression-2)
+		set {_color1} to imageskColor expression-1
+		set {_color2} to imageskColor expression-2
 		set {_r1} to {_color1}.getRed()
 		set {_g1} to {_color1}.getGreen()
 		set {_b1} to {_color1}.getBlue()
@@ -407,7 +410,7 @@ effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[m
 					{Logger}.severe("[image.sk] '%raw expression-7%' is not a variable.");
 				continue
 		if raw expression-7 is set:
-			set {_image} to imgskCopyImage(expression-1)
+			set {_image} to imgskCopyImage expression-1
 		else:
 			set {_image} to expression-1
 		if expression-3 or expression-4 is smaller than 0:
@@ -452,7 +455,7 @@ effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[m
 				{_queue}.addLast(new Point({_pixel}.x! and ({_pixel}.y! - 1)));
 		delete {_queue}
 		if raw expression-7 is set:
-			imgskSetVariable((raw expression-7), {_image}, (event))
+			imageskSetVariable (raw expression-7) to {_image} in event
 		continue
 
 effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)] %object% [with width %-number%][[( and|,)] [with] [colo[u]r] %-object%] (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
@@ -476,7 +479,7 @@ effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)]
 			set {_x2} to expression-10
 			set {_y2} to expression-11
 		if raw expression-12 is set:
-			set {_image} to imgskCopyImage(expression-1)
+			set {_image} to imgskCopyImage expression-1
 		else:
 			set {_image} to expression-1
 		set {_g} to {_image}.createGraphics()
@@ -488,13 +491,13 @@ effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)]
 			{_g}.setStroke(new BasicStroke({_width}));
 		else:
 			{_g}.setStroke(new BasicStroke({_width}, (BasicStroke.CAP_ROUND!) and 2));
-		if imgskColor(expression-3) is instance of Color:
-			{_g}.setColor(imgskColor(expression-3));
+		if imageskColor expression-3 is instance of Color:
+			{_g}.setColor(imageskColor expression-3);
 		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
 		{_g}.draw(new Line2DFloat({_x1}, {_y1}, {_x2} and {_y2}));
 		{_g}.dispose();
 		if raw expression-12 is set:
-			imgskSetVariable((raw expression-12), {_image}, (event))
+			imageskSetVariable (raw expression-12) to {_image} in event
 		continue
 
 effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] %object% with (0¦(width [radius]|vertical radius) %-number%[( and|,)] [with] (height [radius]|horizontal radius) %-number%|1¦(height [radius]|horizontal radius) %-number%[( and|,)] [with] (width [radius]|vertical radius) %-number%)[[( and|,)] [with] [colo[u]r] %-object%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
@@ -528,12 +531,12 @@ effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] 
 			set {_height} to expression-5 * 2
 			set {_width} to expression-6 * 2
 		if raw expression-10 is set:
-			set {_image} to imgskCopyImage(expression-2)
+			set {_image} to imgskCopyImage expression-2
 		else:
 			set {_image} to expression-2
 		set {_g} to {_image}.createGraphics()
-		if imgskColor(expression-7) is instance of Color:
-			{_g}.setColor(imgskColor(expression-7));
+		if imageskColor expression-7 is instance of Color:
+			{_g}.setColor(imageskColor expression-7);
 		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
 		if parse mark is 10 or 11:
 			if expression-1 is set:
@@ -546,7 +549,7 @@ effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] 
 			{_g}.fillOval(({_x} - ({_width} / 2)), ({_y} - ({_height} / 2)), {_width} and {_height});
 		{_g}.dispose();
 		if raw expression-10 is set:
-			imgskSetVariable((raw expression-10), {_image}, (event))
+			imageskSetVariable (raw expression-10) to {_image} in event
 		continue
 
 effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% ((between|at)|using) ([corner] locations|vertices|vertexes|points) %numbers% [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
@@ -560,12 +563,12 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 			continue
 		delay the current effect
 		if raw expression-5 is set:
-			set {_image} to imgskCopyImage(expression-3)
+			set {_image} to imgskCopyImage expression-3
 		else:
 			set {_image} to expression-3
 		set {_g} to {_image}.createGraphics()
-		if imgskColor(expression-2) is instance of Color:
-			{_g}.setColor(imgskColor(expression-2));
+		if imageskColor expression-2 is instance of Color:
+			{_g}.setColor(imageskColor expression-2);
 		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
 		if size of expressions-4 is smaller than 6:
 			{Logger}.severe("[image.sk] A polygon must have 3 or more corners! But entered %rounded down (size of expressions-4) / 2% corner locations.");
@@ -592,9 +595,9 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 			{_g}.fillPolygon({_polygon});
 		{_g}.dispose();
 		if raw expression-5 is not set:
-			imgskSetVariable((raw expression-3), {_image}, (event))
+			imageskSetVariable (raw expression-3) to {_image} in event
 		else:
-			imgskSetVariable((raw expression-5), {_image}, (event))
+			imageskSetVariable (raw expression-5) to {_image} in event
 		continue
 
 effect (create|generate) [a[n]] [new] [(image|img)] (text|string) [(with (id|name)|named)] %string% [[and] with text %-string%]:
@@ -751,13 +754,13 @@ expression (0¦[foreground]|1¦background|2¦outline) colo[u]r of [[(image|img)]
 			else:
 				return color hex "000000"
 	set:
-		if imgskColor(change value) is instance of Color:
+		if imageskColor change value is instance of Color:
 			if parse mark is 0:
-				set {{@variable}::texts::%expression-1%::foreground} to imgskColor(change value)
+				set {{@variable}::texts::%expression-1%::foreground} to imageskColor change value
 			else if parse mark is 1:
-				set {{@variable}::texts::%expression-1%::background} to imgskColor(change value)
+				set {{@variable}::texts::%expression-1%::background} to imageskColor change value
 			else if parse mark is 2:
-				set {{@variable}::texts::%expression-1%::outlineColor} to imgskColor(change value)
+				set {{@variable}::texts::%expression-1%::outlineColor} to imageskColor change value
 	reset:
 		if parse mark is 0:
 			delete {{@variable}::texts::%expression-1%::foreground}
@@ -786,7 +789,7 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 				continue
 		delay the current effect
 		if raw expression-5 is set:
-			set {_image} to imgskCopyImage(expression-2)
+			set {_image} to imgskCopyImage expression-2
 		else:
 			set {_image} to expression-2
 		set {_g} to {_image}.createGraphics()
@@ -851,7 +854,7 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 				add {_g}.getFontMetrics({_font}).getHeight() - 2 to {_y}
 		{_g}.dispose();
 		if raw expression-5 is set:
-			imgskSetVariable((raw expression-5), {_image}, (event))
+			imageskSetVariable (raw expression-5) to {_image} in event
 		continue
 
 effect (save|write) [(image|img)] %object% to [file] %string%:
