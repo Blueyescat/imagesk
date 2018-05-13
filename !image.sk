@@ -886,7 +886,7 @@ effect (register|install|load) [new] font [family] [(from|of|at))] [file] %strin
 				if expression-1 is set:
 					{Logger}.severe("[image.sk] '%expression-1%' is not a valid file path.");
 				continue
-			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT! and {_file}))
+			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT! and {_file}));
 		continue
 
 expression [(all [[of] the]|the)] [available] font[( (families|[family] names)|s)]:
