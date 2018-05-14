@@ -523,13 +523,13 @@ effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] 
 		if parse mark is 0 or 10:
 			if expression-3 or expression-4 is not set:
 				continue
-			set {_width} to expression-3 * 2
-			set {_height} to expression-4 * 2
+			set {_width} to (expression-3 * 2)
+			set {_height} to (expression-4 * 2)
 		else if parse mark is 1 or 11:
 			if expression-5 or expression-6 is not set:
 				continue
-			set {_height} to expression-5 * 2
-			set {_width} to expression-6 * 2
+			set {_height} to (expression-5 * 2)
+			set {_width} to (expression-6 * 2)
 		if raw expression-10 is set:
 			set {_image} to imgskCopyImage expression-2
 		else:
@@ -550,6 +550,48 @@ effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] 
 		{_g}.dispose();
 		if raw expression-10 is set:
 			imageskSetVariable (raw expression-10) to {_image} in event
+		continue
+
+effect draw [a[n]] circle [(1¦outline [with width %-number%])] on [(image|img)] %object% with (radius|width|height) %number%[[( and|,)] [with] [colo[u]r] %-object%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+	trigger:
+		if raw expression-7 is set:
+			if (raw expression-7) isn't instance of Variable:
+				if expression-7 is set:
+					{Logger}.severe("[image.sk] '%raw expression-7%' is not a variable.");
+				continue
+		if expression-2 isn't instance of BufferedImage:
+			continue
+		delay the current effect
+		if expression-5 is set:
+			set {_x} to expression-5
+			set {_x} to {_x} - 1
+		else:
+			continue
+		if expression-6 is set:
+			set {_y} to expression-6
+			set {_y} to {_y} - 1
+		else:
+			continue
+		if raw expression-7 is set:
+			set {_image} to imgskCopyImage expression-2
+		else:
+			set {_image} to expression-2
+		set {_g} to {_image}.createGraphics()
+		if imageskColor expression-4 is instance of Color:
+			{_g}.setColor(imageskColor expression-4);
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
+		if parse mark is 1:
+			if expression-1 is set:
+				set {_owidth} to expression-1
+			else:
+				set {_owidth} to 1
+			{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 2));
+			{_g}.drawOval(({_x} - expression-3), ({_y} - expression-3), (expression-3 * 2) and (expression-3 * 2));
+		else:
+			{_g}.fillOval(({_x} - expression-3), ({_y} - expression-3), (expression-3 * 2) and (expression-3 * 2));
+		{_g}.dispose();
+		if raw expression-7 is set:
+			imageskSetVariable (raw expression-7) to {_image} in event
 		continue
 
 effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% ((between|at)|using) ([corner] locations|vertices|vertexes|points) %numbers% [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
@@ -886,7 +928,7 @@ effect (register|install|load) [new] font [family] [(from|of|at))] [file] %strin
 				if expression-1 is set:
 					{Logger}.severe("[image.sk] '%expression-1%' is not a valid file path.");
 				continue
-			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT! and {_file}));
+			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT! and {_file}))
 		continue
 
 expression [(all [[of] the]|the)] [available] font[( (families|[family] names)|s)]:
