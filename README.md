@@ -1,5 +1,5 @@
 # image.sk
-A script that registers custom syntaxes for image processing for Skript.
+A script that registers custom syntaxes for image processing in Skript.
 
 [Documentation](https://github.com/Blueyescat/image.sk/wiki/Documentation) - [Examples](https://github.com/Blueyescat/image.sk/wiki/Examples)
 
