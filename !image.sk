@@ -85,7 +85,7 @@ local effect imageskSetVariable %object% to %object% in %event%:
 			if last character of {_variable} is "}":
 				set {_variable} to subtext of {_variable} from character 2 to (length of {_variable}) - 1
 		if first character of {_variable} is "_":
-			Variables.setVariable((subtext of {_variable} from character 2 to length of {_variable}), expression-2, expression-3 and true);
+			Variables.setVariable((subtext of {_variable} from character 2 to length of {_variable}), expression-2, expression-3 and true)
 		else:
 			set {%{_variable}%} to expression-2
 
@@ -99,7 +99,7 @@ effect create [a[n]] [new] image with (0¦width %-number%[( and|,)] [with] heigh
 		if raw expression-6 is set:
 			if (raw expression-6) isn't instance of Variable:
 				if expression-6 is set:
-					{Logger}.severe("[image.sk] '%raw expression-6%' is not a variable.");
+					{Logger}.severe("[image.sk] '%raw expression-6%' is not a variable.")
 				continue	
 		if parse mark is 0:
 			set {_width} to rounded expression-1
@@ -113,9 +113,9 @@ effect create [a[n]] [new] image with (0¦width %-number%[( and|,)] [with] heigh
 		set {_image} to new BufferedImage({_width}, {_height} and 2)
 		if imageskColor expression-5 is instance of Color:
 			set {_g} to {_image}.createGraphics()
-			{_g}.setColor(imageskColor expression-5);
-			{_g}.fillRect(0, 0, {_width} and {_height});
-			{_g}.dispose();
+			{_g}.setColor(imageskColor expression-5)
+			{_g}.fillRect(0, 0, {_width} and {_height})
+			{_g}.dispose()
 		if raw expression-6 is set:
 			imageskSetVariable (raw expression-6) to {_image} in event
 		else:
@@ -131,13 +131,13 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 		if raw expression-4 is set:
 			if (raw expression-4) isn't instance of Variable:
 				if expression-4 is set:
-					{Logger}.severe("[image.sk] '%raw expression-4%' is not a variable.");
+					{Logger}.severe("[image.sk] '%raw expression-4%' is not a variable.")
 				continue
 		delay the current effect
 		if parse mark is 0:
 			if expression-1 is set:
 				set {_connection} to new URL(expression-1).openConnection()
-				{_connection}.setRequestProperty("User-Agent" and "imagesk");
+				{_connection}.setRequestProperty("User-Agent" and "imagesk")
 				set {_image} to ImageIO.read({_connection}.getInputStream())
 		else if parse mark is 1:
 			if expression-2 is set:
@@ -146,7 +146,7 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 				set {_file} to new JavaFile({_path})
 				if {_file}.exists() is false:
 					if expression-2 is set:
-						{Logger}.severe("[image.sk] '%expression-2%' is not a valid file path.");
+						{Logger}.severe("[image.sk] '%expression-2%' is not a valid file path.")
 					continue
 				set {_image} to ImageIO.read({_file})
 		else if parse mark is 2:
@@ -156,8 +156,8 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 		if {_image}.getType() is not 2:
 			set {_newImage} to new BufferedImage(({_image}.getWidth()), ({_image}.getHeight()) and 2)
 			set {_g} to {_newImage}.createGraphics()
-			{_g}.drawImage({_image}, 0, 0, ({_image}.getWidth()), ({_image}.getHeight()) and null);
-			{_g}.dispose();
+			{_g}.drawImage({_image}, 0, 0, ({_image}.getWidth()), ({_image}.getHeight()) and null)
+			{_g}.dispose()
 			set {_image} to {_newImage}
 		if raw expression-4 is set:
 			imageskSetVariable (raw expression-4) to {_image} in event
@@ -171,12 +171,12 @@ effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] he
 			if (raw expression-1) isn't instance of Variable:
 				if expression-1 is not {{@variable}::lastImage}:
 					if expression-1 is set:
-						{Logger}.severe("[image.sk] The image to be resized must be in a variable or the last image expression!");
+						{Logger}.severe("[image.sk] The image to be resized must be in a variable or the last image expression!")
 					continue
 		else:
 			if (raw expression-7) isn't instance of Variable:
 				if expression-7 is set:
-					{Logger}.severe("[image.sk] '%raw expression-7%' is not a variable.");
+					{Logger}.severe("[image.sk] '%raw expression-7%' is not a variable.")
 				continue
 		if expression-1 isn't instance of BufferedImage:
 			continue
@@ -209,8 +209,8 @@ effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] he
 		set {_temp} to expression-1.getScaledInstance({_width}, {_height} and {_algorithm})
 		set {_resized} to new BufferedImage({_width}, {_height}, and 2)
 		set {_g} to {_resized}.createGraphics()
-		{_g}.drawImage({_temp}, 0, 0 and null);
-		{_g}.dispose();
+		{_g}.drawImage({_temp}, 0, 0 and null)
+		{_g}.dispose()
 		if raw expression-7 is not set:
 			if expression-1 is {{@variable}::lastImage}:
 				set {{@variable}::lastImage} to {_resized}
@@ -249,7 +249,7 @@ object property (0¦width|1¦height|2¦ascent|3¦descent):
 				return {_fm}.getAscent()
 			else:
 				return {_fm}.getDescent()
-			{_g}.dispose();
+			{_g}.dispose()
 
 object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
 	get:
@@ -269,7 +269,7 @@ object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
 				set {_rgb} to (imageskColor change value).getRGB()
 				set {_x} to expression-2
 				set {_y} to expression-3
-				expression-1.setRGB(({_x} - 1), ({_y} - 1) and {_rgb});
+				expression-1.setRGB(({_x} - 1), ({_y} - 1) and {_rgb})
 	delete:
 		if expression-2 is set:
 			if expression-3 is set:
@@ -277,7 +277,7 @@ object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
 				set {_rgb} to {_rgb}.getRGB()
 				set {_x} to expression-2
 				set {_y} to expression-3
-				expression-1.setRGB(({_x} - 1), ({_y} - 1) and {_rgb});
+				expression-1.setRGB(({_x} - 1), ({_y} - 1) and {_rgb})
 
 object property (opacity|transparency):
 	get:
@@ -294,12 +294,12 @@ object property (opacity|transparency):
 						set {_opacity} to 0
 					set {_temp} to new BufferedImage((expression-1.getWidth()), (expression-1.getHeight()) and 2)
 					set {_g} to {_temp}.createGraphics()
-					{_g}.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER! and {_opacity}));
-					{_g}.drawImage(expression-1, 0, 0 and null);
-					{_g}.dispose();
+					{_g}.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER! and {_opacity}))
+					{_g}.drawImage(expression-1, 0, 0 and null)
+					{_g}.dispose()
 					imageskSetVariable (raw expression-1) to {_temp} in event
 			else:
-				{Logger}.severe("[image.sk] The image to be edited must be in a variable! (set image opacity)");
+				{Logger}.severe("[image.sk] The image to be edited must be in a variable! (set image opacity)")
 		else if expression-1 is instance of Color:
 			if (raw expression-1) is instance of Variable:
 				if change value is set:
@@ -312,7 +312,7 @@ object property (opacity|transparency):
 					set {_color} to new Color((expression-1.getRed()), (expression-1.getGreen()), (expression-1.getBlue()) and {_opacity})
 					imageskSetVariable (raw expression-1) to {_color} in event
 			else:
-				{Logger}.severe("[image.sk] The color to be edited must be in a variable! (set color opacity)");
+				{Logger}.severe("[image.sk] The color to be edited must be in a variable! (set color opacity)")
 
 effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [and] (store|save) [[the] result] (in|to) [variable] %-object%:
 	trigger:
@@ -320,7 +320,7 @@ effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number
 			continue
 		else if (raw expression-10) isn't instance of Variable:
 			if expression-10 is set:
-				{Logger}.severe("[image.sk] '%raw expression-10%' is not a variable.");
+				{Logger}.severe("[image.sk] '%raw expression-10%' is not a variable.")
 			continue
 		delay the current effect
 		if parse mark is 0:
@@ -343,7 +343,7 @@ effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at 
 		if raw expression-5 is set:
 			if (raw expression-5) isn't instance of Variable:
 				if expression-5 is set:
-					{Logger}.severe("[image.sk] '%raw expression-5%' is not a variable.");
+					{Logger}.severe("[image.sk] '%raw expression-5%' is not a variable.")
 				continue
 		if expression-1 isn't instance of BufferedImage:
 			continue
@@ -365,8 +365,8 @@ effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at 
 		else:
 			set {_image} to expression-2
 		set {_g} to {_image}.createGraphics()
-		{_g}.drawImage(expression-1, {_x}, {_y} and null);
-		{_g}.dispose();
+		{_g}.drawImage(expression-1, {_x}, {_y} and null)
+		{_g}.dispose()
 		if raw expression-5 is set:
 			imageskSetVariable (raw expression-5) to {_image} in event
 		continue
@@ -407,7 +407,7 @@ effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[m
 		if raw expression-7 is set:
 			if (raw expression-7) isn't instance of Variable:
 				if expression-7 is set:
-					{Logger}.severe("[image.sk] '%raw expression-7%' is not a variable.");
+					{Logger}.severe("[image.sk] '%raw expression-7%' is not a variable.")
 				continue
 		if raw expression-7 is set:
 			set {_image} to imgskCopyImage expression-1
@@ -438,21 +438,21 @@ effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[m
 			continue
 		delay the current effect
 		set {_queue} to new LinkedList()
-		{_queue}.add(new Point(expression-3 and expression-4));
+		{_queue}.add(new Point(expression-3 and expression-4))
 		while {_queue}.isEmpty() is false:
 			set {_pixel} to {_queue}.removeFirst()
 			if (pixel ({_pixel}.x!) + 1, {_pixel}.y! of {_image}) is similar to {_target} with tolerance {_tolerance}:
 				set pixel ({_pixel}.x!) + 1, {_pixel}.y! of {_image} to {_replacement}
-				{_queue}.addLast(new Point((({_pixel}.x!) + 1) and {_pixel}.y!));
+				{_queue}.addLast(new Point((({_pixel}.x!) + 1) and {_pixel}.y!))
 			if (pixel ({_pixel}.x!) - 1, {_pixel}.y! of {_image}) is similar to {_target} with tolerance {_tolerance}:
 				set pixel ({_pixel}.x!) - 1, {_pixel}.y! of {_image} to {_replacement}
-				{_queue}.addLast(new Point((({_pixel}.x!) - 1) and {_pixel}.y!));
+				{_queue}.addLast(new Point((({_pixel}.x!) - 1) and {_pixel}.y!))
 			if (pixel {_pixel}.x!, ({_pixel}.y!) + 1 of {_image}) is similar to {_target} with tolerance {_tolerance}:
 				set pixel {_pixel}.x!, ({_pixel}.y! + 1) of {_image} to {_replacement}
-				{_queue}.addLast(new Point({_pixel}.x! and ({_pixel}.y! + 1)));
+				{_queue}.addLast(new Point({_pixel}.x! and ({_pixel}.y! + 1)))
 			if (pixel {_pixel}.x!, ({_pixel}.y!) - 1 of {_image}) is similar to {_target} with tolerance {_tolerance}:
 				set pixel {_pixel}.x!, ({_pixel}.y! - 1) of {_image} to {_replacement}
-				{_queue}.addLast(new Point({_pixel}.x! and ({_pixel}.y! - 1)));
+				{_queue}.addLast(new Point({_pixel}.x! and ({_pixel}.y! - 1)))
 		delete {_queue}
 		if raw expression-7 is set:
 			imageskSetVariable (raw expression-7) to {_image} in event
@@ -463,7 +463,7 @@ effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)]
 		if raw expression-12 is set:
 			if (raw expression-12) isn't instance of Variable:
 				if expression-12 is set:
-					{Logger}.severe("[image.sk] '%raw expression-12%' is not a variable.");
+					{Logger}.severe("[image.sk] '%raw expression-12%' is not a variable.")
 				continue
 		if expression-1 isn't instance of BufferedImage:
 			continue
@@ -488,14 +488,14 @@ effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)]
 		else:
 			set {_width} to 1
 		if parse mark is 10 or 11:
-			{_g}.setStroke(new BasicStroke({_width}));
+			{_g}.setStroke(new BasicStroke({_width}))
 		else:
-			{_g}.setStroke(new BasicStroke({_width}, (BasicStroke.CAP_ROUND!) and 2));
+			{_g}.setStroke(new BasicStroke({_width}, (BasicStroke.CAP_ROUND!) and 2))
 		if imageskColor expression-3 is instance of Color:
-			{_g}.setColor(imageskColor expression-3);
-		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
-		{_g}.draw(new Line2DFloat({_x1}, {_y1}, {_x2} and {_y2}));
-		{_g}.dispose();
+			{_g}.setColor(imageskColor expression-3)
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		{_g}.draw(new Line2DFloat({_x1}, {_y1}, {_x2} and {_y2}))
+		{_g}.dispose()
 		if raw expression-12 is set:
 			imageskSetVariable (raw expression-12) to {_image} in event
 		continue
@@ -505,7 +505,7 @@ effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] 
 		if raw expression-10 is set:
 			if (raw expression-10) isn't instance of Variable:
 				if expression-10 is set:
-					{Logger}.severe("[image.sk] '%raw expression-10%' is not a variable.");
+					{Logger}.severe("[image.sk] '%raw expression-10%' is not a variable.")
 				continue
 		if expression-2 isn't instance of BufferedImage:
 			continue
@@ -536,18 +536,18 @@ effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] 
 			set {_image} to expression-2
 		set {_g} to {_image}.createGraphics()
 		if imageskColor expression-7 is instance of Color:
-			{_g}.setColor(imageskColor expression-7);
-		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
+			{_g}.setColor(imageskColor expression-7)
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
 		if parse mark is 10 or 11:
 			if expression-1 is set:
 				set {_owidth} to expression-1
 			else:
 				set {_owidth} to 1
-			{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 2));
-			{_g}.drawOval(({_x} - ({_width} / 2)), ({_y} - ({_height} / 2)), {_width} and {_height});
+			{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 2))
+			{_g}.drawOval(({_x} - ({_width} / 2)), ({_y} - ({_height} / 2)), {_width} and {_height})
 		else:
-			{_g}.fillOval(({_x} - ({_width} / 2)), ({_y} - ({_height} / 2)), {_width} and {_height});
-		{_g}.dispose();
+			{_g}.fillOval(({_x} - ({_width} / 2)), ({_y} - ({_height} / 2)), {_width} and {_height})
+		{_g}.dispose()
 		if raw expression-10 is set:
 			imageskSetVariable (raw expression-10) to {_image} in event
 		continue
@@ -557,7 +557,7 @@ effect draw [a[n]] circle [(1¦outline [with width %-number%])] on [(image|img)]
 		if raw expression-7 is set:
 			if (raw expression-7) isn't instance of Variable:
 				if expression-7 is set:
-					{Logger}.severe("[image.sk] '%raw expression-7%' is not a variable.");
+					{Logger}.severe("[image.sk] '%raw expression-7%' is not a variable.")
 				continue
 		if expression-2 isn't instance of BufferedImage:
 			continue
@@ -578,18 +578,18 @@ effect draw [a[n]] circle [(1¦outline [with width %-number%])] on [(image|img)]
 			set {_image} to expression-2
 		set {_g} to {_image}.createGraphics()
 		if imageskColor expression-4 is instance of Color:
-			{_g}.setColor(imageskColor expression-4);
-		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
+			{_g}.setColor(imageskColor expression-4)
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
 		if parse mark is 1:
 			if expression-1 is set:
 				set {_owidth} to expression-1
 			else:
 				set {_owidth} to 1
-			{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 2));
-			{_g}.drawOval(({_x} - expression-3), ({_y} - expression-3), (expression-3 * 2) and (expression-3 * 2));
+			{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 2))
+			{_g}.drawOval(({_x} - expression-3), ({_y} - expression-3), (expression-3 * 2) and (expression-3 * 2))
 		else:
-			{_g}.fillOval(({_x} - expression-3), ({_y} - expression-3), (expression-3 * 2) and (expression-3 * 2));
-		{_g}.dispose();
+			{_g}.fillOval(({_x} - expression-3), ({_y} - expression-3), (expression-3 * 2) and (expression-3 * 2))
+		{_g}.dispose()
 		if raw expression-7 is set:
 			imageskSetVariable (raw expression-7) to {_image} in event
 		continue
@@ -599,12 +599,12 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 		if raw expression-5 is set:
 			if (raw expression-5) isn't instance of Variable:
 				if expression-5 is set:
-					{Logger}.severe("[image.sk] '%raw expression-5%' is not a variable.");
+					{Logger}.severe("[image.sk] '%raw expression-5%' is not a variable.")
 				continue
 		if expression-3 isn't instance of BufferedImage:
 			continue
 		if expression-4 is smaller than 3:
-			{Logger}.severe("[image.sk] A polygon must have 3 or more vertices! But entered %rounded down (size of expressions-4) / 2% vertice locations.");
+			{Logger}.severe("[image.sk] A polygon must have 3 or more vertices! But entered %rounded down (size of expressions-4) / 2% vertice locations.")
 			continue
 		delay the current effect
 		if raw expression-5 is set:
@@ -613,15 +613,15 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 			set {_image} to expression-3
 		set {_g} to {_image}.createGraphics()
 		if imageskColor expression-2 is instance of Color:
-			{_g}.setColor(imageskColor expression-2);
-		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
+			{_g}.setColor(imageskColor expression-2)
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
 		set {_polygon} to new Polygon()
 		loop expressions-4:
 			add 1 to {_coord}
 			set {_c} to loop-value
 			add {_c} - 1 to {_coords::*}
 			if mod({_coord}, 2) is 0:
-				{_polygon}.addPoint({_coords::*});
+				{_polygon}.addPoint({_coords::*})
 				delete {_coords::*}
 		if parse mark is 1 or 3:
 			if expression-1 is set:
@@ -629,13 +629,13 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 			else:
 				set {_owidth} to 1
 			if parse mark is 1:
-				{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 1));
+				{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 1))
 			else:
-				{_g}.setStroke(new BasicStroke({_owidth}));
-			{_g}.drawPolygon({_polygon});
+				{_g}.setStroke(new BasicStroke({_owidth}))
+			{_g}.drawPolygon({_polygon})
 		else:
-			{_g}.fillPolygon({_polygon});
-		{_g}.dispose();
+			{_g}.fillPolygon({_polygon})
+		{_g}.dispose()
 		if raw expression-5 is not set:
 			imageskSetVariable (raw expression-3) to {_image} in event
 		else:
@@ -647,7 +647,7 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 		if raw expression-9 is set:
 			if (raw expression-9) isn't instance of Variable:
 				if expression-9 is set:
-					{Logger}.severe("[image.sk] '%raw expression-89%' is not a variable.");
+					{Logger}.severe("[image.sk] '%raw expression-89%' is not a variable.")
 				continue
 		if expression-3 isn't instance of BufferedImage:
 			continue
@@ -658,10 +658,10 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 			set {_image} to expression-3
 		set {_g} to {_image}.createGraphics()
 		if imageskColor expression-2 is instance of Color:
-			{_g}.setColor(imageskColor expression-2);
-		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
+			{_g}.setColor(imageskColor expression-2)
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
 		if expression-4 is smaller than 3:
-			{Logger}.severe("[image.sk] A polygon must have 3 or more vertices! But entered %expression-4% vertice locations.");
+			{Logger}.severe("[image.sk] A polygon must have 3 or more vertices! But entered %expression-4% vertice locations.")
 			continue
 		if expression-6 is set:
 			set {_angle} to expression-6
@@ -681,7 +681,7 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 		set {_angleChange} to 360 / expression-4
 		set {_polygon} to new Polygon()
 		loop expression-4 times:
-			{_polygon}.addPoint(({_x} + expression-5 * sin({_angle})) and ({_y} + expression-5 * cos({_angle})));
+			{_polygon}.addPoint(({_x} + expression-5 * sin({_angle})) and ({_y} + expression-5 * cos({_angle})))
 			add {_angleChange} to {_angle}
 		if parse mark is 1 or 3:
 			if expression-1 is set:
@@ -689,13 +689,13 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 			else:
 				set {_owidth} to 1
 			if parse mark is 1:
-				{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 1));
+				{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 1))
 			else:
-				{_g}.setStroke(new BasicStroke({_owidth}));
-			{_g}.drawPolygon({_polygon});
+				{_g}.setStroke(new BasicStroke({_owidth}))
+			{_g}.drawPolygon({_polygon})
 		else:
-			{_g}.fillPolygon({_polygon});
-		{_g}.dispose();
+			{_g}.fillPolygon({_polygon})
+		{_g}.dispose()
 		if raw expression-9 is not set:
 			imageskSetVariable (raw expression-3) to {_image} in event
 		else:
@@ -714,9 +714,12 @@ effect (create|generate) [a[n]] [new] [(image|img)] (text|string) [(with (id|nam
 		set {{@variable}::texts::%expression-1%::foreground} to color "FFFFFF"
 
 expression [the] (image|img) (text|string) [(with (id|name)|named)] %string%:
+	return type: string
 	get:
 		if {{@variable}::texts::%expression-1%} is set:
 			return "imgtext:%expression-1%"
+		else:
+			return
 	delete:
 		delete {{@variable}::texts::%expression-1%} and {{@variable}::texts::%expression-1%::*}
 
@@ -887,7 +890,7 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 		if raw expression-5 is set:
 			if (raw expression-5) isn't instance of Variable:
 				if expression-5 is set:
-					{Logger}.severe("[image.sk] '%raw expression-5%' is not a variable.");
+					{Logger}.severe("[image.sk] '%raw expression-5%' is not a variable.")
 				continue
 		delay the current effect
 		if raw expression-5 is set:
@@ -906,7 +909,7 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 		if {{@variable}::texts::%expression-1%::italic} is set:
 			add Font.ITALIC! to {_style}
 		set {_font} to new Font({_font}, {_style} and {_size})
-		{_g}.setFont({_font});
+		{_g}.setFont({_font})
 		if expression-3 is set:
 			set {_x} to expression-3
 			set {_x} to {_x} - 1
@@ -917,25 +920,25 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 			add {_g}.getFontMetrics({_font}).getAscent() - 1 to {_y}
 		else:
 			set {_y} to {_g}.getFontMetrics({_font}).getAscent() - 1
-		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!));
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
 		if {{@variable}::texts::%expression-1%::outline}, {{@variable}::texts::%expression-1%::onlyOutline}, {{@variable}::texts::%expression-1%::outlineColor} or {{@variable}::texts::%expression-1%::outlineWidth} is set:
 			loop ...{_text}.split("\n|\\n"):
 				set {_w} to loop-value
 				if {{@variable}::texts::%expression-1%::underline}, {{@variable}::texts::%expression-1%::strikethrough} or {{@variable}::texts::%expression-1%::background} is set:
-					{Logger}.warning("[image.sk] Using underline, strikethrough and background color with outline in the same time isn't supported currently. These properties won't work.");
+					{Logger}.warning("[image.sk] Using underline, strikethrough and background color with outline in the same time isn't supported currently. These properties won't work.")
 				set {_frc} to {_g}.getFontRenderContext()
 				set {_gv} to {_font}.createGlyphVector({_frc} and {_w})
 				if {{@variable}::texts::%expression-1%::outlineWidth} is set:
-					{_g}.setStroke(new BasicStroke({{@variable}::texts::%expression-1%::outlineWidth}, (BasicStroke.CAP_ROUND!) and 1));
+					{_g}.setStroke(new BasicStroke({{@variable}::texts::%expression-1%::outlineWidth}, (BasicStroke.CAP_ROUND!) and 1))
 				if {{@variable}::texts::%expression-1%::onlyOutline} is not set:
 					if {{@variable}::texts::%expression-1%::foreground} is set:
-						{_g}.setColor({{@variable}::texts::%expression-1%::foreground});
-					{_g}.fill({_gv}.getOutline({_x} and {_y}));
+						{_g}.setColor({{@variable}::texts::%expression-1%::foreground})
+					{_g}.fill({_gv}.getOutline({_x} and {_y}))
 				if {{@variable}::texts::%expression-1%::outlineColor} is set:
-					{_g}.setColor({{@variable}::texts::%expression-1%::outlineColor});
+					{_g}.setColor({{@variable}::texts::%expression-1%::outlineColor})
 				else:
-					{_g}.setColor(color hex "000000");
-				{_g}.draw({_gv}.getOutline({_x} and {_y}));
+					{_g}.setColor(color hex "000000")
+				{_g}.draw({_gv}.getOutline({_x} and {_y}))
 				add {_g}.getFontMetrics({_font}).getHeight() to {_y}
 		else:
 			loop ...{_text}.split("\n|\\n"):
@@ -943,18 +946,18 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 				if {{@variable}::texts::%expression-1%::underline}, {{@variable}::texts::%expression-1%::strikethrough}, {{@variable}::texts::%expression-1%::foreground} or {{@variable}::texts::%expression-1%::background} is set:
 					set {_aString} to new AttributedString({_w})
 					if {{@variable}::texts::%expression-1%::underline} is set:
-						{_aString}.addAttribute((TextAttribute.UNDERLINE!) and (TextAttribute.UNDERLINE_ON!));
+						{_aString}.addAttribute((TextAttribute.UNDERLINE!) and (TextAttribute.UNDERLINE_ON!))
 					if {{@variable}::texts::%expression-1%::strikethrough} is set:
-						{_aString}.addAttribute((TextAttribute.STRIKETHROUGH!) and (TextAttribute.STRIKETHROUGH_ON!));
+						{_aString}.addAttribute((TextAttribute.STRIKETHROUGH!) and (TextAttribute.STRIKETHROUGH_ON!))
 					if {{@variable}::texts::%expression-1%::foreground} is set:
-						{_aString}.addAttribute((TextAttribute.FOREGROUND!) and {{@variable}::texts::%expression-1%::foreground});
+						{_aString}.addAttribute((TextAttribute.FOREGROUND!) and {{@variable}::texts::%expression-1%::foreground})
 					if {{@variable}::texts::%expression-1%::background} is set:
-						{_aString}.addAttribute((TextAttribute.BACKGROUND!) and {{@variable}::texts::%expression-1%::background});
-					{_aString}.addAttribute((TextAttribute.FONT!) and {_font});
+						{_aString}.addAttribute((TextAttribute.BACKGROUND!) and {{@variable}::texts::%expression-1%::background})
+					{_aString}.addAttribute((TextAttribute.FONT!) and {_font})
 					set {_w} to {_aString}.getIterator()
-				{_g}.drawString({_w}, {_x} and {_y});
+				{_g}.drawString({_w}, {_x} and {_y})
 				add {_g}.getFontMetrics({_font}).getHeight() - 2 to {_y}
-		{_g}.dispose();
+		{_g}.dispose()
 		if raw expression-5 is set:
 			imageskSetVariable (raw expression-5) to {_image} in event
 		continue
@@ -968,13 +971,13 @@ effect (save|write) [(image|img)] %object% to [file] %string%:
 			set {_path} to expression-2
 			replace all "/" and "\" with JavaFile.separator! in {_path}
 			set {_file} to new JavaFile({_path})
-			{_file}.mkdirs();
+			{_file}.mkdirs()
 			set {_fileName} to last element of split {_path} at JavaFile.separator!
 			if {_fileName} contains ".":
 				set {_extension} to last element of split {_fileName} at "."
 			else:
 				set {_extension} to "png"
-			ImageIO.write(expression-1, {_extension} and {_file});
+			ImageIO.write(expression-1, {_extension} and {_file})
 		continue
 
 effect (register|install|load) [new] font [family] [(from|of|at))] [file] %string%:
@@ -986,7 +989,7 @@ effect (register|install|load) [new] font [family] [(from|of|at))] [file] %strin
 			set {_file} to new JavaFile({_path})
 			if {_file}.exists() is false:
 				if expression-1 is set:
-					{Logger}.severe("[image.sk] '%expression-1%' is not a valid file path.");
+					{Logger}.severe("[image.sk] '%expression-1%' is not a valid file path.")
 				continue
 			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT! and {_file}))
 		continue
