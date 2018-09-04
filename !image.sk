@@ -182,8 +182,6 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 
 effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] height %-number%|1¦height %-number%[( and|,)] width %-number%) [(with|using) algorithm %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
 	parse:
-		broadcast "%class of raw expression-1%"
-		broadcast "%class of expression-1%"
 		if expression-7 is not set:
 			if expression-1 isn't instance of Variable:
 				if "%expression-1%" is not "[the] [last[ly]] [(created|generated|received|taken)] (image|img)":
@@ -629,11 +627,11 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 			if expression-5 isn't instance of Variable:
 				parse error "'%expression-5%' is not a variable."
 				stop
-		if raw expression-4 is instance of SimpleLiteral or LiteralList:
-			set {_list::*} to ...(raw expression-4).getSingle().getArray()
+		if expression-4 is instance of SimpleLiteral or LiteralList:
+			set {_list::*} to ...(expression-4).getArray()
 			set {_vertices} to rounded down (size of {_list::*}) / 2
 			if {_vertices} is smaller than 3:
-				parse error "A polygon must have 3 or more vertices! But entered %{_vertices}% vertice locations."
+				parse error "A polygon must have 3 or more vertices! But entered only %{_vertices}% vertice locations."
 				stop
 		continue
 	trigger:
