@@ -100,11 +100,17 @@ local effect set variable %object% to %object% in %event%:
 		set {_name} to {_variable}.getName().toString(expression-3)
 		Variables.setVariable({_name}, expression-2, expression-3, {_variable}.isLocal())
 
-local expression copied image %object%:
+expression:
+	patterns:
+		(copied|cloned) [image[s]] %$objects%
+		[a] (cop(y|ies)|clone[s]) of [image[s]] %$objects%
+		%$objects%'[s] (cop(y|ies)|clone[s])
 	get:
-		return new BufferedImage((expression-1.getColorModel()), (expression-1.copyData(null)), (expression-1.isAlphaPremultiplied()) and null)
+		loop expressions-1:
+			add new BufferedImage((loop-value.getColorModel()), (loop-value.copyData(null)), (loop-value.isAlphaPremultiplied()) and null) to {_result::*}
+		return {_result::*}
 
-effect create [a[n]] [new] image with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] [with] b[ack]g[round] [colo[u]r] %-object%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect create [a[n]] [new] image with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] [with] b[ack]g[round] [colo[u]r] %-object%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-6 is set:
 			if expression-6 isn't instance of Variable:
@@ -140,7 +146,7 @@ expression [the] [last[ly]] [(created|generated|received|taken)] (image|img):
 	delete:
 		delete {{@variable}::lastImage}
 
-effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦base[ ]64 %-string%) [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦base[ ]64 %-string%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-4 is set:
 			if expression-4 isn't instance of Variable:
@@ -180,7 +186,7 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 			set {{@variable}::lastImage} to {_image}
 		continue
 
-effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] height %-number%|1¦height %-number%[( and|,)] width %-number%) [(with|using) algorithm %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] height %-number%|1¦height %-number%[( and|,)] width %-number%) [(with|using) algorithm %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-7 is not set:
 			if expression-1 isn't instance of Variable:
@@ -334,7 +340,7 @@ object property (opacity|transparency):
 			else:
 				error "The color to be edited must be in a variable! (set color opacity)"
 
-effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [and] (store|save) [[the] result] (in|to) [variable] %-object%:
+effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%:
 	parse:
 		if expression-10 is set:
 			if expression-10) isn't instance of Variable:
@@ -360,7 +366,7 @@ effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number
 		set variable raw expression-10 to expression-1.getSubimage(({_x1} - 1), ({_y1} - 1), ({_width} - 1) and ({_height} - 1)) in event
 		continue
 
-effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-5 is set:
 			if expression-5 isn't instance of Variable:
@@ -425,7 +431,7 @@ object property condition similar to %object% [with (tolerance %-number% [percen
 				if {_color2}.getBlue() is between {_minB} and {_maxB}:
 					continue
 
-effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[ment]] [colo[u]r] %object% at [location] %number%( and|,) %number% [with (tolerance %-number% [percent]|%-number% [percent] tolerance)] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[ment]] [colo[u]r] %object% at [location] %number%( and|,) %number% [with (tolerance %-number% [percent]|%-number% [percent] tolerance)] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-7 is set:
 			if expression-7 isn't instance of Variable:
@@ -482,7 +488,7 @@ effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[m
 			set variable (raw expression-7) to {_image} in event
 		continue
 
-effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)] %object% [with width %-number%][[( and|,)] [with] [colo[u]r] %-object%] (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)] %object% [with width %-number%][[( and|,)] [with] [colo[u]r] %-object%] (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-12 is set:
 			if expression-12 isn't instance of Variable:
@@ -525,7 +531,7 @@ effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)]
 			set variable (raw expression-12) to {_image} in event
 		continue
 
-effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] %object% with (0¦(width [radius]|vertical radius) %-number%[( and|,)] [with] (height [radius]|horizontal radius) %-number%|1¦(height [radius]|horizontal radius) %-number%[( and|,)] [with] (width [radius]|vertical radius) %-number%)[[( and|,)] [with] [colo[u]r] %-object%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] %object% with (0¦(width [radius]|vertical radius) %-number%[( and|,)] [with] (height [radius]|horizontal radius) %-number%|1¦(height [radius]|horizontal radius) %-number%[( and|,)] [with] (width [radius]|vertical radius) %-number%)[[( and|,)] [with] [colo[u]r] %-object%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-10 is set:
 			if expression-10 isn't instance of Variable:
@@ -578,7 +584,7 @@ effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] 
 			set variable (raw expression-10) to {_image} in event
 		continue
 
-effect draw [a[n]] circle [(1¦outline [with width %-number%])] on [(image|img)] %object% with (radius|width|height) %number%[[( and|,)] [with] [colo[u]r] %-object%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect draw [a[n]] circle [(1¦outline [with width %-number%])] on [(image|img)] %object% with (radius|width|height) %number%[[( and|,)] [with] [colo[u]r] %-object%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-7 is set:
 			if expression-7 isn't instance of Variable:
@@ -621,7 +627,7 @@ effect draw [a[n]] circle [(1¦outline [with width %-number%])] on [(image|img)]
 			set variable (raw expression-7) to {_image} in event
 		continue
 
-effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% ((between|at)|using) ((corners|vertices|vertexes|points)|[(corner|vertice|vertex|point)] locations) %numbers% [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% ((between|at)|using) ((corners|vertices|vertexes|points)|[(corner|vertice|vertex|point)] locations) %numbers% [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-5 is set:
 			if expression-5 isn't instance of Variable:
@@ -676,7 +682,7 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 			set variable (raw expression-5) to {_image} in event
 		continue
 
-effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% (with|using) %number% [of] (corners|vertices|vertexes|points) with radius %number%[( and|,) [with] angle %-number%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% (with|using) %number% [of] (corners|vertices|vertexes|points) with radius %number%[( and|,) [with] angle %-number%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-9 is set:
 			if expression-9 isn't instance of Variable:
@@ -921,7 +927,7 @@ expression (0¦[foreground]|1¦background|2¦outline) colo[u]r of [[(image|img)]
 		else if parse mark is 2:
 			delete {{@variable}::texts::%expression-1%::outlineColor}
 
-effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %string% (on|to) [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) [[the] result] (in|to) [variable] %-object%]:
+effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %string% (on|to) [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-5 is set:
 			if expression-5 isn't instance of Variable:
