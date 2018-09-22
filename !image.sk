@@ -16,6 +16,7 @@ import:
 	java.awt.font.TextAttribute
 	java.awt.image.BufferedImage
 	java.io.ByteArrayInputStream
+	java.io.ByteArrayOutputStream
 	java.io.File as JavaFile
 	java.lang.String
 	java.net.URL
@@ -36,6 +37,7 @@ import:
 on load:
 	set {{@variable}::Logger} to Bukkit.getServer().getLogger()
 	set {{@variable}::Decoder} to Base64.getDecoder()
+	set {{@variable}::Encoder} to Base64.getEncoder()
 
 on unload:
 	delete {{@variable}::*}
@@ -175,8 +177,8 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 				set {_image} to ImageIO.read({_file})
 		else if parse mark is 2:
 			if expression-3 is set:
-				set {_byte} to {{@variable}::Decoder}.decode(expression-3)
-				set {_bis} to new ByteArrayInputStream({_byte})
+				set {_bytes} to {{@variable}::Decoder}.decode(last element of split expression-3 at ",")
+				set {_bis} to new ByteArrayInputStream({_bytes})
 				set {_image} to ImageIO.read({_bis})
 				{_bis}.close()
 		if {_image}.getType() is not 2:
@@ -190,6 +192,26 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 		else:
 			set {{@variable}::lastImage} to {_image}
 		continue
+
+expression:
+	patterns:
+		base[ ]64 encoded [(image|img)] %object% [with [(format|file)] type %-string%]
+		base[ ]64 encoded [(image|img)] %object% [with (format|file) [type] %-string%]
+		base[ ]64 encoded [(image|img)] %object% [with %-string% [(format|file)] type]
+	return type: string
+	get:
+		if expression-1 isn't instance of BufferedImage:
+			return
+		if expression-2 is not set:
+			set {_type} to "png"
+		else:
+			set {_type} to expression-2
+		
+		set {_bos} to new ByteArrayOutputStream()
+		ImageIO.write(expression-1, {_type}, {_bos})
+		set {_base64} to {{@variable}::Encoder}.encodeToString({_bos}.toByteArray())
+		{_bos}.close()
+		return {_base64}
 
 effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] height %-number%|1¦height %-number%[( and|,)] width %-number%) [(with|using) algorithm %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
