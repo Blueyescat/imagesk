@@ -158,7 +158,7 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 		if parse mark is 0:
 			if expression-1 is set:
 				set {_connection} to new URL(expression-1).openConnection()
-				{_connection}.setRequestProperty("User-Agent" and "imagesk")
+				{_connection}.setRequestProperty("User-Agent" and "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36 OPR/55.0.2994.61")
 				set {_image} to ImageIO.read({_connection}.getInputStream())
 		else if parse mark is 1:
 			if expression-2 is set:
