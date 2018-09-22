@@ -2,13 +2,7 @@ options:
 	variable: imagesk
 
 import:
-	java.lang.String
-	java.util.LinkedList
-	java.text.AttributedString
-	java.io.File as JavaFile
-	java.net.URL
 	java.awt.Image
-	java.awt.image.BufferedImage
 	java.awt.AlphaComposite
 	java.awt.Color
 	java.awt.Font
@@ -16,10 +10,18 @@ import:
 	java.awt.geom.Line2D
 	java.awt.geom.Line2D$Float as Line2DFloat
 	java.awt.Polygon
-	java.awt.font.TextAttribute
 	java.awt.RenderingHints
 	java.awt.GraphicsEnvironment
 	java.awt.Point
+	java.awt.font.TextAttribute
+	java.awt.image.BufferedImage
+	java.io.ByteArrayInputStream
+	java.io.File as JavaFile
+	java.lang.String
+	java.net.URL
+	java.text.AttributedString
+	java.util.Base64
+	java.util.LinkedList
 	javax.imageio.ImageIO
 
 	org.bukkit.Bukkit
@@ -32,9 +34,10 @@ import:
 	ch.njol.skript.util.Color as SkriptColor
 
 on load:
-	set {Logger} to Bukkit.getServer().getLogger()
+	set {{@variable}::Logger} to Bukkit.getServer().getLogger()
+	set {{@variable}::Decoder} to Base64.getDecoder()
 
-on skript load:
+on unload:
 	delete {{@variable}::*}
 
 local effect [(1¦parse)] error %string%:
@@ -42,11 +45,11 @@ local effect [(1¦parse)] error %string%:
 		if parse mark is 1:
 			Skript.error(expression-1)
 		else:
-			{Logger}.severe("[image.sk] %expression-1%")
+			{{@variable}::Logger}.severe("[image.sk] %expression-1%")
 
 local effect warning %string%:
 	trigger:
-		{Logger}.warning("[image.sk] %expression-1%")
+		{{@variable}::Logger}.warning("[image.sk] %expression-1%")
 
 expression [(image|img)] colo[u]r (0¦%-color%|1¦[from] [hex] %-string%|2¦[from] [rgb[ ]][\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
 	get:
@@ -172,8 +175,10 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 				set {_image} to ImageIO.read({_file})
 		else if parse mark is 2:
 			if expression-3 is set:
-				# TODO
-				stop
+				set {_byte} to {{@variable}::Decoder}.decode(expression-3)
+				set {_bis} to new ByteArrayInputStream({_byte})
+				set {_image} to ImageIO.read({_bis})
+				{_bis}.close()
 		if {_image}.getType() is not 2:
 			set {_newImage} to new BufferedImage(({_image}.getWidth()), ({_image}.getHeight()) and 2)
 			set {_g} to {_newImage}.createGraphics()
@@ -230,7 +235,7 @@ effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] he
 		else:
 			set {_algorithm} to Image.SCALE_DEFAULT!
 		set {_temp} to expression-1.getScaledInstance({_width}, {_height} and {_algorithm})
-		set {_resized} to new BufferedImage({_width}, {_height}, and 2)
+		set {_resized} to new BufferedImage({_width}, {_height} and 2)
 		set {_g} to {_resized}.createGraphics()
 		{_g}.drawImage({_temp}, 0, 0 and null)
 		{_g}.dispose()
