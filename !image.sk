@@ -2,18 +2,18 @@ options:
 	variable: imagesk
 
 import:
-	java.awt.Image
 	java.awt.AlphaComposite
+	java.awt.BasicStroke
 	java.awt.Color
 	java.awt.Font
-	java.awt.BasicStroke
-	java.awt.geom.Line2D
-	java.awt.geom.Line2D$Float as Line2DFloat
+	java.awt.GraphicsEnvironment
+	java.awt.Image
+	java.awt.Point
 	java.awt.Polygon
 	java.awt.RenderingHints
-	java.awt.GraphicsEnvironment
-	java.awt.Point
 	java.awt.font.TextAttribute
+	java.awt.geom.Line2D
+	java.awt.geom.Line2D$Float as Line2DFloat
 	java.awt.image.BufferedImage
 	java.io.ByteArrayInputStream
 	java.io.ByteArrayOutputStream
@@ -24,15 +24,15 @@ import:
 	java.util.Base64
 	java.util.LinkedList
 	javax.imageio.ImageIO
-
-	org.bukkit.Bukkit
-
+	
 	ch.njol.skript.Skript
 	ch.njol.skript.lang.LiteralList
 	ch.njol.skript.lang.Variable
 	ch.njol.skript.lang.util.SimpleLiteral
-	ch.njol.skript.variables.Variables
 	ch.njol.skript.util.Color as SkriptColor
+	ch.njol.skript.variables.Variables
+	
+	org.bukkit.Bukkit
 
 on load:
 	set {{@variable}::Logger} to Bukkit.getServer().getLogger()
@@ -196,11 +196,7 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 			set {{@variable}::lastImage} to {_image}
 		continue
 
-expression:
-	patterns:
-		base[ ]64 encoded [(image|img)] %object% [with [(format|file)] type %-string%]
-		base[ ]64 encoded [(image|img)] %object% [with (format|file) [type] %-string%]
-		base[ ]64 encoded [(image|img)] %object% [with %-string% [(format|file)] type]
+expression base[ ]64 encoded [(image|img)] %object% [with ([(format|file)] type|[file] format) %-string%]:
 	return type: string
 	get:
 		if expression-1 isn't instance of BufferedImage:
