@@ -1,0 +1,65 @@
+import:
+	java.awt.image.BufferedImage
+	java.io.ByteArrayInputStream
+	java.io.ByteArrayOutputStream
+	javax.imageio.ImageIO
+	
+	me.iblitzkriegi.vixio.Vixio
+	me.iblitzkriegi.vixio.util.UpdatingMessage
+	me.iblitzkriegi.vixio.util.Util as VixioUtil
+	
+	net.dv8tion.jda.core.EmbedBuilder
+	net.dv8tion.jda.core.MessageBuilder
+	net.dv8tion.jda.core.entities.User
+	net.dv8tion.jda.core.exceptions.RateLimitedException
+
+effect:
+	patterns:
+		upload (image|img) %object% [with ([(format|file)] type|[file] format) %-string%] [with (message|embed) %-message/string%] to %user/channel% [with %bot/string%]
+		upload [the] [last[ly]] [(created|generated|received|taken)] (image|img) [with ([(format|file)] type|[file] format) %-string%] [with (message|embed) %-message/string%] to %user/channel% [with %bot/string%]
+	trigger:
+		if matched pattern is 1:
+			set {_image} to expression-1
+			set {_format} to expression-2
+			set {_messageExpr} to expression-3
+			set {_channel} to expression-4
+			set {_bot} to expression-5
+		else:
+			set {_image} to last image
+			set {_format} to expression-1
+			set {_messageExpr} to expression-2
+			set {_channel} to expression-3
+			set {_bot} to expression-4
+		
+		if {_image} is not instance of BufferedImage:
+			stop
+		delay the current effect
+		if {_format} is not set:
+			set {_format} to "png"
+		if {_messageExpr} is set:
+			if {_message} is instance of EmbedBuilder:
+				set {_message} to VixioUtil.messageFrom(UpdatingMessage.from(new MessageBuilder().setEmbed({_messageExpr}.build()).build()))
+			else:
+				set {_message} to VixioUtil.messageFrom({_messageExpr})
+			if {_message} is not set:
+				continue
+		if {_channel} is instance of User:
+			set {_messageChannel} to try {_channel}.openPrivateChannel().complete(true)
+			if last java error is instance of RateLimitedException:
+				Vixio.getErrorHandler().warn("Vixio attempted to open a private channel but was ratelimited")
+				continue
+		else:
+			set {_messageChannel} to {_channel}
+		set {_bot} to VixioUtil.botFrom({_bot})
+		if {_image}, {_messageChannel} or {_bot} is not set:
+			continue
+		
+		set {_bindedChannel} to VixioUtil.bindMessageChannel({_bot}, {_messageChannel})
+		set {_os} to new ByteArrayOutputStream()
+		ImageIO.write({_image}, {_format}, {_os})
+		set {_is} to new ByteArrayInputStream({_os}.toByteArray())
+		if {_message} is set:
+			{_bindedChannel}.sendMessage({_message}).addFile({_is}, "image.%{_format}%").queue()
+		else:
+			{_bindedChannel}.sendFile({_is}, "image.%{_format}%").queue()
+		continue
