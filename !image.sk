@@ -775,7 +775,7 @@ effect draw [a] polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)
 			set variable (raw expression-9) to {_image} in event
 		continue
 
-effect draw [a] rectangle [(2¦outline [with width %-number%])] with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% [at [[left corner] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect draw [a] rectangle [(2¦outline [with width %-number%])] with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-10 is set:
 			if expression-10 isn't instance of Variable:
@@ -823,11 +823,11 @@ effect draw [a] rectangle [(2¦outline [with width %-number%])] with (0¦width %
 		if raw expression-10 is set:
 			set variable (raw expression-10) to {_image} in event
 		continue
-# draw [a] rounded rectangle [(5¦outline [with width %-number%])] with arc (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) with (2¦width %-number%[( and|,)] [with] height %-number%|3¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% [at [[left corner] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+
 effect:
 	patterns:
-		draw [a] rounded rectangle [(2¦outline [with width %-number%])] with arc (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) with [rectangle] width %-number%[( and|,)] [with] height %-number%[[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% [at [[left corner] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
-		draw [a] rounded rectangle [(2¦outline [with width %-number%])] with arc height %-number%[( and|,)] [with] width %-number% with [rectangle] (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% [at [[left corner] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		draw [a] rounded rectangle [(2¦outline [with width %-number%])] with arc (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) with [rectangle] width %-number%[( and|,)] [with] height %-number%[[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		draw [a] rounded rectangle [(2¦outline [with width %-number%])] with arc height %-number%[( and|,)] [with] width %-number% with [rectangle] (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
 	parse:
 		if expression-12 is set:
 			if expression-12 isn't instance of Variable:
