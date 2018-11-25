@@ -228,15 +228,15 @@ effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] he
 		continue
 	trigger:	
 		if expression-1 isn't instance of BufferedImage:
-			continue
+			stop
 		if parse mark is 0:
 			if expression-2 or expression-3 is not set:
-				continue
+				stop
 			set {_width} to rounded expression-2
 			set {_height} to rounded expression-3
 		else if parse mark is 1:
 			if expression-4 or expression-5 is not set:
-				continue
+				stop
 			set {_height} to rounded expression-4
 			set {_width} to rounded expression-5
 		delay the current effect
@@ -385,7 +385,7 @@ effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number
 		continue
 	trigger:
 		if expression-1 isn't instance of BufferedImage:
-			continue
+			stop
 		delay the current effect
 		if parse mark is 0:
 			set {_x1} to expression-2
@@ -411,9 +411,9 @@ effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at 
 		continue
 	trigger:
 		if expression-1 isn't instance of BufferedImage:
-			continue
+			stop
 		if expression-2 isn't instance of BufferedImage:
-			continue
+			stop
 		delay the current effect
 		if expression-3 is set:
 			set {_x} to expression-3
@@ -480,15 +480,15 @@ effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[m
 		else:
 			set {_image} to expression-1
 		if expression-3 or expression-4 is smaller than 0:
-			continue
+			stop
 		if expression-3 is greater than or equal to {_image}.getWidth():
-			continue
+			stop
 		if expression-4 is greater than or equal to {_image}.getHeight():
-			continue
+			stop
 		set {_target} to pixel expression-3, expression-4 of {_image} 
 		set {_replacement} to expression-2
 		if {_target} is {_replacement}:
-			continue
+			stop
 		if expression-5 is set:
 			set {_tolerance} to expression-5
 		else if expression-6 is set:
@@ -501,7 +501,7 @@ effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[m
 			set {_tolerance} to 0
 		set {_tolerance} to ({_tolerance} / 255) * 120
 		if (pixel expression-3, expression-4 of {_image}) isn't similar to {_target} with tolerance {_tolerance}:
-			continue
+			stop
 		delay the current effect
 		set {_queue} to new LinkedList()
 		{_queue}.add(new Point(expression-3 and expression-4))
@@ -533,7 +533,7 @@ effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)]
 		continue
 	trigger:
 		if expression-1 isn't instance of BufferedImage:
-			continue
+			stop
 		delay the current effect
 		if parse mark is 0 or 10:
 			set {_x1} to expression-4
@@ -576,7 +576,7 @@ effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] 
 		continue
 	trigger:
 		if expression-2 isn't instance of BufferedImage:
-			continue
+			stop
 		delay the current effect
 		if expression-8 is set:
 			set {_x} to expression-8
@@ -608,10 +608,10 @@ effect draw [a[n]] oval [(10¦outline [with width %-number%])] on [(image|img)] 
 		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
 		if parse mark is 10 or 11:
 			if expression-1 is set:
-				set {_owidth} to expression-1
+				set {_outlineWidth} to expression-1
 			else:
-				set {_owidth} to 1
-			{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 2))
+				set {_outlineWidth} to 1
+			{_g}.setStroke(new BasicStroke({_outlineWidth}, (BasicStroke.CAP_ROUND!) and 2))
 			{_g}.drawOval(({_x} - ({_width} / 2)), ({_y} - ({_height} / 2)), {_width} and {_height})
 		else:
 			{_g}.fillOval(({_x} - ({_width} / 2)), ({_y} - ({_height} / 2)), {_width} and {_height})
@@ -629,7 +629,7 @@ effect draw [a[n]] circle [(1¦outline [with width %-number%])] on [(image|img)]
 		continue
 	trigger:
 		if expression-2 isn't instance of BufferedImage:
-			continue
+			stop
 		delay the current effect
 		if expression-5 is set:
 			set {_x} to expression-5
@@ -651,10 +651,10 @@ effect draw [a[n]] circle [(1¦outline [with width %-number%])] on [(image|img)]
 		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
 		if parse mark is 1:
 			if expression-1 is set:
-				set {_owidth} to expression-1
+				set {_outlineWidth} to expression-1
 			else:
-				set {_owidth} to 1
-			{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 2))
+				set {_outlineWidth} to 1
+			{_g}.setStroke(new BasicStroke({_outlineWidth}, (BasicStroke.CAP_ROUND!) and 2))
 			{_g}.drawOval(({_x} - expression-3), ({_y} - expression-3), (expression-3 * 2) and (expression-3 * 2))
 		else:
 			{_g}.fillOval(({_x} - expression-3), ({_y} - expression-3), (expression-3 * 2) and (expression-3 * 2))
@@ -663,7 +663,7 @@ effect draw [a[n]] circle [(1¦outline [with width %-number%])] on [(image|img)]
 			set variable (raw expression-7) to {_image} in event
 		continue
 
-effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% ((between|at)|using) ((corners|vertices|vertexes|points)|[(corner|vertice|vertex|point)] locations) %numbers% [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect draw [a] polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% ((between|at)|using) ((corners|vertices|vertexes|points)|[(corner|vertice|vertex|point)] locations) %numbers% [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-5 is set:
 			if expression-5 isn't instance of Variable:
@@ -678,10 +678,10 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 		continue
 	trigger:
 		if expression-3 isn't instance of BufferedImage:
-			continue
+			stop
 		if (size of expressions-4) / 2 is smaller than 3:
 			error "A polygon must have 3 or more vertices! But entered %rounded down (size of expressions-4) / 2% vertice locations."
-			continue
+			stop
 		delay the current effect
 		if raw expression-5 is set:
 			set {_image} to copied image expression-3
@@ -701,24 +701,22 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 				delete {_coords::*}
 		if parse mark is 1 or 3:
 			if expression-1 is set:
-				set {_owidth} to expression-1
+				set {_outlineWidth} to expression-1
 			else:
-				set {_owidth} to 1
+				set {_outlineWidth} to 1
 			if parse mark is 1:
-				{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 1))
+				{_g}.setStroke(new BasicStroke({_outlineWidth}, (BasicStroke.CAP_ROUND!) and 1))
 			else:
-				{_g}.setStroke(new BasicStroke({_owidth}))
+				{_g}.setStroke(new BasicStroke({_outlineWidth}))
 			{_g}.drawPolygon({_polygon})
 		else:
 			{_g}.fillPolygon({_polygon})
 		{_g}.dispose()
-		if raw expression-5 is not set:
-			set variable (raw expression-3) to {_image} in event
-		else:
+		if raw expression-5 is set:
 			set variable (raw expression-5) to {_image} in event
 		continue
 
-effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% (with|using) %number% [of] (corners|vertices|vertexes|points) with radius %number%[( and|,) [with] angle %-number%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect draw [a] polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% (with|using) %number% [of] (corners|vertices|vertexes|points) with radius %number%[( and|,) [with] angle %-number%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-9 is set:
 			if expression-9 isn't instance of Variable:
@@ -727,7 +725,7 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 		continue
 	trigger:
 		if expression-3 isn't instance of BufferedImage:
-			continue
+			stop
 		delay the current effect
 		if raw expression-9 is set:
 			set {_image} to copied image expression-3
@@ -762,21 +760,132 @@ effect draw a polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s
 			add {_angleChange} to {_angle}
 		if parse mark is 1 or 3:
 			if expression-1 is set:
-				set {_owidth} to expression-1
+				set {_outlineWidth} to expression-1
 			else:
-				set {_owidth} to 1
+				set {_outlineWidth} to 1
 			if parse mark is 1:
-				{_g}.setStroke(new BasicStroke({_owidth}, (BasicStroke.CAP_ROUND!) and 1))
+				{_g}.setStroke(new BasicStroke({_outlineWidth}, (BasicStroke.CAP_ROUND!) and 1))
 			else:
-				{_g}.setStroke(new BasicStroke({_owidth}))
+				{_g}.setStroke(new BasicStroke({_outlineWidth}))
 			{_g}.drawPolygon({_polygon})
 		else:
 			{_g}.fillPolygon({_polygon})
 		{_g}.dispose()
-		if raw expression-9 is not set:
-			set variable (raw expression-3) to {_image} in event
-		else:
+		if raw expression-9 is set:
 			set variable (raw expression-9) to {_image} in event
+		continue
+
+effect draw [a] rectangle [(2¦outline [with width %-number%])] with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% [at [[left corner] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+	parse:
+		if expression-10 is set:
+			if expression-10 isn't instance of Variable:
+				parse error "'%expression-10%' is not a variable."
+				stop
+		continue
+	trigger:
+		if expression-7 isn't instance of BufferedImage:
+			stop
+		delay the current effect
+		if parse mark is 0 or 2:
+			set {_width} to rounded expression-2
+			set {_height} to rounded expression-3
+		else if parse mark is 1 or 3:
+			set {_height} to rounded expression-4
+			set {_width} to rounded expression-5
+		if expression-8 is set:
+			set {_x} to expression-8
+			set {_x} to {_x} - 1
+		else:
+			set {_x} to 0
+		if expression-9 is set:
+			set {_y} to expression-9
+			set {_y} to {_y} - 1
+		else:
+			set {_y} to 0
+		if raw expression-10 is set:
+			set {_image} to copied image expression-7
+		else:
+			set {_image} to expression-7
+		set {_g} to {_image}.createGraphics()
+		if java color expression-6 is instance of Color:
+			{_g}.setColor(java color expression-6)
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		if parse mark is 2 or 3:
+			if expression-1 is set:
+				set {_outlineWidth} to expression-1
+			else:
+				set {_outlineWidth} to 1
+			{_g}.setStroke(new BasicStroke({_outlineWidth}))
+			{_g}.drawRect({_x}, {_y}, {_width} and {_height})
+		else:
+			{_g}.fillRect({_x}, {_y}, {_width} and {_height})
+		{_g}.dispose()
+		if raw expression-10 is set:
+			set variable (raw expression-10) to {_image} in event
+		continue
+# draw [a] rounded rectangle [(5¦outline [with width %-number%])] with arc (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) with (2¦width %-number%[( and|,)] [with] height %-number%|3¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% [at [[left corner] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+effect:
+	patterns:
+		draw [a] rounded rectangle [(2¦outline [with width %-number%])] with arc (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) with [rectangle] width %-number%[( and|,)] [with] height %-number%[[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% [at [[left corner] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		draw [a] rounded rectangle [(2¦outline [with width %-number%])] with arc height %-number%[( and|,)] [with] width %-number% with [rectangle] (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] with [colo[u]r] %-object%] on [(image|img)] %object% [at [[left corner] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+	parse:
+		if expression-12 is set:
+			if expression-12 isn't instance of Variable:
+				parse error "'%expression-12%' is not a variable."
+				stop
+		continue
+	trigger:
+		if expression-9 isn't instance of BufferedImage:
+			stop
+		delay the current effect
+		if matched pattern is 1:
+			if parse mark is 0 or 2:
+				set {_arcWidth} to rounded expression-2
+				set {_arcHeight} to rounded expression-3
+			else if parse mark is 1 or 3:
+				set {_arcHeight} to rounded expression-4
+				set {_arcWidth} to rounded expression-5
+			set {_width} to rounded expression-6
+			set {_height} to rounded expression-7
+		else:
+			set {_arcWidth} to rounded expression-2
+			set {_arcHeight} to rounded expression-3
+			if parse mark is 0 or 2:
+				set {_width} to rounded expression-6
+				set {_height} to rounded expression-7
+			else if parse mark is 3:
+				set {_height} to rounded expression-8
+				set {_width} to rounded expression-9
+		if expression-10 is set:
+			set {_x} to expression-10
+			set {_x} to {_x} - 1
+		else:
+			set {_x} to 0
+		if expression-11 is set:
+			set {_y} to expression-11
+			set {_y} to {_y} - 1
+		else:
+			set {_y} to 0
+		if raw expression-12 is set:
+			set {_image} to copied image expression-9
+		else:
+			set {_image} to expression-9
+		set {_g} to {_image}.createGraphics()
+		if java color expression-8 is instance of Color:
+			{_g}.setColor(java color expression-8)
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		if parse mark is 2 or 3:
+			if expression-1 is set:
+				set {_outlineWidth} to expression-1
+			else:
+				set {_outlineWidth} to 1
+			{_g}.setStroke(new BasicStroke({_outlineWidth}))
+			{_g}.drawRoundRect({_x}, {_y}, {_width}, {_height}, {_arcWidth} and {_arcHeight})
+		else:
+			{_g}.fillRoundRect({_x}, {_y}, {_width}, {_height}, {_arcWidth} and {_arcHeight})
+		{_g}.dispose()
+		if raw expression-12 is set:
+			set variable (raw expression-12) to {_image} in event
 		continue
 
 effect (create|generate) [a[n]] [new] [(image|img)] (text|string) [(with (id|name)|named)] %string% [[and] with text %-string%]:
@@ -972,9 +1081,9 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 		continue
 	trigger:
 		if expression-2 isn't instance of BufferedImage:
-			continue
+			stop
 		if {{@variable}::texts::%expression-1%} is not set:
-			continue
+			stop
 		delay the current effect
 		if raw expression-5 is set:
 			set {_image} to copied image expression-2
@@ -1047,20 +1156,19 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 
 effect (save|write) [(image|img)] %object% to [file] %string%:
 	trigger:
+		if expression-1 isn't instance of BufferedImage:
+			stop
 		delay the current effect
-		if expression-1 is set:
-			if expression-1 isn't instance of BufferedImage:
-				continue
-			set {_path} to expression-2
-			replace all "/" and "\" with JavaFile.separator! in {_path}
-			set {_file} to new JavaFile({_path})
-			{_file}.mkdirs()
-			set {_fileName} to last element of split {_path} at JavaFile.separator!
-			if {_fileName} contains ".":
-				set {_extension} to last element of split {_fileName} at "."
-			else:
-				set {_extension} to "png"
-			ImageIO.write(expression-1, {_extension} and {_file})
+		set {_path} to expression-2
+		replace all "/" and "\" with JavaFile.separator! in {_path}
+		set {_file} to new JavaFile({_path})
+		{_file}.mkdirs()
+		set {_fileName} to last element of split {_path} at JavaFile.separator!
+		if {_fileName} contains ".":
+			set {_extension} to last element of split {_fileName} at "."
+		else:
+			set {_extension} to "png"
+		ImageIO.write(expression-1, {_extension} and {_file})
 		continue
 
 effect (register|install|load) [new] font [family] [(from|of|at))] [file] %string%:
