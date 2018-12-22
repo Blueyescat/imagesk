@@ -119,7 +119,7 @@ expression:
 			add new BufferedImage((loop-value.getColorModel()), (loop-value.copyData(null)), (loop-value.isAlphaPremultiplied()) and null) to {_result::*}
 		return {_result::*}
 
-effect create [a[n]] [new] image with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] [with] b[ack]g[round] [colo[u]r] %-object%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect create [a[n]] [new] image with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] [with] b[ack]g[round] %-object%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-6 is set:
 			if expression-6 isn't instance of Variable:
