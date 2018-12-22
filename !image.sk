@@ -1229,7 +1229,7 @@ effect (save|write) [(image|img)] %object% to [file] %string%:
 		ImageIO.write(expression-1, {_extension} and {_file})
 		continue
 
-effect (register|install|load) [new] font [family] [(from|of|at))] [file] %string%:
+effect (register|install|load) [(the|new)] font [family] [(from|of|at))] [[the] file] %string%:
 	trigger:
 		delay the current effect
 		if expression-1 is set:
