@@ -39,6 +39,12 @@ on load:
 	set {{@variable}::Logger} to Bukkit.getServer().getLogger()
 	set {{@variable}::Decoder} to Base64.getDecoder()
 	set {{@variable}::Encoder} to Base64.getEncoder()
+	
+	# Workaround for skript-mirror limitation
+	delete {{@variable}::useFloatColorMethod}
+	set {_color} to try new Color(255, 255, 255)
+	if "%last java error%" contains "Color parameter outside of expected range":
+		set {{@variable}::useFloatColorMethod} to true
 
 on unload:
 	delete {{@variable}::*}
@@ -79,15 +85,23 @@ expression [(image|img)] colo[u]r (0¦%-color%|1¦[from] [hex] %-string%|2¦[fro
 			set {_opacity} to expression-6
 		else if expression-7 is set:
 			set {_opacity} to expression-7
-		set {_r} to (1 / 255) * {_r}
-		set {_g} to (1 / 255) * {_g}
-		set {_b} to (1 / 255) * {_b}
+		if {{@variable}::useFloatColorMethod} is true:
+			set {_r} to (1 / 255) * {_r}
+			set {_g} to (1 / 255) * {_g}
+			set {_b} to (1 / 255) * {_b}
 		if {_opacity} is set:
-			set {_opacity} to (1 / 100) * {_opacity}
-			if {_opacity} is greater than 1:
-				set {_opacity} to 1
-			else if {_opacity} is smaller than 0:
-				set {_opacity} to 0
+			if {{@variable}::useFloatColorMethod} is true:
+				set {_opacity} to (1 / 100) * {_opacity}
+				if {_opacity} is greater than 1:
+					set {_opacity} to 1
+				else if {_opacity} is smaller than 0:
+					set {_opacity} to 0
+			else:
+				set {_opacity} to (255 / 100) * {_opacity}
+				if {_opacity} is greater than 255:
+					set {_opacity} to 255
+				else if {_opacity} is smaller than 0:
+					set {_opacity} to 0
 			set {_color} to new Color({_r}, {_g}, {_b} and {_opacity})
 		else:
 			set {_color} to new Color({_r}, {_g} and {_b})
