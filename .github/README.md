@@ -1,12 +1,16 @@
 # image.sk
-A script that registers custom syntaxes for image processing in Skript.
+A script folder that registers custom syntaxes for image processing in Skript.
 
-Requires [skript-mirror](https://github.com/btk5h/skript-mirror) and [Skript](https://github.com/bensku/Skript) v2.2+.
+Requires *latest* [skript-mirror](https://github.com/btk5h/skript-mirror) and [Skript](https://github.com/bensku/Skript) v2.2+.
 
 Please always use the latest version of skript-mirror and image.sk. If you see any error, try to update them. If that doesn't solve the error then contact with me.
 
-### [!imageVixio.sk](https://github.com/Blueyescat/image.sk/blob/master/!imageVixio.sk)
-It is an addition file for image.sk, which adds Discord related stuff using the [Vixio](https://github.com/iBlitzkriegi/Vixio) (v2.0+) addon.
+## Installing
+1. Go to [the releases page](https://github.com/Blueyescat/image.sk/releases/tag/v0.5.0)
+1. If you want [Vixio](https://github.com/iBlitzkriegi/Vixio) support, download the `image.sk-Vixio-Support.zip` file. Otherwise, download the `image.sk.zip` file
+1. Unzip/open the zip, copy the `image.sk` **folder** inside and paste it into your `Skript/scripts/` folder
+
+**Vixio Support:** Adds some special codes such as uploading an image to Discord depending on the [Vixio](https://github.com/iBlitzkriegi/Vixio) addon.
 
 ### Relevant Links
 - [Documentation](https://github.com/Blueyescat/image.sk/wiki/Documentation)
