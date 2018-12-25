@@ -1,0 +1,12 @@
+options:
+	# If changing this is really important for you, you need to change it in all image.sk files.
+	variable: imagesk # {imagesk::xxx}
+
+expression [the] (image|img) (text|string) [((with|from) (id|name)|named)] %string%:
+	return type: string
+	get:
+		if {{@variable}::texts::%expression-1%} is set:
+			return "imgtext:%expression-1%"
+		return
+	delete:
+		delete {{@variable}::texts::%expression-1%} and {{@variable}::texts::%expression-1%::*}

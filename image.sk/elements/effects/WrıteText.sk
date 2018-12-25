@@ -1,0 +1,96 @@
+options:
+	# If changing this is really important for you, you need to change it in all image.sk files.
+	variable: imagesk # {imagesk::xxx}
+
+import:
+	java.awt.Color
+	java.awt.Font
+	java.awt.BasicStroke
+	java.awt.RenderingHints
+	java.awt.font.TextAttribute
+	java.awt.image.BufferedImage
+	java.text.AttributedString
+	
+	ch.njol.skript.lang.Variable
+
+effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %string% (on|to) [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+	parse:
+		if expression-5 is set:
+			if expression-5 isn't instance of Variable:
+				imagesk parse error "'%expression-5%' is not a variable."
+				stop
+		continue
+	trigger:
+		if expression-2 isn't instance of BufferedImage:
+			stop
+		if {{@variable}::texts::%expression-1%} is not set:
+			stop
+		delay the current effect
+		if raw expression-5 is set:
+			set {_image} to imagesk_copiedImage(expression-2)
+		else:
+			set {_image} to expression-2
+		set {_g} to {_image}.createGraphics()
+		set {_font} to {{@variable}::texts::%expression-1%::font}
+		set {_size} to {{@variable}::texts::%expression-1%::size}
+		if {_size} is smaller than 1:
+			set {_size} to 1
+		set {_text} to {{@variable}::texts::%expression-1%::text}
+		set {_style} to 0
+		if {{@variable}::texts::%expression-1%::bold} is set:
+			add Font.BOLD! to {_style}
+		if {{@variable}::texts::%expression-1%::italic} is set:
+			add Font.ITALIC! to {_style}
+		set {_font} to new Font({_font}, {_style} and {_size})
+		{_g}.setFont({_font})
+		if expression-3 is set:
+			set {_x} to expression-3
+			set {_x} to {_x} - 1
+		else:
+			set {_x} to 0
+		if expression-4 is set:
+			set {_y} to expression-4
+			add {_g}.getFontMetrics({_font}).getAscent() - 1 to {_y}
+		else:
+			set {_y} to {_g}.getFontMetrics({_font}).getAscent() - 1
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		if {{@variable}::texts::%expression-1%::outline}, {{@variable}::texts::%expression-1%::onlyOutline}, {{@variable}::texts::%expression-1%::outlineColor} or {{@variable}::texts::%expression-1%::outlineWidth} is set:
+			loop ...{_text}.split("\n|\\n"):
+				set {_w} to loop-value
+				if {{@variable}::texts::%expression-1%::underline}, {{@variable}::texts::%expression-1%::strikethrough} or {{@variable}::texts::%expression-1%::background} is set:
+					imagesk warning "Using underline, strikethrough and background color with outline in the same time isn't supported currently. These properties won't work."
+				set {_frc} to {_g}.getFontRenderContext()
+				set {_gv} to {_font}.createGlyphVector({_frc} and {_w})
+				if {{@variable}::texts::%expression-1%::outlineWidth} is set:
+					{_g}.setStroke(new BasicStroke({{@variable}::texts::%expression-1%::outlineWidth}, (BasicStroke.CAP_ROUND!) and 1))
+				if {{@variable}::texts::%expression-1%::onlyOutline} is not set:
+					if {{@variable}::texts::%expression-1%::foreground} is set:
+						{_g}.setColor({{@variable}::texts::%expression-1%::foreground})
+					{_g}.fill({_gv}.getOutline({_x} and {_y}))
+				if {{@variable}::texts::%expression-1%::outlineColor} is set:
+					{_g}.setColor({{@variable}::texts::%expression-1%::outlineColor})
+				else:
+					{_g}.setColor(Color.BLACK!)
+				{_g}.draw({_gv}.getOutline({_x} and {_y}))
+				add {_g}.getFontMetrics({_font}).getHeight() to {_y}
+		else:
+			loop ...{_text}.split("\n|\\n"):
+				set {_w} to loop-value
+				if {{@variable}::texts::%expression-1%::underline}, {{@variable}::texts::%expression-1%::strikethrough}, {{@variable}::texts::%expression-1%::foreground} or {{@variable}::texts::%expression-1%::background} is set:
+					set {_aString} to new AttributedString({_w})
+					if {{@variable}::texts::%expression-1%::underline} is set:
+						{_aString}.addAttribute((TextAttribute.UNDERLINE!) and (TextAttribute.UNDERLINE_ON!))
+					if {{@variable}::texts::%expression-1%::strikethrough} is set:
+						{_aString}.addAttribute((TextAttribute.STRIKETHROUGH!) and (TextAttribute.STRIKETHROUGH_ON!))
+					if {{@variable}::texts::%expression-1%::foreground} is set:
+						{_aString}.addAttribute((TextAttribute.FOREGROUND!) and {{@variable}::texts::%expression-1%::foreground})
+					if {{@variable}::texts::%expression-1%::background} is set:
+						{_aString}.addAttribute((TextAttribute.BACKGROUND!) and {{@variable}::texts::%expression-1%::background})
+					{_aString}.addAttribute((TextAttribute.FONT!) and {_font})
+					set {_w} to {_aString}.getIterator()
+				{_g}.drawString({_w}, {_x} and {_y})
+				add {_g}.getFontMetrics({_font}).getHeight() - 2 to {_y}
+		{_g}.dispose()
+		if raw expression-5 is set:
+			imagesk set variable (raw expression-5) to {_image} in event
+		continue

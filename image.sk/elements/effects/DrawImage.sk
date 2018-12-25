@@ -1,0 +1,36 @@
+import:
+	java.awt.image.BufferedImage
+	
+	ch.njol.skript.lang.Variable
+
+effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+	parse:
+		if expression-5 is set:
+			if expression-5 isn't instance of Variable:
+				imagesk parse error "'%expression-5%' is not a variable."
+				stop
+		continue
+	trigger:
+		if expression-1 or expression-2 isn't instance of BufferedImage:
+			stop
+		if expression-3 is set:
+			set {_x} to expression-3
+			set {_x} to {_x} - 1
+		else:
+			set {_x} to 0
+		if expression-4 is set:
+			set {_y} to expression-4
+			set {_y} to {_y} - 1
+		else:
+			set {_y} to 0
+		if raw expression-5 is set:
+			set {_image} to imagesk_copiedImage(expression-2)
+		else:
+			set {_image} to expression-2
+		delay the current effect
+		set {_g} to {_image}.createGraphics()
+		{_g}.drawImage(expression-1, {_x}, {_y} and null)
+		{_g}.dispose()
+		if raw expression-5 is set:
+			imagesk set variable (raw expression-5) to {_image} in event
+		continue

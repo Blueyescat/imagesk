@@ -1,0 +1,51 @@
+import:
+	java.awt.BasicStroke
+	java.awt.Color
+	java.awt.RenderingHints
+	java.awt.geom.Line2D$Float as Line2DFloat
+	java.awt.image.BufferedImage
+	
+	ch.njol.skript.lang.Variable
+
+effect draw [a] line [(10¦with ((flat|square) (cap|edge[s])))] on [(image|img)] %object% [with width %-number%][[( and|,)] [with] %-object%] (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+	parse:
+		if expression-12 is set:
+			if expression-12 isn't instance of Variable:
+				imagesk parse error "'%expression-12%' is not a variable."
+				stop
+		continue
+	trigger:
+		if expression-1 isn't instance of BufferedImage:
+			stop
+		delay the current effect
+		if parse mark is 0 or 10:
+			set {_x1} to expression-4
+			set {_y1} to expression-5
+			set {_x2} to expression-6
+			set {_y2} to expression-7
+		else if parse mark is 1 or 11:
+			set {_x1} to expression-8
+			set {_y1} to expression-9
+			set {_x2} to expression-10
+			set {_y2} to expression-11
+		if raw expression-12 is set:
+			set {_image} to imagesk_copiedImage(expression-1)
+		else:
+			set {_image} to expression-1
+		set {_g} to {_image}.createGraphics()
+		if expression-2 is set:
+			set {_width} to expression-2
+		else:
+			set {_width} to 1
+		if parse mark is 10 or 11:
+			{_g}.setStroke(new BasicStroke({_width}))
+		else:
+			{_g}.setStroke(new BasicStroke({_width}, (BasicStroke.CAP_ROUND!) and 2))
+		if imagesk java color expression-3 is instance of Color:
+			{_g}.setColor(imagesk java color expression-3)
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		{_g}.draw(new Line2DFloat({_x1}, {_y1}, {_x2} and {_y2}))
+		{_g}.dispose()
+		if raw expression-12 is set:
+			imagesk set variable (raw expression-12) to {_image} in event
+		continue

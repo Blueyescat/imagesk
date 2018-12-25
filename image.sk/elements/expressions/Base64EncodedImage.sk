@@ -1,0 +1,24 @@
+options:
+	# If changing this is really important for you, you need to change it in all image.sk files.
+	variable: imagesk # {imagesk::xxx}
+
+import:
+	java.awt.image.BufferedImage
+	java.io.ByteArrayOutputStream
+	javax.imageio.ImageIO
+
+expression base[ ]64 encoded [(image|img)] %object% [with ([(format|file)] type|[file] format) %-string%]:
+	return type: string
+	get:
+		if expression-1 isn't instance of BufferedImage:
+			return
+		if expression-2 is not set:
+			set {_type} to "png"
+		else:
+			set {_type} to expression-2
+		
+		set {_bos} to new ByteArrayOutputStream()
+		ImageIO.write(expression-1, {_type}, {_bos})
+		set {_base64} to {{@variable}::Encoder}.encodeToString({_bos}.toByteArray())
+		{_bos}.close()
+		return {_base64}

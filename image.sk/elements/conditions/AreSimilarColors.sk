@@ -1,0 +1,33 @@
+import:
+	java.awt.Color
+
+object property condition similar to %object% [with (tolerance %-number% [percent]|%-number% [percent] tolerance)]:
+	check:
+		if (imagesk java color expression-1) or (imagesk java color expression-2) isn't instance of Color:
+			stop
+		if expression-3 is set:
+			set {_tolerance} to expression-3
+		else if expression-4 is set:
+			set {_tolerance} to expression-4
+		else:
+			set {_tolerance} to 0
+		if {_tolerance} is greater than 100:
+			set {_tolerance} to 100
+		else if {_tolerance} is smaller than 0:
+			set {_tolerance} to 0
+		set {_tolerance} to (255 / 100) * {_tolerance}
+		set {_color1} to imagesk java color expression-1
+		set {_color2} to imagesk java color expression-2
+		set {_r1} to {_color1}.getRed()
+		set {_g1} to {_color1}.getGreen()
+		set {_b1} to {_color1}.getBlue()
+		set {_minR} to max({_r1} - {_tolerance} and 0)
+		set {_minG} to max({_g1} - {_tolerance} and 0)
+		set {_minB} to max({_b1} - {_tolerance} and 0)
+		set {_maxR} to min({_r1} + {_tolerance} and 255)
+		set {_maxG} to min({_g1} + {_tolerance} and 255)
+		set {_maxB} to min({_b1} + {_tolerance} and 255)
+		if {_color2}.getRed() is between {_minR} and {_maxR}:
+			if {_color2}.getGreen() is between {_minG} and {_maxG}:
+				if {_color2}.getBlue() is between {_minB} and {_maxB}:
+					continue

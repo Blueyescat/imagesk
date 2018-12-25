@@ -1,0 +1,30 @@
+import:
+	java.awt.image.BufferedImage
+	
+	ch.njol.skript.lang.Variable
+
+effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%:
+	parse:
+		if expression-10 is set:
+			if expression-10 isn't instance of Variable:
+				imagesk parse error "'%expression-10%' is not a variable."
+				stop
+		continue
+	trigger:
+		if expression-1 isn't instance of BufferedImage:
+			stop
+		delay the current effect
+		if parse mark is 0:
+			set {_x1} to expression-2
+			set {_y1} to expression-3
+			set {_x2} to expression-4
+			set {_y2} to expression-5
+		else if parse mark is 1:
+			set {_x1} to expression-6
+			set {_y1} to expression-7
+			set {_x2} to expression-8
+			set {_y2} to expression-9
+		set {_width} to difference between {_x1} and {_x2}
+		set {_height} to difference between {_y1} and {_y2}
+		imagesk set variable raw expression-10 to expression-1.getSubimage(({_x1} - 1), ({_y1} - 1), ({_width} - 1) and ({_height} - 1)) in event
+		continue

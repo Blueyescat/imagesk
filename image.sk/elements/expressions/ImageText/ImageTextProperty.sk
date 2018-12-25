@@ -1,0 +1,152 @@
+options:
+	# If changing this is really important for you, you need to change it in all image.sk files.
+	variable: imagesk # {imagesk::xxx}
+
+import:
+	java.awt.Color
+	java.awt.Font
+
+expression (0¦(text|string)|1¦font[[( |-)]family]) of [[(image|img)] (text|string)] %string%:
+	return type: string
+	get:
+		if parse mark is 0:
+			return {{@variable}::texts::%expression-1%::text}
+		else if parse mark is 1:
+			return {{@variable}::texts::%expression-1%::font}
+	set string:
+		if {{@variable}::texts::%expression-1%} is set:
+			if parse mark is 0:
+				set {{@variable}::texts::%expression-1%::text} to change value
+			else if parse mark is 1:
+				set {{@variable}::texts::%expression-1%::font} to change value
+	reset:
+		if parse mark is 0:
+			set {{@variable}::texts::%expression-1%::text} to "Sample Text"
+		else if parse mark is 1:
+			set {{@variable}::texts::%expression-1%::font} to Font.DIALOG!
+
+expression (0¦bold|1¦italic|2¦underline[d]|3¦strikethrough|4¦outline[d]|5¦(only|just) outline) [state] of [[(image|img)] (text|string)] %string%:
+	return type: boolean
+	get:
+		if parse mark is 0:
+			return {{@variable}::texts::%expression-1%::bold}
+		else if parse mark is 1:
+			return {{@variable}::texts::%expression-1%::italic}
+		else if parse mark is 2:
+			return {{@variable}::texts::%expression-1%::underline}
+		else if parse mark is 3:
+			return {{@variable}::texts::%expression-1%::strikethrough}
+		else if parse mark is 4:
+			return {{@variable}::texts::%expression-1%::outline}
+		else if parse mark is 5:
+			return {{@variable}::texts::%expression-1%::onlyOutline}
+	set boolean:
+		if {{@variable}::texts::%expression-1%} is set:
+			if parse mark is 0:
+				if change value is true:
+					set {{@variable}::texts::%expression-1%::bold} to true
+				else:
+					delete {{@variable}::texts::%expression-1%::bold}
+			else if parse mark is 1:
+				if change value is true:
+					set {{@variable}::texts::%expression-1%::italic} to true
+				else:
+					delete {{@variable}::texts::%expression-1%::italic}
+			else if parse mark is 2:
+				if change value is true:
+					set {{@variable}::texts::%expression-1%::underline} to true
+				else:
+					delete {{@variable}::texts::%expression-1%::underline}
+			else if parse mark is 3:
+				if change value is true:
+					set {{@variable}::texts::%expression-1%::strikethrough} to true
+				else:
+					delete {{@variable}::texts::%expression-1%::strikethrough}
+			else if parse mark is 4:
+				if change value is true:
+					set {{@variable}::texts::%expression-1%::outline} to true
+				else:
+					delete {{@variable}::texts::%expression-1%::outline}
+			else if parse mark is 5:
+				if change value is true:
+					set {{@variable}::texts::%expression-1%::onlyOutline} to true
+				else:
+					delete {{@variable}::texts::%expression-1%::onlyOutline}
+	reset:
+		if parse mark is 0:
+			delete {{@variable}::texts::%expression-1%::bold}
+		else if parse mark is 1:
+			delete {{@variable}::texts::%expression-1%::italic}
+		else if parse mark is 2:
+			delete {{@variable}::texts::%expression-1%::underline}
+		else if parse mark is 3:
+			delete {{@variable}::texts::%expression-1%::strikethrough}
+		else if parse mark is 4:
+			delete {{@variable}::texts::%expression-1%::outline}
+		else if parse mark is 5:
+			delete {{@variable}::texts::%expression-1%::onlyOutline}
+
+expression size of [[(image|img)] (text|string)] %string%:
+	return type: number
+	get:
+		return {{@variable}::texts::%expression-1%::size}
+	set number:
+		set {{@variable}::texts::%expression-1%::size} to change value
+	add number:
+		add change value to {{@variable}::texts::%expression-1%::size}
+	remove number:
+		remove change value from {{@variable}::texts::%expression-1%::size}
+	reset:
+		set {{@variable}::texts::%expression-1%::size} to 12
+
+expression outline (width|size) of [[(image|img)] (text|string)] %string%:
+	return type: number
+	get:
+		if {{@variable}::texts::%expression-1%::outlineWidth} is set:
+			return {{@variable}::texts::%expression-1%::outlineWidth}
+		else:
+			return 1
+	set number:
+		set {{@variable}::texts::%expression-1%::outlineWidth} to change value
+	add number:
+		add change value to {{@variable}::texts::%expression-1%::outlineWidth}
+	remove number:
+		remove change value from {{@variable}::texts::%expression-1%::outlineWidth}
+	reset:
+		delete {{@variable}::texts::%expression-1%::outlineWidth}
+	delete:
+		delete {{@variable}::texts::%expression-1%::outlineWidth}
+
+expression (0¦[foreground]|1¦background|2¦outline) colo[u]r of [[(image|img)] (text|string)] %string%:
+	get:
+		if parse mark is 0:
+			return {{@variable}::texts::%expression-1%::foreground}
+		else if parse mark is 1:
+			return {{@variable}::texts::%expression-1%::background}
+		else if parse mark is 2:
+			if {{@variable}::texts::%expression-1%::outlineColor} is set:
+				return {{@variable}::texts::%expression-1%::outlineColor}
+			else:
+				return Color.BLACK!
+	set:
+		if imagesk java color change value is instance of Color:
+			if parse mark is 0:
+				set {{@variable}::texts::%expression-1%::foreground} to imagesk java color change value
+			else if parse mark is 1:
+				set {{@variable}::texts::%expression-1%::background} to imagesk java color change value
+			else if parse mark is 2:
+				set {{@variable}::texts::%expression-1%::outlineColor} to imagesk java color change value
+	reset:
+		if parse mark is 0:
+			delete {{@variable}::texts::%expression-1%::foreground}
+		else if parse mark is 1:
+			delete {{@variable}::texts::%expression-1%::background}
+		else if parse mark is 2:
+			delete {{@variable}::texts::%expression-1%::outlineColor}
+	delete:
+		if parse mark is 0:
+			delete {{@variable}::texts::%expression-1%::foreground}
+		else if parse mark is 1:
+			delete {{@variable}::texts::%expression-1%::background}
+		else if parse mark is 2:
+			delete {{@variable}::texts::%expression-1%::outlineColor}

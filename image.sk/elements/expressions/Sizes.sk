@@ -1,0 +1,50 @@
+options:
+	# If changing this is really important for you, you need to change it in all image.sk files.
+	variable: imagesk # {imagesk::xxx}
+
+import:
+	java.awt.Font
+	java.awt.image.BufferedImage
+	java.lang.String
+
+expression:
+	patterns:
+		[the] (0¦width|1¦height|2¦ascent|3¦descent) of [(image|img)] [(text|string)] %object%
+		[the] [(image|img)] [(text|string)] (0¦width|1¦height|2¦ascent|3¦descent) of %object%
+		[(image|img)] [(text|string)] %object%'s (0¦width|1¦height|2¦ascent|3¦descent)
+		%object%'s [(image|img)] [(text|string)] (0¦width|1¦height|2¦ascent|3¦descent)
+	return type: number
+	parse:
+		if expression-1 is instance of BufferedImage:
+			if parse mark is 2 or 3:
+				stop
+		continue
+	get:
+		if expression-1 is instance of BufferedImage:
+			if parse mark is 0:
+				return expression-1.getWidth()
+			else if parse mark is 1:
+				return expression-1.getHeight()
+		else if expression-1 is instance of String:
+			set {_name} to expression-1
+			if first 8 characters of {_name} is "imgtext:":
+				set {_name} to subtext of {_name} from character 9 to length of {_name}
+			if {{@variable}::texts::%{_name}%} is not set:
+				return
+			set {_style} to 0
+			if {{@variable}::texts::%{_name}%::bold} is set:
+				add Font.BOLD! to {_style}
+			if {{@variable}::texts::%{_name}%::italic} is set:
+				add Font.ITALIC! to {_style}
+			set {_font} to new Font({{@variable}::texts::%{_name}%::font}, {_style} and {{@variable}::texts::%{_name}%::size})
+			set {_g} to new BufferedImage(1, 1 and BufferedImage.TYPE_INT_RGB!).getGraphics()
+			set {_fm} to {_g}.getFontMetrics({_font})
+			if parse mark is 0:
+				return {_fm}.stringWidth({{@variable}::texts::%{_name}%::text})
+			else if parse mark is 1:
+				return {_fm}.getHeight()
+			else if parse mark is 2:
+				return {_fm}.getAscent()
+			else:
+				return {_fm}.getDescent()
+			{_g}.dispose()

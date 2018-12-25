@@ -1,0 +1,55 @@
+options:
+	# If changing this is really important for you, you need to change it in all image.sk files.
+	variable: imagesk # {imagesk::xxx}
+
+import:
+	java.awt.Image
+	java.awt.image.BufferedImage
+	java.io.ByteArrayInputStream
+	java.io.File as JavaFile
+	java.net.URL
+	javax.imageio.ImageIO
+	
+	ch.njol.skript.lang.Variable
+
+effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦base[ ]64 %-string%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+	parse:
+		if expression-4 is set:
+			if expression-4 isn't instance of Variable:
+				imagesk parse error "'%expression-4%' is not a variable."
+				stop
+		continue
+	trigger:
+		delay the current effect
+		if parse mark is 0:
+			if expression-1 is set:
+				set {_connection} to new URL(expression-1).openConnection()
+				{_connection}.setRequestProperty("User-Agent" and "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36 OPR/55.0.2994.61")
+				set {_image} to ImageIO.read({_connection}.getInputStream())
+		else if parse mark is 1:
+			if expression-2 is set:
+				set {_path} to expression-2
+				replace all "/" and "\" with JavaFile.separator! in {_path}
+				set {_file} to new JavaFile({_path})
+				if {_file}.exists() is false:
+					if expression-2 is set:
+						imagesk error "'%expression-2%' is not a valid file path."
+					continue
+				set {_image} to ImageIO.read({_file})
+		else if parse mark is 2:
+			if expression-3 is set:
+				set {_bytes} to {{@variable}::Decoder}.decode(last element of (expression-3 split at ","))
+				set {_bis} to new ByteArrayInputStream({_bytes})
+				set {_image} to ImageIO.read({_bis})
+				{_bis}.close()
+		if {_image}.getType() is not 2:
+			set {_newImage} to new BufferedImage(({_image}.getWidth()), ({_image}.getHeight()) and BufferedImage.TYPE_INT_ARGB!)
+			set {_g} to {_newImage}.createGraphics()
+			{_g}.drawImage({_image}, 0, 0, ({_image}.getWidth()), ({_image}.getHeight()) and null)
+			{_g}.dispose()
+			set {_image} to {_newImage}
+		if raw expression-4 is set:
+			imagesk set variable (raw expression-4) to {_image} in event
+		else:
+			set {{@variable}::lastImage} to {_image}
+		continue

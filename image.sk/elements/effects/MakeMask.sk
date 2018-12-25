@@ -1,0 +1,43 @@
+import:
+	java.awt.AlphaComposite
+	java.awt.BasicStroke
+	java.awt.RenderingHints
+	java.awt.image.BufferedImage
+	
+	ch.njol.skript.lang.Variable
+
+effect:
+	patterns:
+		make mask on [(image|img)] %object% using [(image|img)] %object% [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		mask [(image|img)] %object% by [(image|img)] %object% [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		make [(image|img)] %object% masked by [(image|img)] %object% [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+	parse:
+		if expression-3 is set:
+			if expression-3 isn't instance of Variable:
+				imagesk parse error "'%expression-3%' is not a variable."
+				stop
+		continue
+	trigger:
+		if expression-1 or expression-2 isn't instance of BufferedImage:
+			stop
+		if raw expression-3 is set:
+			set {_image} to imagesk_copiedImage(expression-1)
+		else:
+			set {_image} to expression-1
+		set {_mask} to expression-2
+		if {_image}.getWidth() is not {_mask}.getWidth():
+			stop
+		if {_image}.getHeight() is not {_mask}.getHeight():
+			stop
+		delay the current effect
+		set {_g} to {_mask}.createGraphics()
+		{_g}.setComposite(AlphaComposite.Src!)
+		{_g}.setRenderingHint(RenderingHints.KEY_ANTIALIASING!, RenderingHints.VALUE_ANTIALIAS_ON!)
+		{_g}.setComposite(AlphaComposite.SrcAtop!)
+		{_g}.drawImage({_image}, 0, 0, null)
+		{_g}.dispose()
+		if raw expression-3 is set:
+			imagesk set variable (raw expression-3) to {_mask} in event
+		else:
+			{_image}.setData({_mask}.getData())
+		continue

@@ -1,0 +1,18 @@
+options:
+	# If changing this is really important for you, you need to change it in all image.sk files.
+	variable: imagesk # {imagesk::xxx}
+
+import:
+	java.awt.Color
+	java.awt.Font
+
+effect (create|generate) [a[n]] [new] [(image|img)] (text|string) [(with (id|name)|named)] %string% [[and] with text %-string%]:
+	trigger:
+		if {{@variable}::texts::%expression-1%} is set:
+			delete {{@variable}::texts::%expression-1%::*}
+		set {{@variable}::texts::%expression-1%} to true
+		if expression-2 is set:
+			set {{@variable}::texts::%expression-1%::text} to expression-2
+		set {{@variable}::texts::%expression-1%::font} to Font.DIALOG!
+		set {{@variable}::texts::%expression-1%::size} to 12
+		set {{@variable}::texts::%expression-1%::foreground} to Color.WHITE!

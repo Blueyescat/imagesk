@@ -1,0 +1,71 @@
+import:
+	java.awt.BasicStroke
+	java.awt.Color
+	java.awt.RenderingHints
+	java.awt.image.BufferedImage
+	
+	ch.njol.skript.lang.Variable
+
+effect:
+	patterns:
+		draw [a] rounded rectangle [(2¦outline [with width %-number%])] with arc (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) with [rectangle] width %-number%[( and|,)] [with] height %-number%[[( and|,)] with %-object%] on [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		draw [a] rounded rectangle [(2¦outline [with width %-number%])] with arc height %-number%[( and|,)] [with] width %-number% with [rectangle] (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] with %-object%] on [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+	parse:
+		if expression-12 is set:
+			if expression-12 isn't instance of Variable:
+				imagesk parse error "'%expression-12%' is not a variable."
+				stop
+		continue
+	trigger:
+		if expression-9 isn't instance of BufferedImage:
+			stop
+		delay the current effect
+		if matched pattern is 1:
+			if parse mark is 0 or 2:
+				set {_arcWidth} to rounded expression-2
+				set {_arcHeight} to rounded expression-3
+			else if parse mark is 1 or 3:
+				set {_arcHeight} to rounded expression-4
+				set {_arcWidth} to rounded expression-5
+			set {_width} to rounded expression-6
+			set {_height} to rounded expression-7
+		else:
+			set {_arcWidth} to rounded expression-2
+			set {_arcHeight} to rounded expression-3
+			if parse mark is 0 or 2:
+				set {_width} to rounded expression-6
+				set {_height} to rounded expression-7
+			else if parse mark is 3:
+				set {_height} to rounded expression-8
+				set {_width} to rounded expression-9
+		if expression-10 is set:
+			set {_x} to expression-10
+			set {_x} to {_x} - 1
+		else:
+			set {_x} to 0
+		if expression-11 is set:
+			set {_y} to expression-11
+			set {_y} to {_y} - 1
+		else:
+			set {_y} to 0
+		if raw expression-12 is set:
+			set {_image} to imagesk_copiedImage(expression-9)
+		else:
+			set {_image} to expression-9
+		set {_g} to {_image}.createGraphics()
+		if imagesk java color expression-8 is instance of Color:
+			{_g}.setColor(imagesk java color expression-8)
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		if parse mark is 2 or 3:
+			if expression-1 is set:
+				set {_outlineWidth} to expression-1
+			else:
+				set {_outlineWidth} to 1
+			{_g}.setStroke(new BasicStroke({_outlineWidth}))
+			{_g}.drawRoundRect({_x}, {_y}, {_width}, {_height}, {_arcWidth} and {_arcHeight})
+		else:
+			{_g}.fillRoundRect({_x}, {_y}, {_width}, {_height}, {_arcWidth} and {_arcHeight})
+		{_g}.dispose()
+		if raw expression-12 is set:
+			imagesk set variable (raw expression-12) to {_image} in event
+		continue

@@ -1,0 +1,56 @@
+import:
+	java.awt.BasicStroke
+	java.awt.Color
+	java.awt.RenderingHints
+	java.awt.image.BufferedImage
+	
+	ch.njol.skript.lang.Variable
+
+effect draw [a] rectangle [(2¦outline [with width %-number%])] with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] with %-object%] on [(image|img)] %object% [at [location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+	parse:
+		if expression-10 is set:
+			if expression-10 isn't instance of Variable:
+				imagesk parse error "'%expression-10%' is not a variable."
+				stop
+		continue
+	trigger:
+		if expression-7 isn't instance of BufferedImage:
+			stop
+		delay the current effect
+		if parse mark is 0 or 2:
+			set {_width} to rounded expression-2
+			set {_height} to rounded expression-3
+		else if parse mark is 1 or 3:
+			set {_height} to rounded expression-4
+			set {_width} to rounded expression-5
+		if expression-8 is set:
+			set {_x} to expression-8
+			set {_x} to {_x} - 1
+		else:
+			set {_x} to 0
+		if expression-9 is set:
+			set {_y} to expression-9
+			set {_y} to {_y} - 1
+		else:
+			set {_y} to 0
+		if raw expression-10 is set:
+			set {_image} to imagesk_copiedImage(expression-7)
+		else:
+			set {_image} to expression-7
+		set {_g} to {_image}.createGraphics()
+		if imagesk java color expression-6 is instance of Color:
+			{_g}.setColor(imagesk java color expression-6)
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		if parse mark is 2 or 3:
+			if expression-1 is set:
+				set {_outlineWidth} to expression-1
+			else:
+				set {_outlineWidth} to 1
+			{_g}.setStroke(new BasicStroke({_outlineWidth}))
+			{_g}.drawRect({_x}, {_y}, {_width} and {_height})
+		else:
+			{_g}.fillRect({_x}, {_y}, {_width} and {_height})
+		{_g}.dispose()
+		if raw expression-10 is set:
+			imagesk set variable (raw expression-10) to {_image} in event
+		continue

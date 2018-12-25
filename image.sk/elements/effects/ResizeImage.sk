@@ -1,0 +1,69 @@
+options:
+	# If changing this is really important for you, you need to change it in all image.sk files.
+	variable: imagesk # {imagesk::xxx}
+
+import:
+	java.awt.Image
+	java.awt.image.BufferedImage
+	
+	ch.njol.skript.lang.Variable
+
+effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] height %-number%|1¦height %-number%[( and|,)] width %-number%) [(with|using) algorithm %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+	parse:
+		if expression-7 is not set:
+			if expression-1 isn't instance of Variable:
+				if "%expression-1%" is not "[the] [last[ly]] [(created|generated|received|taken)] (image|img)":
+					imagesk parse error "The image to be resized must be in a variable or the last image expression. Or a variable must be specified to save the result image."
+					stop
+		else:
+			if expression-7 isn't instance of Variable:
+				imagesk parse error "'%expression-7%' is not a variable."
+				stop
+		continue
+	trigger:
+		if expression-1 isn't instance of BufferedImage:
+			stop
+		if raw expression-7 is set:
+			set {_image} to imagesk_copiedImage(expression-1)
+		else:
+			set {_image} to expression-1
+		if parse mark is 0:
+			if expression-2 or expression-3 is not set:
+				stop
+			set {_width} to rounded expression-2
+			set {_height} to rounded expression-3
+		else if parse mark is 1:
+			if expression-4 or expression-5 is not set:
+				stop
+			set {_height} to rounded expression-4
+			set {_width} to rounded expression-5
+		if {_width} is smaller than 1:
+			set {_width} to 1
+		if {_height} is smaller than 1:
+			set {_height} to 1
+		delay the current effect
+		if expression-6 is 1:
+			set {_algorithm} to Image.SCALE_AREA_AVERAGING!
+		else if expression-6 is 2:
+			set {_algorithm} to Image.SCALE_DEFAULT!
+		else if expression-6 is 3:
+			set {_algorithm} to Image.SCALE_FAST!
+		else if expression-6 is 4:
+			set {_algorithm} to Image.SCALE_REPLICATE!
+		else if expression-6 is 5:
+			set {_algorithm} to Image.SCALE_SMOOTH!
+		else:
+			set {_algorithm} to Image.SCALE_DEFAULT!
+		set {_temp} to {_image}.getScaledInstance({_width}, {_height} and {_algorithm})
+		set {_resized} to new BufferedImage({_width}, {_height} and BufferedImage.TYPE_INT_ARGB!)
+		set {_g} to {_resized}.createGraphics()
+		{_g}.drawImage({_temp}, 0, 0 and null)
+		{_g}.dispose()
+		if raw expression-7 is not set:
+			if "%raw expression-1%" is "[the] [last[ly]] [(created|generated|received|taken)] (image|img)":
+				set {{@variable}::lastImage} to {_resized}
+			else:
+				imagesk set variable (raw expression-1) to {_resized} in event
+		else:
+			imagesk set variable (raw expression-7) to {_resized} in event
+		continue

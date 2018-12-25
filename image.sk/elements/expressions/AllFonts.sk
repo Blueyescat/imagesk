@@ -1,0 +1,10 @@
+import:
+	java.awt.GraphicsEnvironment
+
+plural expression:
+	patterns:
+		[(all [[of] the]|the)] [available] fonts
+		[(all [[of] the]|the)] [available] font (families|[family] names)
+	return type: string
+	get:
+		return ...GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()

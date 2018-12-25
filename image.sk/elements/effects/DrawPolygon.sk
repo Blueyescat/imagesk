@@ -1,0 +1,122 @@
+import:
+	java.awt.BasicStroke
+	java.awt.Color
+	java.awt.Polygon
+	java.awt.RenderingHints
+	java.awt.image.BufferedImage
+	
+	ch.njol.skript.lang.LiteralList
+	ch.njol.skript.lang.Variable
+	ch.njol.skript.lang.util.SimpleLiteral
+
+effect draw [a] polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with %-object%] on [(image|img)] %object% ((between|at)|using) ((corners|vertices|vertexes|points)|[(corner|vertice|vertex|point)] locations) %numbers% [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+	parse:
+		if expression-5 is set:
+			if expression-5 isn't instance of Variable:
+				imagesk parse error "'%expression-5%' is not a variable."
+				stop
+		if expression-4 is instance of SimpleLiteral or LiteralList:
+			set {_list::*} to ...(expression-4).getArray()
+			set {_vertices} to rounded down (size of {_list::*}) / 2
+			if {_vertices} is smaller than 3:
+				imagesk parse error "A polygon must have 3 or more vertices! But entered only %{_vertices}% vertice locations."
+				stop
+		continue
+	trigger:
+		if expression-3 isn't instance of BufferedImage:
+			stop
+		if (size of expressions-4) / 2 is smaller than 3:
+			imagesk error "A polygon must have 3 or more vertices! But entered %rounded down (size of expressions-4) / 2% vertice locations."
+			stop
+		delay the current effect
+		if raw expression-5 is set:
+			set {_image} to imagesk_copiedImage(expression-3)
+		else:
+			set {_image} to expression-3
+		set {_g} to {_image}.createGraphics()
+		if imagesk java color expression-2 is instance of Color:
+			{_g}.setColor(imagesk java color expression-2)
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		set {_polygon} to new Polygon()
+		loop expressions-4:
+			add 1 to {_coord}
+			set {_c} to loop-value
+			add {_c} - 1 to {_coords::*}
+			if mod({_coord}, 2) is 0:
+				{_polygon}.addPoint({_coords::*})
+				delete {_coords::*}
+		if parse mark is 1 or 3:
+			if expression-1 is set:
+				set {_outlineWidth} to expression-1
+			else:
+				set {_outlineWidth} to 1
+			if parse mark is 1:
+				{_g}.setStroke(new BasicStroke({_outlineWidth}, (BasicStroke.CAP_ROUND!) and 1))
+			else:
+				{_g}.setStroke(new BasicStroke({_outlineWidth}))
+			{_g}.drawPolygon({_polygon})
+		else:
+			{_g}.fillPolygon({_polygon})
+		{_g}.dispose()
+		if raw expression-5 is set:
+			imagesk set variable (raw expression-5) to {_image} in event
+		continue
+
+effect draw [a] polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with %-object%] on [(image|img)] %object% (with|using) %number% [of] (corners|vertices|vertexes|points) with radius %number%[( and|,) [with] angle %-number%] [at [[center] location] %-number%( and|,) %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+	parse:
+		if expression-9 is set:
+			if expression-9 isn't instance of Variable:
+				imagesk parse error "'%expression-9%' is not a variable."
+				stop
+		continue
+	trigger:
+		if expression-3 isn't instance of BufferedImage:
+			stop
+		delay the current effect
+		if raw expression-9 is set:
+			set {_image} to imagesk_copiedImage(expression-3)
+		else:
+			set {_image} to expression-3
+		set {_g} to {_image}.createGraphics()
+		if imagesk java color expression-2 is instance of Color:
+			{_g}.setColor(imagesk java color expression-2)
+		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		if expression-4 is smaller than 3:
+			imagesk error "A polygon must have 3 or more vertices! But entered %expression-4% vertice locations."
+			continue
+		if expression-6 is set:
+			set {_angle} to expression-6
+		else:
+			set {_angle} to 180
+		if expression-7 is set:
+			set {_x} to expression-7
+			set {_x} to {_x} - 1
+		else:
+			set {_x} to 0
+		if expression-8 is set:
+			set {_y} to expression-8
+			set {_y} to {_y} - 1
+		else:
+			set {_y} to 0
+		# Algorithm by bi0qaw (https://github.com/bi0qaw)
+		set {_angleChange} to 360 / expression-4
+		set {_polygon} to new Polygon()
+		loop expression-4 times:
+			{_polygon}.addPoint(({_x} + expression-5 * sin({_angle})) and ({_y} + expression-5 * cos({_angle})))
+			add {_angleChange} to {_angle}
+		if parse mark is 1 or 3:
+			if expression-1 is set:
+				set {_outlineWidth} to expression-1
+			else:
+				set {_outlineWidth} to 1
+			if parse mark is 1:
+				{_g}.setStroke(new BasicStroke({_outlineWidth}, (BasicStroke.CAP_ROUND!) and 1))
+			else:
+				{_g}.setStroke(new BasicStroke({_outlineWidth}))
+			{_g}.drawPolygon({_polygon})
+		else:
+			{_g}.fillPolygon({_polygon})
+		{_g}.dispose()
+		if raw expression-9 is set:
+			imagesk set variable (raw expression-9) to {_image} in event
+		continue

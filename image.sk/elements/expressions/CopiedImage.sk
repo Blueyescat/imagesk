@@ -1,0 +1,13 @@
+import:
+	java.awt.image.BufferedImage
+
+expression:
+	patterns:
+		(copied|cloned) [image[s]] %$objects%
+		[a] (cop(y|ies)|clone[s]) of [image[s]] %$objects%
+		%$objects%'[s] (cop(y|ies)|clone[s])
+	get:
+		loop expressions-1:
+			if loop-value is instance of BufferedImage:
+				add imagesk_copiedImage(loop-value) to {_result::*}
+		return {_result::*}

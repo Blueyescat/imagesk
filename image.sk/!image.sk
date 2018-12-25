@@ -1,0 +1,68 @@
+# ##############################
+# Main file of image.sk
+#
+# https://github.com/Blueyescat/image.sk
+#
+# Please don't change this file, write your script in another sk file.
+# ##############################
+
+options:
+	# If changing this is really important for you, you need to change it in all image.sk files.
+	variable: imagesk # {imagesk::xxx}
+
+import:
+	java.awt.Color
+	java.util.Base64
+	
+	org.bukkit.Bukkit
+	
+	ch.njol.skript.Skript
+	ch.njol.skript.util.Color as SkriptColor
+	ch.njol.skript.variables.Variables
+
+on load:
+	set {{@variable}::Logger} to Bukkit.getServer().getLogger()
+	set {{@variable}::Decoder} to Base64.getDecoder()
+	set {{@variable}::Encoder} to Base64.getEncoder()
+	
+	# Workaround for a skript-mirror limitation
+	delete {{@variable}::useFloatColorMethod}
+	set {_color} to try new Color(255, 255, 255)
+	if "%last java error%" contains "Color parameter outside of expected range":
+		set {{@variable}::useFloatColorMethod} to true
+
+on skript unload:
+	loop {{@variable}::*}:
+		if loop-index is not "lastImage":
+			delete {{@variable}::%loop-index%} and {{@variable}::%loop-index%::*}
+
+# You shouldn't use the syntaxes below in your scripts
+effect imagesk [(1¦parse)] error %string%:
+	trigger:
+		if parse mark is 1:
+			Skript.error(expression-1)
+		else:
+			{{@variable}::Logger}.severe("[image.sk] %expression-1%")
+
+effect imagesk warning %string%:
+	trigger:
+		{{@variable}::Logger}.warning("[image.sk] %expression-1%")
+
+effect imagesk set variable %object% to %object% in %event%:
+	trigger:
+		set {_variable} to expression-1
+		set {_name} to {_variable}.getName().toString(expression-3)
+		Variables.setVariable({_name}, expression-2, expression-3, {_variable}.isLocal())
+
+expression imagesk java color %object%:
+	get:
+		if expression-1 is instance of SkriptColor:
+			return new Color(expression-1.getBukkitColor().asRGB())
+		return expression-1
+# You shouldn't use the syntaxes above in your scripts
+
+expression [the] [last[ly]] [(created|generated|received|taken)] (image|img):
+	get:
+		return {{@variable}::lastImage}
+	delete:
+		delete {{@variable}::lastImage}

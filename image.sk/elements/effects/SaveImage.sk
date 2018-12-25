@@ -1,0 +1,21 @@
+import:
+	java.awt.image.BufferedImage
+	java.io.File as JavaFile
+	javax.imageio.ImageIO
+
+effect (save|write) [(image|img)] %object% to [file] %string%:
+	trigger:
+		if expression-1 isn't instance of BufferedImage:
+			stop
+		delay the current effect
+		set {_path} to expression-2
+		replace all "/" and "\" with JavaFile.separator! in {_path}
+		set {_file} to new JavaFile({_path})
+		{_file}.mkdirs()
+		set {_fileName} to last element of split {_path} at JavaFile.separator!
+		if {_fileName} contains ".":
+			set {_extension} to last element of split {_fileName} at "."
+		else:
+			set {_extension} to "png"
+		ImageIO.write(expression-1, {_extension} and {_file})
+		continue

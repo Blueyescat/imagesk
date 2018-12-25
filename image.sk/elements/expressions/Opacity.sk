@@ -1,0 +1,43 @@
+import:
+	java.awt.AlphaComposite
+	java.awt.Color
+	java.awt.image.BufferedImage
+	
+	ch.njol.skript.lang.Variable
+
+object property (opacity|transparency):
+	return type: number
+	get:
+		if expression-1 is instance of Color:
+			return expression-1.getAlpha()
+		return
+	set:
+		if expression-1 is instance of BufferedImage:
+			if (raw expression-1) is instance of Variable:
+				if change value is set:
+					set {_opacity} to (1 / 100) * change value
+					if {_opacity} is greater than 1:
+						set {_opacity} to 1
+					else if {_opacity} is smaller than 0:
+						set {_opacity} to 0
+					set {_temp} to new BufferedImage((expression-1.getWidth()), (expression-1.getHeight()) and BufferedImage.TYPE_INT_ARGB!)
+					set {_g} to {_temp}.createGraphics()
+					{_g}.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER! and {_opacity}))
+					{_g}.drawImage(expression-1, 0, 0 and null)
+					{_g}.dispose()
+					imagesk set variable (raw expression-1) to {_temp} in event
+			else:
+				imagesk error "The image to be edited must be in a variable! (set image opacity)"
+		else if expression-1 is instance of Color:
+			if (raw expression-1) is instance of Variable:
+				if change value is set:
+					set {_opacity} to change value
+					set {_opacity} to (255 / 100) * {_opacity}
+					if {_opacity} is greater than 255:
+						set {_opacity} to 255
+					else if {_opacity} is smaller than 0:
+						set {_opacity} to 0
+					set {_color} to new Color((expression-1.getRed()), (expression-1.getGreen()), (expression-1.getBlue()) and {_opacity})
+					imagesk set variable (raw expression-1) to {_color} in event
+			else:
+				imagesk error "The color to be edited must be in a variable! (set color opacity)"

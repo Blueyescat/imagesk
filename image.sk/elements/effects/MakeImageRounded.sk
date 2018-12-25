@@ -1,0 +1,64 @@
+import:
+	java.awt.AlphaComposite
+	java.awt.Color
+	java.awt.geom.RoundRectangle2D$Double as RoundRectangle2DFloat
+	java.awt.RenderingHints
+	java.awt.image.BufferedImage
+	
+	ch.njol.skript.lang.Variable
+
+effect:
+	patterns:
+		make [(image|img)] %object% rounded with arc (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		round [(image|img)] %object% with arc (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		make [(image|img)] %object% (circle|[fully] rounded) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		[fully] round [(image|img)] %object% [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+	parse:
+		if expression-6 is set:
+			if expression-6 isn't instance of Variable:
+				imagesk parse error "'%expression-6%' is not a variable."
+				stop
+		continue
+	trigger:
+		if expression-1 isn't instance of BufferedImage:
+			stop
+		if matched pattern is 1 or 2:
+			if raw expression-6 is set:
+				set {_image} to imagesk_copiedImage(expression-1)
+			else:
+				set {_image} to expression-1
+			if parse mark is 0:
+				set {_arcWidth} to rounded expression-2
+				set {_arcHeight} to rounded expression-3
+			else if parse mark is 1:
+				set {_arcHeight} to rounded expression-4
+				set {_arcWidth} to rounded expression-5
+		else:
+			if raw expression-2 is set:
+				set {_image} to imagesk_copiedImage(expression-1)
+			else:
+				set {_image} to expression-1
+			set {_arcWidth} to {_image}.getWidth()
+			set {_arcHeight} to {_image}.getHeight()
+		delay the current effect
+		set {_width} to {_image}.getWidth()
+		set {_height} to {_image}.getHeight()
+		
+		set {_output} to new BufferedImage({_width}, {_height}, (BufferedImage.TYPE_INT_ARGB!))
+		set {_g} to {_output}.createGraphics()
+		{_g}.setComposite(AlphaComposite.Src!)
+		{_g}.setRenderingHint(RenderingHints.KEY_ANTIALIASING!, RenderingHints.VALUE_ANTIALIAS_ON!)
+		{_g}.setColor(Color.WHITE!)
+		{_g}.fill(new RoundRectangle2DFloat(0, 0, {_width}, {_height}, {_arcWidth}, {_arcHeight}))
+		{_g}.setComposite(AlphaComposite.SrcAtop!)
+		{_g}.drawImage({_image}, 0, 0, null)
+		{_g}.dispose()
+		if matched pattern is 1 or 2:
+			if raw expression-6 is set:
+				imagesk set variable (raw expression-6) to {_output} in event
+				continue
+		else if raw expression-2 is set:
+			imagesk set variable (raw expression-2) to {_output} in event
+			continue
+		{_image}.setData({_output}.getData())
+		continue

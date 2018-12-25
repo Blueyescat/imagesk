@@ -1,0 +1,40 @@
+options:
+	# If changing this is really important for you, you need to change it in all image.sk files.
+	variable: imagesk # {imagesk::xxx}
+
+import:
+	java.awt.Color
+	java.awt.image.BufferedImage
+	
+	ch.njol.skript.lang.Variable
+
+effect create [a[n]] [new] image with (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] [with] b[ack]g[round] %-object%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+	parse:
+		if expression-6 is set:
+			if expression-6 isn't instance of Variable:
+				imagesk parse error "'%expression-6%' is not a variable."
+				stop
+		continue
+	trigger:
+		delay the current effect
+		if parse mark is 0:
+			set {_width} to rounded expression-1
+			set {_height} to rounded expression-2
+		else if parse mark is 1:
+			set {_height} to rounded expression-3
+			set {_width} to rounded expression-4
+		if {_width} is smaller than 1:
+			set {_width} to 1
+		if {_height} is smaller than 1:
+			set {_height} to 1
+		set {_image} to new BufferedImage({_width}, {_height} and BufferedImage.TYPE_INT_ARGB!)
+		if imagesk java color expression-5 is instance of Color:
+			set {_g} to {_image}.createGraphics()
+			{_g}.setColor(imagesk java color expression-5)
+			{_g}.fillRect(0, 0, {_width} and {_height})
+			{_g}.dispose()
+		if raw expression-6 is set:
+			imagesk set variable (raw expression-6) to {_image} in event
+		else:
+			set {{@variable}::lastImage} to {_image}
+		continue

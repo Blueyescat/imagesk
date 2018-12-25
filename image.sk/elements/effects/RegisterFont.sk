@@ -1,0 +1,18 @@
+import:
+	java.awt.Font
+	java.io.File as JavaFile
+	java.nio.file.Files
+	java.nio.file.Path
+	java.nio.file.Paths
+	java.awt.GraphicsEnvironment
+
+effect (register|install|load) [(the|new)] font [family] [(from|of|at))] [[the] file] %string%:
+	trigger:
+		delay the current effect
+		if expression-1 is set:
+			set {_path} to expression-1
+			replace all "/" and "\" with JavaFile.separator! in {_path}
+			set {_path} to Paths.get({_path})
+			if Files.isRegularFile({_path}):
+				GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT! and {_path}.toFile()))
+		continue
