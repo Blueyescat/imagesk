@@ -8,6 +8,9 @@ import:
 	java.io.ByteArrayInputStream
 	java.io.File as JavaFile
 	java.net.URL
+	java.nio.file.Files
+	java.nio.file.Path
+	java.nio.file.Paths
 	javax.imageio.ImageIO
 	
 	ch.njol.skript.lang.Variable
@@ -30,12 +33,14 @@ effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦ba
 			if expression-2 is set:
 				set {_path} to expression-2
 				replace all "/" and "\" with JavaFile.separator! in {_path}
-				set {_file} to new JavaFile({_path})
-				if {_file}.exists() is false:
+				set {_path} to Paths.get({_path})
+			
+				if Files.isRegularFile({_path}):
+					set {_image} to ImageIO.read({_path}.toFile())
+				else:
 					if expression-2 is set:
 						imagesk error "'%expression-2%' is not a valid file path."
 					continue
-				set {_image} to ImageIO.read({_file})
 		else if parse mark is 2:
 			if expression-3 is set:
 				set {_bytes} to {{@variable}::Decoder}.decode(last element of (expression-3 split at ","))
