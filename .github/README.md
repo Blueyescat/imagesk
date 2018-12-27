@@ -7,7 +7,7 @@ Please always use the latest version of skript-mirror and imagesk. If you see an
 
 ## Installing
 1. Go to [the releases page](https://github.com/Blueyescat/imagesk/releases/tag/v0.5.0)
-1. If you want [Vixio](https://github.com/iBlitzkriegi/Vixio) support, download the `imagesk-Vixio-Support.zip` file. Otherwise, download the `image.sk.zip` file
+1. If you want [Vixio](https://github.com/iBlitzkriegi/Vixio) support, download the `imagesk-Vixio-Support.zip` file. Otherwise, download the `imagesk.zip` file
 1. Unzip/open the zip, copy the `imagesk` **folder** inside and paste it into your `Skript/scripts/` folder
 
 **Vixio Support:** Adds some special codes such as uploading an image to Discord depending on the [Vixio](https://github.com/iBlitzkriegi/Vixio) addon.
