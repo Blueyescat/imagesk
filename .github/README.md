@@ -14,6 +14,8 @@ Please always use the latest version of skript-mirror and imagesk. If you see an
 
 When updating imagesk, just get the new folder and **replace** with your old folder.
 
+To reload/enable/disable imagesk, use **`/sk reload imagesk/`** since it is a folder.
+
 ### Relevant Links
 - [Documentation](https://github.com/Blueyescat/imagesk/wiki/Documentation)
 - [Examples](https://github.com/Blueyescat/imagesk/wiki/Examples)
