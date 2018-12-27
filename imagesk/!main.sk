@@ -1,13 +1,13 @@
 # ##############################
-# Main file of image.sk
+# Main file of imagesk (v0.5.0)
 #
-# https://github.com/Blueyescat/image.sk
+# https://github.com/Blueyescat/imagesk
 #
 # Please don't change this file, write your script in another sk file.
 # ##############################
 
 options:
-	# If changing this is really important for you, you need to change it in all image.sk files.
+	# If changing this is really important for you, you need to change it in all imagesk files.
 	variable: imagesk # {imagesk::xxx}
 
 import:
@@ -42,11 +42,11 @@ effect imagesk [(1¦parse)] error %string%:
 		if parse mark is 1:
 			Skript.error(expression-1)
 		else:
-			{{@variable}::Logger}.severe("[image.sk] %expression-1%")
+			{{@variable}::Logger}.severe("[imagesk] %expression-1%")
 
 effect imagesk warning %string%:
 	trigger:
-		{{@variable}::Logger}.warning("[image.sk] %expression-1%")
+		{{@variable}::Logger}.warning("[imagesk] %expression-1%")
 
 effect imagesk set variable %object% to %object% in %event%:
 	trigger:

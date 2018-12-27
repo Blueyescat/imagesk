@@ -1,5 +1,5 @@
 options:
-	# If changing this is really important for you, you need to change it in all image.sk files.
+	# If changing this is really important for you, you need to change it in all imagesk files.
 	variable: imagesk # {imagesk::xxx}
 
 import:
