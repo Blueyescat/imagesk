@@ -1,5 +1,5 @@
 # imagesk
-A script folder that registers custom syntaxes for image processing in Skript.
+A scripts folder that registers custom syntaxes for image processing in Skript.
 
 Requires *latest* [skript-mirror](https://github.com/btk5h/skript-mirror) and [Skript](https://github.com/bensku/Skript) v2.2+.
 
@@ -11,6 +11,8 @@ Please always use the latest version of skript-mirror and imagesk. If you see an
 1. Unzip/open the zip, copy the `imagesk` **folder** inside and paste it into your `Skript/scripts/` folder
 
 **Vixio Support:** Adds some special codes such as uploading an image to Discord depending on the [Vixio](https://github.com/iBlitzkriegi/Vixio) addon.
+
+When updating imagesk, just get the new folder and **replace** with your old folder.
 
 ### Relevant Links
 - [Documentation](https://github.com/Blueyescat/imagesk/wiki/Documentation)
