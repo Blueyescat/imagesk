@@ -2,7 +2,7 @@ import:
 	java.awt.Color
 	java.awt.image.BufferedImage
 
-object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
+object property [colo[u]r of] pixel [at [location]] %number%,[ ]%number%:
 	get:
 		if expression-1 isn't instance of BufferedImage:
 			return
@@ -14,11 +14,13 @@ object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
 	set:
 		if expression-1 isn't instance of BufferedImage:
 			stop
-		if (imagesk java color change value) isn't instance of Color:
+		if (imagesk_colorFrom(change value)) isn't instance of Color:
 			stop
 		if expression-2 is set:
 			if expression-3 is set:
-				set {_rgb} to (imagesk java color change value).getRGB()
+				set {_rgb} to (imagesk_colorFrom(change value)).getRGB()
+				set {_x} to (expression-2) - 1
+				set {_y} to (expression-3) - 1
 				imagesk_setPixelColor(expression-1, {_x}, {_y} and {_rgb})
 	delete:
 		if expression-1 isn't instance of BufferedImage:
@@ -26,4 +28,6 @@ object property [colo[u]r of] pixel [at [location]] %number%( and|,) %number%:
 		if expression-2 is set:
 			if expression-3 is set:
 				set {_rgb} to new Color(0, 0, 0 and 0)
+				set {_x} to (expression-2) - 1
+				set {_y} to (expression-3) - 1
 				imagesk_setPixelColor(expression-1, {_x}, {_y} and {_rgb}.getRGB())

@@ -16,7 +16,6 @@ expression base[ ]64 encoded [(image|img)] %object% [with ([(format|file)] type|
 			set {_type} to "png"
 		else:
 			set {_type} to expression-2
-		
 		set {_bos} to new ByteArrayOutputStream()
 		ImageIO.write(expression-1, {_type}, {_bos})
 		set {_base64} to {{@variable}::Encoder}.encodeToString({_bos}.toByteArray())

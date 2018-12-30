@@ -3,7 +3,7 @@ import:
 	
 	ch.njol.skript.lang.Variable
 
-effect (get|extract) part of [(image|img)] %object% (0¦from [location] %-number%( and|,) %-number% to [location] %-number%( and|,) %-number%|1¦between locations %-number%( and|,) %-number% and %-number%( and|,) %-number%) [and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%:
+effect (get|extract) part of [(image|img)] %object% (from [location] %-number%,[ ]%-number% to [location] %-number%,[ ]%-number%|1¦between locations %-number%,[ ]%-number% and %-number%,[ ]%-number%) [and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%:
 	parse:
 		if expression-10 is set:
 			if expression-10 isn't instance of Variable:

@@ -5,7 +5,7 @@ options:
 import:
 	java.awt.Color
 
-expression [(image|img)] colo[u]r (0¦%-color%|1¦[from] [hex] %-string%|2¦[from] [rgb[ ]][\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
+expression [(image|img)] colo[u]r (%-color%|1¦[from] [hex] %-string%|2¦[from] [rgb[ ]][\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
 	get:
 		if parse mark is 0 or 1:
 			if parse mark is 0:

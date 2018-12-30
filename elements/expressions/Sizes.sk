@@ -9,10 +9,10 @@ import:
 
 expression:
 	patterns:
-		[the] (0¦width|1¦height|2¦ascent|3¦descent) of [(image|img)] [(text|string)] %object%
-		[the] [(image|img)] [(text|string)] (0¦width|1¦height|2¦ascent|3¦descent) of %object%
-		[(image|img)] [(text|string)] %object%'s (0¦width|1¦height|2¦ascent|3¦descent)
-		%object%'s [(image|img)] [(text|string)] (0¦width|1¦height|2¦ascent|3¦descent)
+		[the] (width|1¦height|2¦ascent|3¦descent) of [(image|img)] [(text|string)] %object%
+		[the] [(image|img)] [(text|string)] (width|1¦height|2¦ascent|3¦descent) of %object%
+		[(image|img)] [(text|string)] %object%'s (width|1¦height|2¦ascent|3¦descent)
+		%object%'s [(image|img)] [(text|string)] (width|1¦height|2¦ascent|3¦descent)
 	return type: number
 	parse:
 		if expression-1 is instance of BufferedImage:
@@ -39,8 +39,14 @@ expression:
 			set {_font} to new Font({{@variable}::texts::%{_name}%::font}, {_style} and {{@variable}::texts::%{_name}%::size})
 			set {_g} to new BufferedImage(1, 1 and BufferedImage.TYPE_INT_RGB!).getGraphics()
 			set {_fm} to {_g}.getFontMetrics({_font})
+			set {_text} to {{@variable}::texts::%{_name}%::text}
 			if parse mark is 0:
-				return {_fm}.stringWidth({{@variable}::texts::%{_name}%::text})
+				if {_text}.matches(".*(\n|\\n).*"):
+					loop ...{_text}.split("\n|\\n"):
+						add {_fm}.stringWidth(loop-value) to {_sizes::*}
+					return max({_sizes::*})
+				else:
+					return {_fm}.stringWidth({_text})
 			else if parse mark is 1:
 				return {_fm}.getHeight()
 			else if parse mark is 2:

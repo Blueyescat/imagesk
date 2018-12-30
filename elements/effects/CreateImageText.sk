@@ -6,7 +6,7 @@ import:
 	java.awt.Color
 	java.awt.Font
 
-effect (create|generate) [a[n]] [new] [(image|img)] (text|string) [(with (id|name)|named)] %string% [[and] with text %-string%]:
+effect (create|generate) [a[n]] [new] [(image|img)] (text|string) [(with (id|name)|named)] %string% [[and] [with] (content|text|string) %-string%]:
 	trigger:
 		if {{@variable}::texts::%expression-1%} is set:
 			delete {{@variable}::texts::%expression-1%::*}

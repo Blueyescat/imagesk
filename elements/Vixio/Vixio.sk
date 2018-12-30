@@ -1,0 +1,22 @@
+import:
+	java.io.File as JavaFile
+	java.nio.file.Files
+	java.nio.file.Path
+	java.nio.file.Paths
+	
+	ch.njol.skript.Skript
+	ch.njol.skript.ScriptLoader
+
+# Temporary system
+
+on load:
+	set {_s} to JavaFile.separator!
+	set {_p} to "%Skript.getInstance().getDataFolder()%%{_s}%scripts%{_s}%imagesk%{_s}%elements%{_s}%Vixio%{_s}%"
+	set {_disabled} to Paths.get("%{_p}%-Vixio-code.sk").toFile()
+	set {_enabled} to Paths.get("%{_p}%Vixio-code.sk").toFile()
+	if Skript.classExists("me.iblitzkriegi.vixio.util.UpdatingMessage"):
+		if {_disabled}.exists():
+			{_disabled}.renameTo({_enabled})
+			ScriptLoader.loadScripts({_enabled})
+	else if {_enabled}.exists():
+		execute console command "sk disable imagesk imagesk%{_s}%elements%{_s}%Vixio%{_s}%Vixio-code.sk"

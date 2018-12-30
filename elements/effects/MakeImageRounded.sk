@@ -9,8 +9,8 @@ import:
 
 effect:
 	patterns:
-		make [(image|img)] %object% rounded with arc (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
-		round [(image|img)] %object% with arc (0¦width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		make [(image|img)] %object% rounded with arc[h] (width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		round [(image|img)] %object% with arc[h] (width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
 		make [(image|img)] %object% (circle|[fully] rounded) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
 		[fully] round [(image|img)] %object% [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
 	parse:

@@ -6,7 +6,7 @@ import:
 	java.awt.Color
 	java.awt.Font
 
-expression (0¦(text|string)|1¦font[[( |-)]family]) of [[(image|img)] (text|string)] %string%:
+expression ((content|text|string)|1¦font[[( |-)]family]) of [[(image|img)] (text|string)] %string%:
 	return type: string
 	get:
 		if parse mark is 0:
@@ -25,7 +25,7 @@ expression (0¦(text|string)|1¦font[[( |-)]family]) of [[(image|img)] (text|str
 		else if parse mark is 1:
 			set {{@variable}::texts::%expression-1%::font} to Font.DIALOG!
 
-expression (0¦bold|1¦italic|2¦underline[d]|3¦strikethrough|4¦outline[d]|5¦(only|just) outline) [state] of [[(image|img)] (text|string)] %string%:
+expression (bold|1¦italic|2¦underline[d]|3¦strikethrough|4¦outline[d]|5¦(only|just) outline) [state] of [[(image|img)] (text|string)] %string%:
 	return type: boolean
 	get:
 		if parse mark is 0:
@@ -117,7 +117,7 @@ expression outline (width|size) of [[(image|img)] (text|string)] %string%:
 	delete:
 		delete {{@variable}::texts::%expression-1%::outlineWidth}
 
-expression (0¦[foreground]|1¦background|2¦outline) colo[u]r of [[(image|img)] (text|string)] %string%:
+expression ([foreground]|1¦background|2¦outline) colo[u]r of [[(image|img)] (text|string)] %string%:
 	get:
 		if parse mark is 0:
 			return {{@variable}::texts::%expression-1%::foreground}
@@ -129,13 +129,13 @@ expression (0¦[foreground]|1¦background|2¦outline) colo[u]r of [[(image|img)]
 			else:
 				return Color.BLACK!
 	set:
-		if imagesk java color change value is instance of Color:
+		if imagesk_colorFrom(change value) is instance of Color:
 			if parse mark is 0:
-				set {{@variable}::texts::%expression-1%::foreground} to imagesk java color change value
+				set {{@variable}::texts::%expression-1%::foreground} to imagesk_colorFrom(change value)
 			else if parse mark is 1:
-				set {{@variable}::texts::%expression-1%::background} to imagesk java color change value
+				set {{@variable}::texts::%expression-1%::background} to imagesk_colorFrom(change value)
 			else if parse mark is 2:
-				set {{@variable}::texts::%expression-1%::outlineColor} to imagesk java color change value
+				set {{@variable}::texts::%expression-1%::outlineColor} to imagesk_colorFrom(change value)
 	reset:
 		if parse mark is 0:
 			delete {{@variable}::texts::%expression-1%::foreground}

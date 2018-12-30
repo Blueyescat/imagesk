@@ -8,7 +8,7 @@ import:
 	
 	ch.njol.skript.lang.Variable
 
-effect resize [(image|img)] %object% to [sizes] (0¦width %-number%[( and|,)] height %-number%|1¦height %-number%[( and|,)] width %-number%) [(with|using) algorithm %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect resize [(image|img)] %object% to [sizes] (width %-number%[( and|,)] height %-number%|1¦height %-number%[( and|,)] width %-number%) [(with|using) algorithm %-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-7 is not set:
 			if expression-1 isn't instance of Variable:

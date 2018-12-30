@@ -15,7 +15,7 @@ import:
 	
 	ch.njol.skript.lang.Variable
 
-effect get [the] (image|img) (of|from) (0¦url %-string%|1¦file %-string%|2¦base[ ]64 %-string%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect get [the] (image|img) (of|from) (url %-string%|1¦file %-string%|2¦base[ ]64 %-string%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-4 is set:
 			if expression-4 isn't instance of Variable:

@@ -4,32 +4,32 @@ import:
 	
 	ch.njol.skript.lang.Variable
 
-effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[ment]] [colo[u]r] %object% at [location] %number%( and|,) %number% [with (tolerance %-number% [percent]|%-number% [percent] tolerance)] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect [(flood|bucket)] fill [on] [(image|img)] %object% at [location] %number%,[ ]%number% (with|using) [replace[ment]] %object% [with tolerance %-number% [percent]] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
-		if expression-7 is set:
-			if expression-7 isn't instance of Variable:
-				imagesk parse error "'%expression-7%' is not a variable."
+		if expression-6 is set:
+			if expression-6 isn't instance of Variable:
+				imagesk parse error "'%expression-6%' is not a variable."
 				stop
 		continue
 	trigger:
-		if raw expression-7 is set:
+		if raw expression-6 is set:
 			set {_image} to imagesk_copiedImage(expression-1)
 		else:
 			set {_image} to expression-1
-		if expression-3 or expression-4 is smaller than 0:
+		set {_x} to (expression-2) - 1
+		set {_y} to (expression-3) - 1
+		if {_x} or {_y} is smaller than 0:
 			stop
-		if expression-3 is greater than or equal to {_image}.getWidth():
+		if {_x} is greater than or equal to {_image}.getWidth():
 			stop
-		if expression-4 is greater than or equal to {_image}.getHeight():
+		if {_y} is greater than or equal to {_image}.getHeight():
 			stop
-		set {_target} to imagesk_pixelColor({_image}, expression-3, expression-4)
-		set {_replacement} to imagesk java color expression-2
+		set {_target} to imagesk_pixelColor({_image}, {_x}, {_y})
+		set {_replacement} to imagesk_colorFrom(expression-4)
 		if {_target} is {_replacement}:
 			stop
 		if expression-5 is set:
 			set {_tolerance} to expression-5
-		else if expression-6 is set:
-			set {_tolerance} to expression-6
 		else:
 			set {_tolerance} to 0
 		if {_tolerance} is greater than 100:
@@ -37,11 +37,11 @@ effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[m
 		else if {_tolerance} is smaller than 0:
 			set {_tolerance} to 0
 		set {_tolerance} to ({_tolerance} / 255) * 120
-		if imagesk_pixelColor({_image}, expression-3, expression-4) isn't similar to {_target} with tolerance {_tolerance}:
+		if imagesk_pixelColor({_image}, {_x}, {_y}) isn't similar to {_target} with tolerance {_tolerance}:
 			stop
 		delay the current effect
 		set {_queue} to new LinkedList()
-		{_queue}.add(new Point(expression-3 and expression-4))
+		{_queue}.add(new Point({_x} and {_y}))
 		while {_queue}.isEmpty() is false:
 			set {_pixel} to {_queue}.removeFirst()
 			if imagesk_pixelColor({_image}, ({_pixel}.x!) + 1, {_pixel}.y!) is similar to {_target} with tolerance {_tolerance}:
@@ -57,6 +57,6 @@ effect [(flood|bucket)] fill [on] [(image|img)] %object% (with|using) [replace[m
 				imagesk_setPixelColor({_image}, {_pixel}.x!, ({_pixel}.y! - 1), {_replacement}.getRGB())
 				{_queue}.addLast(new Point({_pixel}.x! and ({_pixel}.y! - 1)))
 		delete {_queue}
-		if raw expression-7 is set:
-			imagesk set variable (raw expression-7) to {_image} in event
+		if raw expression-6 is set:
+			imagesk set variable (raw expression-6) to {_image} in event
 		continue

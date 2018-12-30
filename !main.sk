@@ -1,5 +1,5 @@
 # ##############################
-# Main file of imagesk (v1.0.1)
+# Main file of imagesk (v2.0.0-beta)
 #
 # https://github.com/Blueyescat/imagesk
 #
@@ -12,6 +12,8 @@ options:
 
 import:
 	java.awt.Color
+	java.awt.image.BufferedImage
+	java.lang.Math
 	java.util.Base64
 	
 	org.bukkit.Bukkit
@@ -36,7 +38,15 @@ on skript unload:
 		if loop-index is not "lastImage":
 			delete {{@variable}::%loop-index%} and {{@variable}::%loop-index%::*}
 
+expression [the] [last[ly]] [(created|generated|received|taken)] (image|img):
+	get:
+		return {{@variable}::lastImage}
+	delete:
+		delete {{@variable}::lastImage}
+
+
 # You shouldn't use the syntaxes below in your scripts
+
 effect imagesk [(1¦parse)] error %string%:
 	trigger:
 		if parse mark is 1:
@@ -54,15 +64,22 @@ effect imagesk set variable %object% to %object% in %event%:
 		set {_name} to {_variable}.getName().toString(expression-3)
 		Variables.setVariable({_name}, expression-2, expression-3, {_variable}.isLocal())
 
-expression imagesk java color %object%:
-	get:
-		if expression-1 is instance of SkriptColor:
-			return new Color(expression-1.getBukkitColor().asRGB())
-		return expression-1
-# You shouldn't use the syntaxes above in your scripts
+function imagesk_colorFrom(color: object) :: object:
+	if {_color} is instance of SkriptColor:
+		return new Color({_color}.getBukkitColor().asRGB())
+	return {_color}
 
-expression [the] [last[ly]] [(created|generated|received|taken)] (image|img):
-	get:
-		return {{@variable}::lastImage}
-	delete:
-		delete {{@variable}::lastImage}
+function imagesk_toRadians(degrees: number) :: number:
+	return Math.toRadians({_degrees})
+
+function imagesk_pixelColor(image: object, x: number, y: number) :: object:
+	set {_rgb} to {_image}.getRGB({_x} and {_y})
+	return new Color({_rgb})
+
+function imagesk_setPixelColor(image: object, x: number, y: number, rgb: number):
+	{_image}.setRGB({_x}, {_y} and {_rgb})
+
+function imagesk_copiedImage(image: object) :: object:
+	return new BufferedImage(({_image}.getColorModel()), ({_image}.copyData(null)), ({_image}.isAlphaPremultiplied()) and null)
+
+# You shouldn't use the syntaxes above in your scripts
