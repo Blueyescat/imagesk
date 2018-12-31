@@ -13,7 +13,7 @@ import:
 	
 	ch.njol.skript.lang.Variable
 
-effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %string% (on|to) [(image|img)] %object% [at [location] %-number%,[ ]%-number%] [with rotation %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %string% (on|to) [(image|img)] %object% [at [location] %-number%,[ ]%-number%] [with [rotation] %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-8 is set:
 			if expression-8 isn't instance of Variable:

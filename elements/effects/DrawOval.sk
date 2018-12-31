@@ -6,7 +6,7 @@ import:
 	
 	ch.njol.skript.lang.Variable
 
-effect draw [a[n]] oval [(10¦outline [with width %-number%])] with (horizontal radius %-number%[( and|,)] [with] vertical radius %-number%|1¦vertical radius %-number%[( and|,)] [with] horizontal radius %-number%)[[( and|,)] [with] %-object%][[( and|,)] with rotation %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] on [(image|img)] %object% [at [[center] location] %-number%,[ ]%-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect draw [a[n]] oval [(10¦outline [with width %-number%])] with (horizontal radius %-number%[( and|,)] [with] vertical radius %-number%|1¦vertical radius %-number%[( and|,)] [with] horizontal radius %-number%)[[( and|,)] [with] %-object%][[( and|,)] with [rotation] %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] on [(image|img)] %object% [at [[center] location] %-number%,[ ]%-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-13 is set:
 			if expression-13 isn't instance of Variable:

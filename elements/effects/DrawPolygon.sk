@@ -9,7 +9,7 @@ import:
 	ch.njol.skript.lang.Variable
 	ch.njol.skript.lang.util.SimpleLiteral
 
-effect draw [a] polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with %-object%][[( and|,)] with rotation %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] on [(image|img)] %object% ((between|at)|using) [(corner|vertice|vertex|point)] locations %numbers% [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect draw [a] polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)[s])))] [with width %-number%])][[( and|,)] with %-object%][[( and|,)] with [rotation] %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] on [(image|img)] %object% ((between|at)|using) [(corner|vertice|vertex|point)] locations %numbers% [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-8 is set:
 			if expression-8 isn't instance of Variable:
@@ -67,7 +67,7 @@ effect draw [a] polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)
 			imagesk set variable (raw expression-8) to {_image} in event
 		continue
 
-effect draw [a] polygon [(1¦outline [(2¦with (flat|square) (cap|(edge|corner)[s]))] [with width %-number%])][[( and|,)] with %-object%] (with|using) (corners|vertices|vertexes|points) %number% with radius %number%[[( and|,)] [with] angle %-number% degree[s]][[( and|,)] with rotation %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] on [(image|img)] %object% [at [[center] location] %-number%,[ ]%-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect draw [a] polygon [(1¦outline [(2¦with (flat|square) (cap|(edge|corner)[s]))] [with width %-number%])][[( and|,)] with %-object%] (with|using) (corners|vertices|vertexes|points) %number% with radius %number%[[( and|,)] [with] angle %-number% degree[s]][[( and|,)] with [rotation] %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] on [(image|img)] %object% [at [[center] location] %-number%,[ ]%-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-12 is set:
 			if expression-12 isn't instance of Variable:
