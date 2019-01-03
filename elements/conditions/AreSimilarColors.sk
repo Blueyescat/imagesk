@@ -21,12 +21,12 @@ object property condition similar to %object% [with (tolerance %-number% [percen
 		set {_r1} to {_color1}.getRed()
 		set {_g1} to {_color1}.getGreen()
 		set {_b1} to {_color1}.getBlue()
-		set {_minR} to max({_r1} - {_tolerance} and 0)
-		set {_minG} to max({_g1} - {_tolerance} and 0)
-		set {_minB} to max({_b1} - {_tolerance} and 0)
-		set {_maxR} to min({_r1} + {_tolerance} and 255)
-		set {_maxG} to min({_g1} + {_tolerance} and 255)
-		set {_maxB} to min({_b1} + {_tolerance} and 255)
+		set {_minR} to max({_r1} - {_tolerance}, 0)
+		set {_minG} to max({_g1} - {_tolerance}, 0)
+		set {_minB} to max({_b1} - {_tolerance}, 0)
+		set {_maxR} to min({_r1} + {_tolerance}, 255)
+		set {_maxG} to min({_g1} + {_tolerance}, 255)
+		set {_maxB} to min({_b1} + {_tolerance}, 255)
 		if {_color2}.getRed() is between {_minR} and {_maxR}:
 			if {_color2}.getGreen() is between {_minG} and {_maxG}:
 				if {_color2}.getBlue() is between {_minB} and {_maxB}:

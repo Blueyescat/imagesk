@@ -27,9 +27,9 @@ object property (opacity|transparency):
 					set {_temp} to new BufferedImage(expression-1.getWidth(), expression-1.getHeight(), BufferedImage.TYPE_INT_ARGB!)
 					set {_g} to {_temp}.createGraphics()
 					{_g}.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER!, {_opacity}))
-					{_g}.drawImage((expression-1), 0, 0, null)
+					{_g}.drawImage(expression-1, 0, 0, null)
 					{_g}.dispose()
-					imagesk set variable (raw expression-1) to {_temp} in event
+					imagesk set variable raw expression-1 to {_temp} in event
 			else:
 				imagesk error "The image to be edited must be in a variable! (set image opacity)"
 		else if expression-1 is instance of Color:
@@ -43,7 +43,6 @@ object property (opacity|transparency):
 						set {_r} to (1 / 255) * {_r}
 						set {_g} to (1 / 255) * {_g}
 						set {_b} to (1 / 255) * {_b}
-						
 						set {_opacity} to (1 / 100) * {_opacity}
 						if {_opacity} is greater than 1:
 							set {_opacity} to 1

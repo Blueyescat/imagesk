@@ -46,17 +46,17 @@ effect [(flood|bucket)] fill [on] [(image|img)] %object% at [location] %number%,
 			set {_pixel} to {_queue}.removeFirst()
 			if imagesk_pixelColor({_image}, ({_pixel}.x!) + 1, {_pixel}.y!) is similar to {_target} with tolerance {_tolerance}:
 				imagesk_setPixelColor({_image}, ({_pixel}.x!) + 1, {_pixel}.y!, {_replacement}.getRGB())
-				{_queue}.addLast(new Point((({_pixel}.x!) + 1) and {_pixel}.y!))
+				{_queue}.addLast(new Point((({_pixel}.x!) + 1), {_pixel}.y!))
 			if imagesk_pixelColor({_image}, ({_pixel}.x!) - 1, {_pixel}.y!) is similar to {_target} with tolerance {_tolerance}:
 				imagesk_setPixelColor({_image}, ({_pixel}.x!) - 1, {_pixel}.y!, {_replacement}.getRGB())
-				{_queue}.addLast(new Point((({_pixel}.x!) - 1) and {_pixel}.y!))
+				{_queue}.addLast(new Point((({_pixel}.x!) - 1), {_pixel}.y!))
 			if imagesk_pixelColor({_image}, {_pixel}.x!, ({_pixel}.y!) + 1) is similar to {_target} with tolerance {_tolerance}:
 				imagesk_setPixelColor({_image}, {_pixel}.x!, ({_pixel}.y! + 1), {_replacement}.getRGB())
-				{_queue}.addLast(new Point({_pixel}.x! and ({_pixel}.y! + 1)))
+				{_queue}.addLast(new Point({_pixel}.x!, ({_pixel}.y! + 1)))
 			if imagesk_pixelColor({_image}, {_pixel}.x!, ({_pixel}.y!) - 1) is similar to {_target} with tolerance {_tolerance}:
 				imagesk_setPixelColor({_image}, {_pixel}.x!, ({_pixel}.y! - 1), {_replacement}.getRGB())
-				{_queue}.addLast(new Point({_pixel}.x! and ({_pixel}.y! - 1)))
+				{_queue}.addLast(new Point({_pixel}.x!, ({_pixel}.y! - 1)))
 		delete {_queue}
 		if raw expression-6 is set:
-			imagesk set variable (raw expression-6) to {_image} in event
+			imagesk set variable raw expression-6 to {_image} in event
 		continue

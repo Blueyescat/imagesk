@@ -37,7 +37,7 @@ effect:
 		{_g}.drawImage({_image}, 0, 0, null)
 		{_g}.dispose()
 		if raw expression-3 is set:
-			imagesk set variable (raw expression-3) to {_mask} in event
+			imagesk set variable raw expression-3 to {_mask} in event
 		else:
 			{_image}.setData({_mask}.getData())
 		continue

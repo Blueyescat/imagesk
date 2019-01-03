@@ -44,7 +44,7 @@ effect:
 		set {_width} to {_image}.getWidth()
 		set {_height} to {_image}.getHeight()
 		
-		set {_output} to new BufferedImage({_width}, {_height}, (BufferedImage.TYPE_INT_ARGB!))
+		set {_output} to new BufferedImage({_width}, {_height}, BufferedImage.TYPE_INT_ARGB!)
 		set {_g} to {_output}.createGraphics()
 		{_g}.setComposite(AlphaComposite.Src!)
 		{_g}.setRenderingHint(RenderingHints.KEY_ANTIALIASING!, RenderingHints.VALUE_ANTIALIAS_ON!)
@@ -55,10 +55,10 @@ effect:
 		{_g}.dispose()
 		if matched pattern is 1 or 2:
 			if raw expression-6 is set:
-				imagesk set variable (raw expression-6) to {_output} in event
+				imagesk set variable raw expression-6 to {_output} in event
 				continue
 		else if raw expression-2 is set:
-			imagesk set variable (raw expression-2) to {_output} in event
+			imagesk set variable raw expression-2 to {_output} in event
 			continue
 		{_image}.setData({_output}.getData())
 		continue

@@ -32,8 +32,8 @@ effect (draw|merge) [(image|img)] %object% (on|with) [(image|img)] %object% [at 
 				{_g}.rotate(imagesk_toRadians(expression-5), (expression-6) - 1, (expression-7) - 1)
 			else:
 				{_g}.rotate(imagesk_toRadians(expression-5), {_x}, {_y})
-		{_g}.drawImage(expression-1, {_x}, {_y} and null)
+		{_g}.drawImage(expression-1, {_x}, {_y}, null)
 		{_g}.dispose()
 		if raw expression-8 is set:
-			imagesk set variable (raw expression-8) to {_image} in event
+			imagesk set variable raw expression-8 to {_image} in event
 		continue

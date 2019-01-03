@@ -54,7 +54,7 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 			add {_g}.getFontMetrics({_font}).getAscent() - 1 to {_y}
 		else:
 			set {_y} to {_g}.getFontMetrics({_font}).getAscent() - 1
-		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		{_g}.setRenderingHint(RenderingHints.KEY_ANTIALIASING!, RenderingHints.VALUE_ANTIALIAS_ON!)
 		if expression-5 is set:
 			if expression-6 and expression-7 are set:
 				{_g}.rotate(imagesk_toRadians(expression-5), (expression-6) - 1, (expression-7) - 1)
@@ -66,18 +66,18 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 				if {{@variable}::texts::%{_name}%::underline}, {{@variable}::texts::%{_name}%::strikethrough} or {{@variable}::texts::%{_name}%::background} is set:
 					imagesk warning "Using underline, strikethrough and background color with outline in the same time isn't supported currently. These properties won't work."
 				set {_frc} to {_g}.getFontRenderContext()
-				set {_gv} to {_font}.createGlyphVector({_frc} and {_w})
+				set {_gv} to {_font}.createGlyphVector({_frc}, {_w})
 				if {{@variable}::texts::%{_name}%::outlineWidth} is set:
-					{_g}.setStroke(new BasicStroke({{@variable}::texts::%{_name}%::outlineWidth}, (BasicStroke.CAP_ROUND!) and 1))
+					{_g}.setStroke(new BasicStroke({{@variable}::texts::%{_name}%::outlineWidth}, BasicStroke.CAP_ROUND!, 1))
 				if {{@variable}::texts::%{_name}%::onlyOutline} is not set:
 					if {{@variable}::texts::%{_name}%::foreground} is set:
 						{_g}.setColor({{@variable}::texts::%{_name}%::foreground})
-					{_g}.fill({_gv}.getOutline({_x} and {_y}))
+					{_g}.fill({_gv}.getOutline({_x}, {_y}))
 				if {{@variable}::texts::%{_name}%::outlineColor} is set:
 					{_g}.setColor({{@variable}::texts::%{_name}%::outlineColor})
 				else:
 					{_g}.setColor(Color.BLACK!)
-				{_g}.draw({_gv}.getOutline({_x} and {_y}))
+				{_g}.draw({_gv}.getOutline({_x}, {_y}))
 				add {_g}.getFontMetrics({_font}).getHeight() to {_y}
 		else:
 			loop ...{_text}.split("\n|\\n"):
@@ -85,18 +85,18 @@ effect (write|draw) [[(image|img)] (text|string) [(with (id|name)|named)]] %stri
 				if {{@variable}::texts::%{_name}%::underline}, {{@variable}::texts::%{_name}%::strikethrough}, {{@variable}::texts::%{_name}%::foreground} or {{@variable}::texts::%{_name}%::background} is set:
 					set {_aString} to new AttributedString({_w})
 					if {{@variable}::texts::%{_name}%::underline} is set:
-						{_aString}.addAttribute((TextAttribute.UNDERLINE!) and (TextAttribute.UNDERLINE_ON!))
+						{_aString}.addAttribute(TextAttribute.UNDERLINE!, TextAttribute.UNDERLINE_ON!)
 					if {{@variable}::texts::%{_name}%::strikethrough} is set:
-						{_aString}.addAttribute((TextAttribute.STRIKETHROUGH!) and (TextAttribute.STRIKETHROUGH_ON!))
+						{_aString}.addAttribute(TextAttribute.STRIKETHROUGH!, TextAttribute.STRIKETHROUGH_ON!)
 					if {{@variable}::texts::%{_name}%::foreground} is set:
-						{_aString}.addAttribute((TextAttribute.FOREGROUND!) and {{@variable}::texts::%{_name}%::foreground})
+						{_aString}.addAttribute(TextAttribute.FOREGROUND!, {{@variable}::texts::%{_name}%::foreground})
 					if {{@variable}::texts::%{_name}%::background} is set:
-						{_aString}.addAttribute((TextAttribute.BACKGROUND!) and {{@variable}::texts::%{_name}%::background})
-					{_aString}.addAttribute((TextAttribute.FONT!) and {_font})
+						{_aString}.addAttribute(TextAttribute.BACKGROUND!, {{@variable}::texts::%{_name}%::background})
+					{_aString}.addAttribute(TextAttribute.FONT!, {_font})
 					set {_w} to {_aString}.getIterator()
-				{_g}.drawString({_w}, {_x} and {_y})
+				{_g}.drawString({_w}, {_x}, {_y})
 				add {_g}.getFontMetrics({_font}).getHeight() - 2 to {_y}
 		{_g}.dispose()
 		if raw expression-8 is set:
-			imagesk set variable (raw expression-8) to {_image} in event
+			imagesk set variable raw expression-8 to {_image} in event
 		continue

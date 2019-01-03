@@ -54,16 +54,16 @@ effect resize [(image|img)] %object% to [sizes] (width %-number%[( and|,)] heigh
 			set {_algorithm} to Image.SCALE_SMOOTH!
 		else:
 			set {_algorithm} to Image.SCALE_DEFAULT!
-		set {_temp} to {_image}.getScaledInstance({_width}, {_height} and {_algorithm})
-		set {_resized} to new BufferedImage({_width}, {_height} and BufferedImage.TYPE_INT_ARGB!)
+		set {_temp} to {_image}.getScaledInstance({_width}, {_height}, {_algorithm})
+		set {_resized} to new BufferedImage({_width}, {_height}, BufferedImage.TYPE_INT_ARGB!)
 		set {_g} to {_resized}.createGraphics()
-		{_g}.drawImage({_temp}, 0, 0 and null)
+		{_g}.drawImage({_temp}, 0, 0, null)
 		{_g}.dispose()
 		if raw expression-7 is not set:
 			if "%raw expression-1%" is "[the] [last[ly]] [(created|generated|received|taken)] (image|img)":
 				set {{@variable}::lastImage} to {_resized}
 			else:
-				imagesk set variable (raw expression-1) to {_resized} in event
+				imagesk set variable raw expression-1 to {_resized} in event
 		else:
-			imagesk set variable (raw expression-7) to {_resized} in event
+			imagesk set variable raw expression-7 to {_resized} in event
 		continue

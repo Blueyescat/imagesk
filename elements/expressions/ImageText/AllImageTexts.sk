@@ -2,8 +2,8 @@ options:
 	# If changing this is really important for you, you need to change it in all imagesk files.
 	variable: imagesk # {imagesk::xxx}
 
-expression [(all [[of] the]|the)] (image|img) (text|string)s:
-	return type: strings
+plural expression [(all [[of] the]|the)] (image|img) (text|string)s:
+	return type: string
 	get:
 		loop {{@variable}::texts::*}:
 			add "imgtext:%loop-index%" to {_list::*}

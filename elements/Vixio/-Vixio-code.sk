@@ -30,7 +30,6 @@ effect:
 			set {_messageExpr} to expression-2
 			set {_channel} to expression-3
 			set {_bot} to expression-4
-		
 		if {_image} is not instance of BufferedImage:
 			stop
 		delay the current effect
@@ -53,7 +52,6 @@ effect:
 		set {_bot} to VixioUtil.botFrom({_bot})
 		if {_image}, {_messageChannel} or {_bot} is not set:
 			continue
-		
 		set {_bindedChannel} to VixioUtil.bindMessageChannel({_bot}, {_messageChannel})
 		set {_os} to new ByteArrayOutputStream()
 		ImageIO.write({_image}, {_format}, {_os})

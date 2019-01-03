@@ -32,7 +32,7 @@ effect draw [a[n]] circle [(1¦outline [with width %-number%])] with (radius|siz
 		set {_g} to {_image}.createGraphics()
 		if imagesk_colorFrom(expression-3) is instance of Color:
 			{_g}.setColor(imagesk_colorFrom(expression-3))
-		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		{_g}.setRenderingHint(RenderingHints.KEY_ANTIALIASING!, RenderingHints.VALUE_ANTIALIAS_ON!)
 		if expression-4, expression-5 and expression-6 are set:
 			{_g}.rotate(imagesk_toRadians(expression-4), (expression-5) - 1, (expression-6) - 1)
 		if parse mark is 1:
@@ -40,11 +40,11 @@ effect draw [a[n]] circle [(1¦outline [with width %-number%])] with (radius|siz
 				set {_outlineWidth} to expression-1
 			else:
 				set {_outlineWidth} to 1
-			{_g}.setStroke(new BasicStroke({_outlineWidth}, (BasicStroke.CAP_ROUND!) and 2))
-			{_g}.drawOval(({_x} - expression-2), ({_y} - expression-2), (expression-2 * 2) and (expression-2 * 2))
+			{_g}.setStroke(new BasicStroke({_outlineWidth}, BasicStroke.CAP_ROUND! and 2))
+			{_g}.drawOval(({_x} - expression-2), ({_y} - expression-2), (expression-2 * 2), (expression-2 * 2))
 		else:
-			{_g}.fillOval(({_x} - expression-2), ({_y} - expression-2), (expression-2 * 2) and (expression-2 * 2))
+			{_g}.fillOval(({_x} - expression-2), ({_y} - expression-2), (expression-2 * 2), (expression-2 * 2))
 		{_g}.dispose()
 		if raw expression-10 is set:
-			imagesk set variable (raw expression-10) to {_image} in event
+			imagesk set variable raw expression-10 to {_image} in event
 		continue

@@ -1,5 +1,5 @@
 # ##############################
-# Main file of imagesk (v2.0.0-beta)
+# Main file of imagesk (v2.0.0-beta.2)
 #
 # https://github.com/Blueyescat/imagesk
 #
@@ -44,9 +44,7 @@ expression [the] [last[ly]] [(created|generated|received|taken)] (image|img):
 	delete:
 		delete {{@variable}::lastImage}
 
-
-# You shouldn't use the syntaxes below in your scripts
-
+# Do not use the syntaxes below in your scripts
 effect imagesk [(1¦parse)] error %string%:
 	trigger:
 		if parse mark is 1:
@@ -60,8 +58,7 @@ effect imagesk warning %string%:
 
 effect imagesk set variable %object% to %object% in %event%:
 	trigger:
-		set {_variable} to expression-1
-		set {_name} to {_variable}.getName().toString(expression-3)
+		set {_name} to expression-1.getName().toString(expression-3)
 		Variables.setVariable({_name}, expression-2, expression-3, {_variable}.isLocal())
 
 function imagesk_colorFrom(color: object) :: object:
@@ -73,13 +70,12 @@ function imagesk_toRadians(degrees: number) :: number:
 	return Math.toRadians({_degrees})
 
 function imagesk_pixelColor(image: object, x: number, y: number) :: object:
-	set {_rgb} to {_image}.getRGB({_x} and {_y})
+	set {_rgb} to {_image}.getRGB({_x}, {_y})
 	return new Color({_rgb})
 
 function imagesk_setPixelColor(image: object, x: number, y: number, rgb: number):
-	{_image}.setRGB({_x}, {_y} and {_rgb})
+	{_image}.setRGB({_x}, {_y}, {_rgb})
 
 function imagesk_copiedImage(image: object) :: object:
-	return new BufferedImage(({_image}.getColorModel()), ({_image}.copyData(null)), ({_image}.isAlphaPremultiplied()) and null)
-
-# You shouldn't use the syntaxes above in your scripts
+	return new BufferedImage({_image}.getColorModel(), {_image}.copyData(null), {_image}.isAlphaPremultiplied(), null)
+# Do not use the syntaxes above in your scripts

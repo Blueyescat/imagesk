@@ -48,13 +48,13 @@ effect get [the] (image|img) (of|from) (url %-string%|1¦file %-string%|2¦base[
 				set {_image} to ImageIO.read({_bis})
 				{_bis}.close()
 		if {_image}.getType() is not 2:
-			set {_newImage} to new BufferedImage(({_image}.getWidth()), ({_image}.getHeight()) and BufferedImage.TYPE_INT_ARGB!)
+			set {_newImage} to new BufferedImage({_image}.getWidth(), {_image}.getHeight(), BufferedImage.TYPE_INT_ARGB!)
 			set {_g} to {_newImage}.createGraphics()
-			{_g}.drawImage({_image}, 0, 0, ({_image}.getWidth()), ({_image}.getHeight()) and null)
+			{_g}.drawImage({_image}, 0, 0, {_image}.getWidth(), {_image}.getHeight(), null)
 			{_g}.dispose()
 			set {_image} to {_newImage}
 		if raw expression-4 is set:
-			imagesk set variable (raw expression-4) to {_image} in event
+			imagesk set variable raw expression-4 to {_image} in event
 		else:
 			set {{@variable}::lastImage} to {_image}
 		continue

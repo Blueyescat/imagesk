@@ -50,12 +50,11 @@ expression [(image|img)] colo[u]r [from] (%-color%|1¦[hex] %-string%|2¦[rgb[ ]
 					set {_opacity} to 255
 				else if {_opacity} is smaller than 0:
 					set {_opacity} to 0
-			set {_color} to new Color({_r}, {_g}, {_b} and {_opacity})
+			set {_color} to new Color({_r}, {_g}, {_b}, {_opacity})
 		else:
-			set {_color} to new Color({_r}, {_g} and {_b})
+			set {_color} to new Color({_r}, {_g}, {_b})
 		return {_color}
 
 expression %color% with (opacity|transparency) %number% [percent]:
 	get:
-		set {_color} to expression-1
-		return color from {_color} with opacity expression-2
+		return color from expression-1 with opacity expression-2

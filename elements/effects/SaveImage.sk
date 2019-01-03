@@ -17,5 +17,5 @@ effect (save|write) [(image|img)] %object% to [file] %string%:
 			set {_extension} to last element of split {_fileName} at "."
 		else:
 			set {_extension} to "png"
-		ImageIO.write(expression-1, {_extension} and {_file})
+		ImageIO.write(expression-1, {_extension}, {_file})
 		continue

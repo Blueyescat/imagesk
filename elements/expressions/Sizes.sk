@@ -36,8 +36,8 @@ expression:
 				add Font.BOLD! to {_style}
 			if {{@variable}::texts::%{_name}%::italic} is set:
 				add Font.ITALIC! to {_style}
-			set {_font} to new Font({{@variable}::texts::%{_name}%::font}, {_style} and {{@variable}::texts::%{_name}%::size})
-			set {_g} to new BufferedImage(1, 1 and BufferedImage.TYPE_INT_RGB!).getGraphics()
+			set {_font} to new Font({{@variable}::texts::%{_name}%::font}, {_style}, {{@variable}::texts::%{_name}%::size})
+			set {_g} to new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB!).getGraphics()
 			set {_fm} to {_g}.getFontMetrics({_font})
 			set {_text} to {{@variable}::texts::%{_name}%::text}
 			if parse mark is 0:

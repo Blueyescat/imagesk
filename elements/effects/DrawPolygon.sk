@@ -36,7 +36,7 @@ effect draw [a] polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)
 		set {_g} to {_image}.createGraphics()
 		if imagesk_colorFrom(expression-2) is instance of Color:
 			{_g}.setColor(imagesk_colorFrom(expression-2))
-		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		{_g}.setRenderingHint(RenderingHints.KEY_ANTIALIASING!, RenderingHints.VALUE_ANTIALIAS_ON!)
 		if expression-3 is set:
 			if expression-4 and expression-5 are set:
 				{_g}.rotate(imagesk_toRadians(expression-3), (expression-4) - 1, (expression-5) - 1)
@@ -56,7 +56,7 @@ effect draw [a] polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)
 			else:
 				set {_outlineWidth} to 1
 			if parse mark is 1:
-				{_g}.setStroke(new BasicStroke({_outlineWidth}, (BasicStroke.CAP_ROUND!) and 1))
+				{_g}.setStroke(new BasicStroke({_outlineWidth}, BasicStroke.CAP_ROUND!, 1))
 			else:
 				{_g}.setStroke(new BasicStroke({_outlineWidth}))
 			{_g}.drawPolygon({_polygon})
@@ -64,7 +64,7 @@ effect draw [a] polygon [(1¦outline [(2¦with ((flat|square) (cap|(edge|corner)
 			{_g}.fillPolygon({_polygon})
 		{_g}.dispose()
 		if raw expression-8 is set:
-			imagesk set variable (raw expression-8) to {_image} in event
+			imagesk set variable raw expression-8 to {_image} in event
 		continue
 
 effect draw [a] polygon [(1¦outline [(2¦with (flat|square) (cap|(edge|corner)[s]))] [with width %-number%])][[( and|,)] with %-object%] (with|using) (corners|vertices|vertexes|points) %number% with radius %number%[[( and|,)] [with] angle %-number% degree[s]][[( and|,)] with [rotation] %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] on [(image|img)] %object% [at [[center] location] %-number%,[ ]%-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
@@ -85,7 +85,7 @@ effect draw [a] polygon [(1¦outline [(2¦with (flat|square) (cap|(edge|corner)[
 		set {_g} to {_image}.createGraphics()
 		if imagesk_colorFrom(expression-2) is instance of Color:
 			{_g}.setColor(imagesk_colorFrom(expression-2))
-		{_g}.setRenderingHint((RenderingHints.KEY_ANTIALIASING!) and (RenderingHints.VALUE_ANTIALIAS_ON!))
+		{_g}.setRenderingHint(RenderingHints.KEY_ANTIALIASING!, RenderingHints.VALUE_ANTIALIAS_ON!)
 		if expression-6 is set:
 			if expression-7 and expression-8 are set:
 				{_g}.rotate(imagesk_toRadians(expression-6), (expression-7) - 1, (expression-8) - 1)
@@ -110,7 +110,7 @@ effect draw [a] polygon [(1¦outline [(2¦with (flat|square) (cap|(edge|corner)[
 		set {_angleChange} to 360 / expression-3
 		set {_polygon} to new Polygon()
 		loop expression-3 times:
-			{_polygon}.addPoint(({_x} + expression-4 * sin({_angle})) and ({_y} + expression-4 * cos({_angle})))
+			{_polygon}.addPoint(({_x} + expression-4 * sin({_angle})), ({_y} + expression-4 * cos({_angle})))
 			add {_angleChange} to {_angle}
 		if parse mark is 1 or 3:
 			if expression-1 is set:
@@ -118,7 +118,7 @@ effect draw [a] polygon [(1¦outline [(2¦with (flat|square) (cap|(edge|corner)[
 			else:
 				set {_outlineWidth} to 1
 			if parse mark is 1:
-				{_g}.setStroke(new BasicStroke({_outlineWidth}, (BasicStroke.CAP_ROUND!) and 1))
+				{_g}.setStroke(new BasicStroke({_outlineWidth}, BasicStroke.CAP_ROUND!, 1))
 			else:
 				{_g}.setStroke(new BasicStroke({_outlineWidth}))
 			{_g}.drawPolygon({_polygon})
@@ -126,5 +126,5 @@ effect draw [a] polygon [(1¦outline [(2¦with (flat|square) (cap|(edge|corner)[
 			{_g}.fillPolygon({_polygon})
 		{_g}.dispose()
 		if raw expression-12 is set:
-			imagesk set variable (raw expression-12) to {_image} in event
+			imagesk set variable raw expression-12 to {_image} in event
 		continue

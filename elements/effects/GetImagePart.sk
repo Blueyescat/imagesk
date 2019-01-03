@@ -26,5 +26,5 @@ effect (get|extract) part of [(image|img)] %object% (from [location] %-number%,[
 			set {_y2} to expression-9
 		set {_width} to difference between {_x1} and {_x2}
 		set {_height} to difference between {_y1} and {_y2}
-		imagesk set variable raw expression-10 to expression-1.getSubimage(({_x1} - 1), ({_y1} - 1), ({_width} - 1) and ({_height} - 1)) in event
+		imagesk set variable raw expression-10 to expression-1.getSubimage(({_x1} - 1), ({_y1} - 1), ({_width} - 1), ({_height} - 1)) in event
 		continue
