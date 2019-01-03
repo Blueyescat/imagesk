@@ -5,11 +5,11 @@ options:
 import:
 	java.awt.Color
 
-expression [(image|img)] colo[u]r (%-color%|1¦[from] [hex] %-string%|2¦[from] [rgb[ ]][\(]%-number%, %-number%, %-number%[\)])[[,] [with] ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)))]:
+expression [(image|img)] colo[u]r [from] (%-color%|1¦[hex] %-string%|2¦[rgb[ ]][\(]%-number%, %-number%, %-number%[\)])[[,] [with] (opacity|transparency) %-number% [percent]))]:
 	get:
 		if parse mark is 0 or 1:
 			if parse mark is 0:
-				if expression-6 and expression-7 is not set:
+				if expression-6 is not set:
 					return new Color(expression-1.getBukkitColor().asRGB())
 				else:
 					set {_color} to expression-1.getBukkitColor()
@@ -17,7 +17,7 @@ expression [(image|img)] colo[u]r (%-color%|1¦[from] [hex] %-string%|2¦[from] 
 				set {_hex} to expression-2
 				replace all "##" with "" in {_hex}
 				set {_color} to Color.decode("##%{_hex}%")
-				if expression-6 and expression-7 is not set:
+				if expression-6 is not set:
 					return {_color}
 			set {_r} to {_color}.getRed()
 			set {_g} to {_color}.getGreen()
@@ -33,8 +33,6 @@ expression [(image|img)] colo[u]r (%-color%|1¦[from] [hex] %-string%|2¦[from] 
 				set {_%loop-value%} to 0
 		if expression-6 is set:
 			set {_opacity} to expression-6
-		else if expression-7 is set:
-			set {_opacity} to expression-7
 		if {{@variable}::useFloatColorMethod} is true:
 			set {_r} to (1 / 255) * {_r}
 			set {_g} to (1 / 255) * {_g}
@@ -57,6 +55,7 @@ expression [(image|img)] colo[u]r (%-color%|1¦[from] [hex] %-string%|2¦[from] 
 			set {_color} to new Color({_r}, {_g} and {_b})
 		return {_color}
 
-expression %color% with ((opacity|transparency) %-number% [percent]|%-number% [percent] (opacity|transparency)):
+expression %color% with (opacity|transparency) %number% [percent]:
 	get:
-		return color expression-1 with opacity expression-2
+		set {_color} to expression-1
+		return color from {_color} with opacity expression-2
