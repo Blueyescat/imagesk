@@ -58,7 +58,8 @@ effect imagesk warning %string%:
 
 effect imagesk set variable %object% to %object% in %event%:
 	trigger:
-		set {_name} to expression-1.getName().toString(expression-3)
+		set {_variable} to expression-1
+		set {_name} to {_variable}.getName().toString(expression-3)
 		Variables.setVariable({_name}, expression-2, expression-3, {_variable}.isLocal())
 
 function imagesk_colorFrom(color: object) :: object:
