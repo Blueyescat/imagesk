@@ -29,5 +29,4 @@ expression [a] [new] [(1¦(repeating|repeated)|2¦(reflected|reflecting))] linea
 				set {_method} to CycleMethod.REPEAT!
 			else if parse mark is 2 or 8:
 				set {_method} to CycleMethod.REFLECT!
-			broadcast "%{_x1}, {_y1}, {_x2}, {_y2}, [{_fractions::*}], [{_colors::*}], {_method}%"
 			return new LinearGradientPaint({_x1}, {_y1}, {_x2}, {_y2}, [{_fractions::*}], [{_colors::*}], {_method})
