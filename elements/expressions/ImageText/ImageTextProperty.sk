@@ -117,7 +117,7 @@ expression outline (width|size) of [[(image|img)] (text|string)] %string%:
 	delete:
 		delete {{@variable}::texts::%expression-1%::outlineWidth}
 
-expression ([foreground]|1¦background|2¦outline) colo[u]r of [[(image|img)] (text|string)] %string%:
+expression ([f[ore]g[round]]|1¦b[ack]g[round]|2¦outline) (colo[u]r|paint|gradient) of [[(image|img)] (text|string)] %string%:
 	get:
 		if parse mark is 0:
 			return {{@variable}::texts::%expression-1%::foreground}
@@ -129,13 +129,13 @@ expression ([foreground]|1¦background|2¦outline) colo[u]r of [[(image|img)] (t
 			else:
 				return Color.BLACK!
 	set:
-		if imagesk_colorFrom(change value) is instance of Color:
+		if imagesk_paintFrom(change value) is set:
 			if parse mark is 0:
-				set {{@variable}::texts::%expression-1%::foreground} to imagesk_colorFrom(change value)
+				set {{@variable}::texts::%expression-1%::foreground} to imagesk_paintFrom(change value)
 			else if parse mark is 1:
-				set {{@variable}::texts::%expression-1%::background} to imagesk_colorFrom(change value)
+				set {{@variable}::texts::%expression-1%::background} to imagesk_paintFrom(change value)
 			else if parse mark is 2:
-				set {{@variable}::texts::%expression-1%::outlineColor} to imagesk_colorFrom(change value)
+				set {{@variable}::texts::%expression-1%::outlineColor} to imagesk_paintFrom(change value)
 	reset:
 		if parse mark is 0:
 			delete {{@variable}::texts::%expression-1%::foreground}

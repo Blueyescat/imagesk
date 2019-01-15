@@ -4,7 +4,7 @@ import:
 	
 	ch.njol.skript.lang.Variable
 
-effect [(flood|bucket)] fill [on] [(image|img)] %object% at [location] %number%,[ ]%number% (with|using) [replace[ment]] %object% [with tolerance %-number% [percent]] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect [(flood|bucket)] fill [on] [(image|img)] %object% at [location] %number%,[ ]%number% (with|using) [replace[ment]] %object%[[( and|,)] [with] tolerance %-number% [percent]] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
 	parse:
 		if expression-6 is set:
 			if expression-6 isn't instance of Variable:
@@ -25,7 +25,9 @@ effect [(flood|bucket)] fill [on] [(image|img)] %object% at [location] %number%,
 		if {_y} is greater than or equal to {_image}.getHeight():
 			stop
 		set {_target} to imagesk_pixelColor({_image}, {_x}, {_y})
-		set {_replacement} to imagesk_colorFrom(expression-4)
+		set {_replacement} to imagesk_paintFrom(expression-4)
+		if imagesk_areColors({_replacement}) is false:
+			stop
 		if {_target} is {_replacement}:
 			stop
 		if expression-5 is set:

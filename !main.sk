@@ -12,6 +12,7 @@ options:
 
 import:
 	java.awt.Color
+	java.awt.Paint
 	java.awt.image.BufferedImage
 	java.lang.Math
 	java.util.Base64
@@ -62,10 +63,17 @@ effect imagesk set variable %object% to %object% in %event%:
 		set {_name} to {_variable}.getName().toString(expression-3)
 		Variables.setVariable({_name}, expression-2, expression-3, {_variable}.isLocal())
 
-function imagesk_colorFrom(color: object) :: object:
+function imagesk_paintFrom(color: object) :: object:
 	if {_color} is instance of SkriptColor:
 		return new Color({_color}.getBukkitColor().asRGB())
-	return {_color}
+	if {_color} is instance of Paint:
+		return {_color}
+
+function imagesk_areColors(paints: objects) :: boolean:
+	loop {_paints::*}:
+		if loop-value is not instance of Color:
+			return false
+	return true
 
 function imagesk_toRadians(degrees: number) :: number:
 	return Math.toRadians({_degrees})
@@ -79,4 +87,7 @@ function imagesk_setPixelColor(image: object, x: number, y: number, rgb: number)
 
 function imagesk_copiedImage(image: object) :: object:
 	return new BufferedImage({_image}.getColorModel(), {_image}.copyData(null), {_image}.isAlphaPremultiplied(), null)
+
+function imagesk_skriptColor(color: object) :: color:
+	return {_color}
 # Do not use the syntaxes above in your scripts

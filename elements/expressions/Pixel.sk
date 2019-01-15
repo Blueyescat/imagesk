@@ -14,11 +14,11 @@ object property [colo[u]r of] pixel [at [location]] %number%,[ ]%number%:
 	set:
 		if expression-1 isn't instance of BufferedImage:
 			stop
-		if imagesk_colorFrom(change value) isn't instance of Color:
+		if imagesk_paintFrom(change value) isn't instance of Color:
 			stop
 		if expression-2 is set:
 			if expression-3 is set:
-				set {_rgb} to (imagesk_colorFrom(change value)).getRGB()
+				set {_rgb} to (imagesk_paintFrom(change value)).getRGB()
 				set {_x} to (expression-2) - 1
 				set {_y} to (expression-3) - 1
 				imagesk_setPixelColor(expression-1, {_x}, {_y}, {_rgb})

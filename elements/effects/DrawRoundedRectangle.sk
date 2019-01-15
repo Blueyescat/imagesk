@@ -8,8 +8,8 @@ import:
 
 effect:
 	patterns:
-		draw [a] rounded rectangle [(2¦outline [with width %-number%])] with arc[h] (width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) with [rectangle] width %-number%[( and|,)] [with] height %-number%[[( and|,)] with %-object%][[( and|,)] with [rotation] %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] on [(image|img)] %object% [at [location] %-number%,[ ]%-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
-		draw [a] rounded rectangle [(2¦outline [with width %-number%])] with arc[h] height %-number%[( and|,)] [with] width %-number% with [rectangle] (width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] with %-object%][[( and|,)] with [rotation] %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] on [(image|img)] %object% [at [location] %-number%,[ ]%-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		draw [a] rounded rectangle [(2¦outline [with width %-number%])] with arc[h] (width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) with [rectangle] width %-number%[( and|,)] [with] height %-number%[[( and|,)] [with] [(paint|gradient)] %-object%][[( and|,)] [with] [rotation] %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] on [(image|img)] %object% [at [location] %-number%,[ ]%-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		draw [a] rounded rectangle [(2¦outline [with width %-number%])] with arc[h] height %-number%[( and|,)] [with] width %-number% with [rectangle] (width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] [with] [(paint|gradient)] %-object%][[( and|,)] [with] [rotation] %-number% degree[s] [angle] [using origin location %-number%,[ ]%-number%]] on [(image|img)] %object% [at [location] %-number%,[ ]%-number%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
 	parse:
 		if expression-15 is set:
 			if expression-15 isn't instance of Variable:
@@ -51,8 +51,8 @@ effect:
 		else:
 			set {_image} to expression-12
 		set {_g} to {_image}.createGraphics()
-		if imagesk_colorFrom(expression-8) is instance of Color:
-			{_g}.setColor(imagesk_colorFrom(expression-8))
+		if imagesk_paintFrom(expression-8) is set:
+			{_g}.setPaint(imagesk_paintFrom(expression-8))
 		{_g}.setRenderingHint(RenderingHints.KEY_ANTIALIASING!, RenderingHints.VALUE_ANTIALIAS_ON!)
 		if expression-9 is set:
 			if expression-10 and expression-11 are set:

@@ -1,0 +1,74 @@
+import:
+	java.awt.Color
+	java.awt.RadialGradientPaint
+	java.awt.MultipleGradientPaint$ColorSpaceType
+	java.awt.MultipleGradientPaint$CycleMethod
+	java.awt.geom.AffineTransform
+	java.awt.geom.Point2D$Double as Point2DDouble
+
+expression [a] [new] [(1¦repeating|2¦reflected)] (radial|circular) gradient with %objects%[(,| and)] [with] radius %-number%[[(,| and)] [with] (fraction|distribution)s %-numbers%] at [center] [location] %-number%,[ ]%-number% [using (start|focus) location %-number%,[ ]%-number%]:
+	get:
+		loop expressions-1:
+			add imagesk_paintFrom(loop-value) to {_colors::*}
+		if imagesk_areColors({_colors::*}) is true:
+			set {_radius} to expression-2
+			if raw expressions-3 is set:
+				loop expressions-3:
+					add (1 / 100) * ("%loop-value%" parsed as number) to {_fractions::*}
+			else:
+				loop size of {_colors::*} times:
+					add (1 / (size of {_colors::*} - 1)) * (loop-number - 1) to {_fractions::*}
+			set {_x} to (expression-4) - 1
+			set {_y} to (expression-5) - 1
+			if parse mark is 0:
+				set {_method} to CycleMethod.NO_CYCLE!
+			else if parse mark is 1:
+				set {_method} to CycleMethod.REPEAT!
+			else if parse mark is 2:
+				set {_method} to CycleMethod.REFLECT!
+			if (raw expression-6) and (raw expression-7) are set:
+				set {_x2} to (expression-6) - 1
+				set {_y2} to (expression-7) - 1
+			else:
+				set {_x2} to {_x}
+				set {_y2} to {_y}
+			return new RadialGradientPaint({_x}, {_y}, {_radius}, {_x2}, {_y2}, [{_fractions::*}], [{_colors::*}], {_method})
+				
+expression [a] [new] [(1¦repeating|2¦reflected)] (radial|circular) gradient with %objects%[(,| and)] [with] (horizontal radius %-number%[( and|,)] [with] vertical radius %-number%|10¦vertical radius %-number%[( and|,)] [with] horizontal radius %-number%)[[(,| and)] [with] (fraction|distribution)s %-numbers%] at [center] [location] %-number%,[ ]%-number% [using (start|focus) location %-number%,[ ]%-number%]:
+	get:
+		loop expressions-1:
+			add imagesk_paintFrom(loop-value) to {_colors::*}
+		if imagesk_areColors({_colors::*}) is true:
+			if raw expressions-6 is set:
+				loop expressions-6:
+					add (1 / 100) * ("%loop-value%" parsed as number) to {_fractions::*}
+			else:
+				loop size of {_colors::*} times:
+					add (1 / (size of {_colors::*} - 1)) * (loop-number - 1) to {_fractions::*}
+			set {_x} to (expression-7) - 1
+			set {_y} to (expression-8) - 1
+			set {_loc1} to new Point2DDouble({_x}, {_y})
+			if parse mark is 0 or 10:
+				set {_method} to CycleMethod.NO_CYCLE!
+			else if parse mark is 1 or 11:
+				set {_method} to CycleMethod.REPEAT!
+			else if parse mark is 2 or 8:
+				set {_method} to CycleMethod.REFLECT!
+			if (raw expression-9) and (raw expression-10) are set:
+				set {_x2} to (expression-9) - 1
+				set {_y2} to (expression-10) - 1
+			if parse mark is 0, 1 or 2:
+				set {_width} to expression-2
+				set {_height} to expression-3
+			else if parse mark is 1, 8, 10 or 11:
+				set {_width} to expression-4
+				set {_height} to expression-5
+			set {_transform} to AffineTransform.getTranslateInstance({_x}, {_y})
+			set {_min} to min({_width}, {_height})
+			{_transform}.scale({_width} / {_min}, {_height} / {_min})
+			{_transform}.translate(0-{_x}, 0-{_y})
+			if {_x2} and {_y2} are set:
+				set {_loc2} to new Point2DDouble({_x2}, {_y2})
+			else:
+				set {_loc2} to new Point2DDouble({_x}, {_y})
+			return new RadialGradientPaint({_loc1}, ({_width} * 2), {_loc2}, [{_fractions::*}], [{_colors::*}], {_method}, (ColorSpaceType.SRGB!), {_transform})

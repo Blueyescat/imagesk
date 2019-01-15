@@ -3,7 +3,7 @@ import:
 
 object property condition similar to %object% [with (tolerance %-number% [percent]|%-number% [percent] tolerance)]:
 	check:
-		if imagesk_colorFrom(expression-1) or imagesk_colorFrom(expression-2) isn't instance of Color:
+		if imagesk_paintFrom(expression-1) or imagesk_paintFrom(expression-2) isn't instance of Color:
 			stop
 		if expression-3 is set:
 			set {_tolerance} to expression-3
@@ -16,8 +16,8 @@ object property condition similar to %object% [with (tolerance %-number% [percen
 		else if {_tolerance} is smaller than 0:
 			set {_tolerance} to 0
 		set {_tolerance} to (255 / 100) * {_tolerance}
-		set {_color1} to imagesk_colorFrom(expression-1)
-		set {_color2} to imagesk_colorFrom(expression-2)
+		set {_color1} to imagesk_paintFrom(expression-1)
+		set {_color2} to imagesk_paintFrom(expression-2)
 		set {_r1} to {_color1}.getRed()
 		set {_g1} to {_color1}.getGreen()
 		set {_b1} to {_color1}.getBlue()

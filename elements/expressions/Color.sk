@@ -4,6 +4,9 @@ options:
 
 import:
 	java.awt.Color
+	java.lang.String
+	
+	ch.njol.skript.util.Color as SkriptColor
 
 expression [(image|img)] colo[u]r [from] (%-color%|1¦[hex] %-string%|2¦[rgb[ ]][\(]%-number%, %-number%, %-number%[\)])[[,] [with] (opacity|transparency) %-number% [percent]))]:
 	get:
@@ -58,3 +61,16 @@ expression [(image|img)] colo[u]r [from] (%-color%|1¦[hex] %-string%|2¦[rgb[ ]
 expression %color% with (opacity|transparency) %number% [percent]:
 	get:
 		return color from expression-1 with opacity expression-2
+
+plural expression colo[u]rs %objects%:
+	get:
+		if expression-2 is set:
+			set {_opacity} to expression-2
+		loop expressions-1:
+			if loop-value is instance of Color:
+				add loop-value to {_colors::*}
+			else if loop-value is instance of SkriptColor:
+				add color from imagesk_skriptColor(loop-value) to {_colors::*}
+			else if loop-value is instance of String:
+				add color from "%loop-value%" to {_colors::*}
+		return {_colors::*}

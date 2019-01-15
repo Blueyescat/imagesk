@@ -1,0 +1,33 @@
+import:
+	java.awt.LinearGradientPaint
+	java.awt.MultipleGradientPaint$CycleMethod
+
+expression [a] [new] [(1¦(repeating|repeated)|2¦(reflected|reflecting))] linear gradient with %objects%[[(,| and)] [with] (fraction|distribution)s %-numbers%] (from [location] %-number%,[ ]%-number% to %-number%,[ ]%-number%|10¦between locations %-number%,[ ]%-number% and %-number%,[ ]%-number%):
+	get:
+		loop expressions-1:
+			add imagesk_paintFrom(loop-value) to {_colors::*}
+		if imagesk_areColors({_colors::*}) is true:
+			if raw expressions-2 is set:
+				loop expressions-2:
+					add (1 / 100) * ("%loop-value%" parsed as number) to {_fractions::*}
+			else:
+				loop size of {_colors::*} times:
+					add (1 / (size of {_colors::*} - 1)) * (loop-number - 1) to {_fractions::*}
+			if parse mark is 0, 1 or 2:
+				set {_x1} to (expression-3) - 1
+				set {_y1} to (expression-4) - 1
+				set {_x2} to (expression-5) - 1
+				set {_y2} to (expression-6) - 1
+			else if parse mark is 8, 10 or 11:
+				set {_x1} to (expression-7) - 1
+				set {_y1} to (expression-8) - 1
+				set {_x2} to (expression-9) - 1
+				set {_y2} to (expression-10) - 1
+			if parse mark is 0 or 10:
+				set {_method} to CycleMethod.NO_CYCLE!
+			else if parse mark is 1 or 11:
+				set {_method} to CycleMethod.REPEAT!
+			else if parse mark is 2 or 8:
+				set {_method} to CycleMethod.REFLECT!
+			broadcast "%{_x1}, {_y1}, {_x2}, {_y2}, [{_fractions::*}], [{_colors::*}], {_method}%"
+			return new LinearGradientPaint({_x1}, {_y1}, {_x2}, {_y2}, [{_fractions::*}], [{_colors::*}], {_method})

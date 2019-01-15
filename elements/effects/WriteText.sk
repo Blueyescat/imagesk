@@ -71,12 +71,12 @@ effect write [[(image|img)] (text|string) [(with (id|name)|named)]] %string% (on
 					{_g}.setStroke(new BasicStroke({{@variable}::texts::%{_name}%::outlineWidth}, BasicStroke.CAP_ROUND!, 1))
 				if {{@variable}::texts::%{_name}%::onlyOutline} is not set:
 					if {{@variable}::texts::%{_name}%::foreground} is set:
-						{_g}.setColor({{@variable}::texts::%{_name}%::foreground})
+						{_g}.setPaint({{@variable}::texts::%{_name}%::foreground})
 					{_g}.fill({_gv}.getOutline({_x}, {_y}))
 				if {{@variable}::texts::%{_name}%::outlineColor} is set:
-					{_g}.setColor({{@variable}::texts::%{_name}%::outlineColor})
+					{_g}.setPaint({{@variable}::texts::%{_name}%::outlineColor})
 				else:
-					{_g}.setColor(Color.BLACK!)
+					{_g}.setPaint(Color.BLACK!)
 				{_g}.draw({_gv}.getOutline({_x}, {_y}))
 				add {_g}.getFontMetrics({_font}).getHeight() to {_y}
 		else:
