@@ -4,9 +4,12 @@ import:
 	java.io.ByteArrayOutputStream
 	javax.imageio.ImageIO
 	
+	ch.njol.skript.lang.Variable
+	
 	me.iblitzkriegi.vixio.Vixio
 	me.iblitzkriegi.vixio.util.UpdatingMessage
 	me.iblitzkriegi.vixio.util.Util as VixioUtil
+	me.iblitzkriegi.vixio.util.skript.SkriptUtil as VixioSkriptUtil
 	
 	net.dv8tion.jda.core.EmbedBuilder
 	net.dv8tion.jda.core.MessageBuilder
@@ -15,8 +18,18 @@ import:
 
 effect:
 	patterns:
-		upload (image|img) %object% [with ([(format|file)] type|[file] format) %-string%] [with (message|embed) %-message/string%] to %user/channel% [with %bot/string%]
-		upload [the] [last[ly]] [(created|generated|received|taken)] (image|img) [with ([(format|file)] type|[file] format) %-string%] [with (message|embed) %-message/string%] to %user/channel% [with %bot/string%]
+		upload (image|img) %object% [with ([(format|file)] type|[file] format) %-string%] [with (message|embed) %-message/string%] to %user/channel% [with %bot/string%] [and store (it|the message) in %-objects%]
+		upload [the] [last[ly]] [(created|generated|received|taken)] (image|img) [with ([(format|file)] type|[file] format) %-string%] [with (message|embed) %-message/string%] to %user/channel% [with %bot/string%] [and store (it|the message) in %-objects%]
+	parse:
+		if matched pattern is 1:
+			set {_varExpr} to expression-6
+		else:
+			set {_varExpr} to expression-5
+		if {_varExpr} is set:
+			if {_varExpr} isn't instance of Variable:
+				imagesk parse error "'%{_varExpr}%' is not a variable."
+				stop				
+		continue
 	trigger:
 		if matched pattern is 1:
 			set {_image} to expression-1
@@ -57,7 +70,13 @@ effect:
 		ImageIO.write({_image}, {_format}, {_os})
 		set {_is} to new ByteArrayInputStream({_os}.toByteArray())
 		if {_message} is set:
-			{_bindedChannel}.sendMessage({_message}).addFile({_is}, "image.%{_format}%").queue()
+			set {_resultingMessage} to {_bindedChannel}.sendMessage({_message}).addFile({_is}, "image.%{_format}%").complete(true)
 		else:
-			{_bindedChannel}.sendFile({_is}, "image.%{_format}%").queue()
+			set {_resultingMessage} to {_bindedChannel}.sendFile({_is}, "image.%{_format}%").complete(true)
+		if matched pattern is 1:
+			set {_varExpr} to raw expression-6
+		else:
+			set {_varExpr} to raw expression-5
+		if {_varExpr} is set:
+			VixioUtil.storeInVar(VixioSkriptUtil.getVariableName({_varExpr}), {_varExpr}, UpdatingMessage.from({_resultingMessage}), event)
 		continue
