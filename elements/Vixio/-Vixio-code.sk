@@ -21,7 +21,8 @@ effect:
 		upload (image|img) %object% [with ([(format|file)] type|[file] format) %-string%] [with (message|embed) %-message/string%] to %user/channel% [with %bot/string%] [and store (it|the message) in %-objects%]
 		upload [the] [last[ly]] [(created|generated|received|taken)] (image|img) [with ([(format|file)] type|[file] format) %-string%] [with (message|embed) %-message/string%] to %user/channel% [with %bot/string%] [and store (it|the message) in %-objects%]
 	parse:
-		if matched pattern is 1:
+		# skript-mirror bug, it sees the patterns as 32 and 15 in parse section only
+		if matched pattern is 32:
 			set {_varExpr} to expression-6
 		else:
 			set {_varExpr} to expression-5
