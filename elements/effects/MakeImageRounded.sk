@@ -50,7 +50,7 @@ effect:
 		{_g}.setRenderingHint(RenderingHints.KEY_ANTIALIASING!, RenderingHints.VALUE_ANTIALIAS_ON!)
 		{_g}.setPaint(Color.WHITE!)
 		{_g}.fill(new RoundRectangle2DDouble(0, 0, {_width}, {_height}, {_arcWidth}, {_arcHeight}))
-		{_g}.setComposite(AlphaComposite.SrcAtop!)
+		{_g}.setComposite(AlphaComposite.SrcIn!)
 		{_g}.drawImage({_image}, 0, 0, null)
 		{_g}.dispose()
 		if matched pattern is 1 or 2:
