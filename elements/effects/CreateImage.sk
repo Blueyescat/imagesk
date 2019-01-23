@@ -8,12 +8,19 @@ import:
 	
 	ch.njol.skript.lang.Variable
 
-effect create [a[n]] [new] image with (width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] [with] [b[ack]g[round]] [(paint|gradient)] %-object%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]:
+effect:
+	patterns:
+		create [a[n]] [new] image with (width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] [with] [b[ack]g[round]] [(paint|gradient)] %-object%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
+		create [a[n]] [new] image with (width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
 	parse:
-		if expression-6 is set:
-			if expression-6 isn't instance of Variable:
-				imagesk parse error "'%expression-6%' is not a variable."
-				stop
+		if matched pattern is 29:
+			set {_varExpr} to expression-6
+		else:
+			set {_varExpr} to expression-5
+		if {_varExpr} is set:
+			if {_varExpr} isn't instance of Variable:
+				imagesk parse error "'%{_varExpr}%' is not a variable."
+				stop				
 		continue
 	trigger:
 		delay the current effect
@@ -28,13 +35,17 @@ effect create [a[n]] [new] image with (width %-number%[( and|,)] [with] height %
 		if {_height} is smaller than 1:
 			set {_height} to 1
 		set {_image} to new BufferedImage({_width}, {_height}, BufferedImage.TYPE_INT_ARGB!)
-		if imagesk_paintFrom(expression-5) is set:
-			set {_g} to {_image}.createGraphics()
-			{_g}.setPaint(imagesk_paintFrom(expression-5))
-			{_g}.fillRect(0, 0, {_width}, {_height})
-			{_g}.dispose()
-		if raw expression-6 is set:
-			imagesk set variable raw expression-6 to {_image} in event
+		if matched pattern is 1:
+			if imagesk_paintFrom(expression-5) is set:
+				set {_g} to {_image}.createGraphics()
+				{_g}.setPaint(imagesk_paintFrom(expression-5))
+				{_g}.fillRect(0, 0, {_width}, {_height})
+				{_g}.dispose()
+			set {_varExpr} to raw expression-6
+		else:
+			set {_varExpr} to raw expression-5
+		if {_varExpr} is set:
+			imagesk set variable {_varExpr} to {_image} in event
 		else:
 			set {{@variable}::lastImage} to {_image}
 		continue
