@@ -13,6 +13,7 @@ effect:
 		create [a[n]] [new] image with (width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%)[[( and|,)] [with] [b[ack]g[round]] [(paint|gradient)] %-object%] [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
 		create [a[n]] [new] image with (width %-number%[( and|,)] [with] height %-number%|1¦height %-number%[( and|,)] [with] width %-number%) [[and] (store|save) ([[the] result]|it) (in|to) [variable] %-object%]
 	parse:
+		# skript-mirror bug, it sees the patterns as 29 and 17 in parse section only
 		if matched pattern is 29:
 			set {_varExpr} to expression-6
 		else:

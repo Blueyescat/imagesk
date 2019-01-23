@@ -13,9 +13,11 @@ import:
 	
 	net.dv8tion.jda.core.EmbedBuilder
 	net.dv8tion.jda.core.MessageBuilder
+	net.dv8tion.jda.core.entities.Icon
 	net.dv8tion.jda.core.entities.User
 	net.dv8tion.jda.core.exceptions.RateLimitedException
 
+# UploadImage
 effect:
 	patterns:
 		upload (image|img) %object% [with ([(format|file)] type|[file] format) %-string%] [with (message|embed) %-message/string%] to %user/channel% [with %bot/string%] [and store (it|the message) in %-objects%]
@@ -80,4 +82,27 @@ effect:
 			set {_varExpr} to raw expression-5
 		if {_varExpr} is set:
 			VixioUtil.storeInVar(VixioSkriptUtil.getVariableName({_varExpr}), {_varExpr}, UpdatingMessage.from({_resultingMessage}), event)
+		continue
+
+# CreateEmote
+effect create [a[n]] [new] (emote|emoji) (using|from|with) [(image|img)] %object% [with ([(format|file)] type|[file] format) %-string%] (named|with [the] name) %string% [in %guild%] [with %bot/string%]:
+	trigger:
+		if expression-1 isn't instance of BufferedImage:
+			stop
+		if expression-2 is set:
+			set {_format} to expression-2
+		else:
+			set {_format} to "png"
+		set {_name} to expression-3
+		replace all " " with "_" in {_name}
+		delay the current effect
+		set {_bot} to VixioUtil.botFrom(expression-5)
+		set {_guild} to VixioUtil.bindGuild({_bot}, expression-4)
+		if {_name}, {_format}, {_bot} or {_guild} is not set:
+			continue
+		set {_baos} to new ByteArrayOutputStream()
+		ImageIO.write(expression-1, {_format}, {_baos})
+		set {_is} to new ByteArrayInputStream({_baos}.toByteArray())
+		set {_icon} to Icon.from({_is})
+		expression-4.getController().createEmote({_name}, {_icon}).queue()
 		continue
