@@ -6,7 +6,7 @@ Requires *latest* [skript-mirror](https://github.com/btk5h/skript-mirror) and [S
 Please always use the latest version of skript-mirror and imagesk. If you see any error, try to update them. If that doesn't solve the error then contact with me.
 
 ## Installing
-1. Go to [the releases page](https://github.com/Blueyescat/imagesk/releases/tag/v0.5.0)
+1. Go to [the releases page](https://github.com/Blueyescat/imagesk/releases)
 1. Download the `imagesk.zip` file
 1. Unzip/open the zip, copy the `imagesk` **folder** inside and paste it into your `Skript/scripts/` folder
 
